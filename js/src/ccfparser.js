@@ -85,6 +85,18 @@ var formBuilder = {
             $(dropdown).val(ccfOptions.language);
             input.appendChild(dropdown);
         }
+        if (element.attributes.attributeList !== undefined) {
+            for (var key in element.attributes.attributeList) {
+                switch(element.attributes.attributeList[key].ValueScheme) {
+                    case 'string':
+                        var attr_field = document.createElement('input');
+                        attr_field.setAttribute('type', 'text');
+                        attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + element.ID);
+                        attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name);
+                }
+                input.appendChild(attr_field);
+            }
+        }
         if (element.attributes.duplicate !== undefined)
         {
             var btn = document.createElement('input');
