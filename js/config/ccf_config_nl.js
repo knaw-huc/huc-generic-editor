@@ -24,7 +24,8 @@ var ccfOptions = {
       no_valid_date_box: ': geen geldige datum',
       date_string: 'jjjj-mm-dd',
       int_field: 'De waarde van dit veld moet numeriek zijn!',
-      int_field_box: ': moet numeriek zijn!'
+      int_field_box: ': moet numeriek zijn!',
+      attr_not_empty_field: 'Attribuut is verplicht'
     }
 };
 

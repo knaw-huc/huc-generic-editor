@@ -24,7 +24,8 @@ var ccfOptions = {
       no_valid_date_box: ': not a valid date!',
       date_string: 'yyyy-mm-dd',
       int_field: 'The value of this field must be an integer!',
-      int_field_box: 'must be an integer!'
+      int_field_box: 'must be an integer!',
+      attr_not_empty_field: 'Attribute(s) mandatory'
     }
 };
 
