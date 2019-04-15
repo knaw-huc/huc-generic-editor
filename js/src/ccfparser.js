@@ -768,6 +768,13 @@ function parseRecord(obj, set) {
                     if (language !== 0) {
                         $(set).find("div[data-name='" + name + "']").find(".language_dd").first().val(language);
                     }
+                    if (obj[key].attributes !== undefined) {
+                        for (var attr_key in obj[key].attributes) {
+                            if (attr_key !== 'xml:lang') {
+                               $(set).find("div[data-name='" + name + "']").find("input[data-attribute_name='" + attr_key + "']").first().val(obj[key].attributes[attr_key]); 
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -792,9 +799,7 @@ function duplicateField(obj, set) {
     var tempID;
     var name = obj.name;
     var btn = $(set).find("div[data-name='" + name + "']").find(".btn").first();
-    //console.log(btn);
     clonedElement = $(set).find("div[data-name='" + name + "']").find(".control").first().clone();
-    //var btn = $(clonedElement).find(".btn").first();
     clonedElement.attr('class', 'clone');
     clonedElement.find(".btn").each(
             function () {
