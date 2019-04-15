@@ -91,7 +91,8 @@ var formBuilder = {
                     case 'string':
                         var attr_field = document.createElement('input');
                         attr_field.setAttribute('type', 'text');
-                        attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + element.ID);
+                        attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + '_' + element.ID);
+                        attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
                         attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name);
                 }
                 input.appendChild(attr_field);
@@ -597,8 +598,10 @@ function validate() {
                 inputOK = false;
                 break;
         }
+        //validateAttributes(key);
     }
     if (inputOK) {
+        //console.log(validationProfiles);
         sendForm();
     } else {
         $("#errorSpace").append(errorSpace);
@@ -711,6 +714,10 @@ function parseElement(element) {
                 unit.attributes = {};
                 var id = $(this).attr("id");
                 unit.attributes.lang = $("#lang_" + id).val();
+                console.log(id);
+                $(this).parent().find("input[id^='attr_']").each(function () {
+                    unit.attributes[$(this).attr("data-attribute_name")] = $(this).val();
+                });
                 retVal.push(unit);
             }
         }
@@ -867,21 +874,19 @@ function duplicateComponent(obj, set) {
     clonedComponent.find(".optionalCompBtn").each(function () {
         $(this).attr('value', "✗");
         $(this).on("click", showComponentFields);
-        //$(this).click();
     });
     clonedComponent.attr("data-filename", null);
     $(set).append(clonedComponent);
     addAutoComplete(clonedComponent);
 }
 
+
 function validateInput(key) {
     $("[data-validation-profile=" + key + "]").each(function () {
         if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
             inputOK = false;
-            //$("#errorMsg_" + this.id).html("This field is mandatory!");
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
             var error = document.createElement('p');
-            //$(error).html(validationProfiles[key].attributes.label + ": mandatory!");
             $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
             $(errorSpace).append(error);
         } else {
@@ -891,10 +896,8 @@ function validateInput(key) {
             var str = this.value;
             if (!isValidDate(str)) {
                 inputOK = false;
-                //$("#errorMsg_" + this.id).html("This is not a valid date!");
                 $("#errorMsg_" + this.id).html(ccfOptions.alert.no_valid_date);
                 var error = document.createElement('p');
-                //$(error).html(validationProfiles[key].attributes.label + ": not a valid date!");
                 $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.no_valid_date_box);
                 $(errorSpace).append(error);
             }
@@ -909,8 +912,21 @@ function validateInput(key) {
                 $(errorSpace).append(error);
             }
         }
+        if (validationProfiles[key].attributes.attributeList !== undefined) {
+           if (this.value !== "") {
+              for (var att in validationProfiles[key].attributes.attributeList) {
+                  if (validationProfiles[key].attributes.attributeList[att].Required && $("#attr_" + validationProfiles[key].attributes.attributeList[att].name + "_" + this.id).val() === "") {
+                      inputOK = false;
+                      $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
+                  }
+              }
+           }
+       } 
     });
+    
 }
+
+
 
 function isInteger(x) {
     return (Number(x) !== NaN) && (x % 1 === 0);
@@ -937,6 +953,17 @@ function validateTextArea(key) {
         } else {
             $("#errorMsg_" + this.id).html("");
         }
+         if (validationProfiles[key].attributes.attributeList !== undefined) {
+           if (this.value !== "") {
+              for (var att in validationProfiles[key].attributes.attributeList) {
+                  console.log(validationProfiles[key].attributes.attributeList[att].Required);
+                  if (validationProfiles[key].attributes.attributeList[att].Required) {
+                      inputOK = false;
+                      $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
+                  }
+              }
+           }
+       }
     });
 }
 
@@ -951,6 +978,17 @@ function validateSelect(key) {
         } else {
             $("#errorMsg_" + this.id).html("");
         }
+         if (validationProfiles[key].attributes.attributeList !== undefined) {
+           if (this.value !== "") {
+              for (var att in validationProfiles[key].attributes.attributeList) {
+                  console.log(validationProfiles[key].attributes.attributeList[att].Required);
+                  if (validationProfiles[key].attributes.attributeList[att].Required) {
+                      inputOK = false;
+                      $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
+                  }
+              }
+           }
+       }
     });
 }
 
