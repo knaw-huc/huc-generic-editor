@@ -87,13 +87,14 @@ var formBuilder = {
         }
         if (element.attributes.attributeList !== undefined) {
             for (var key in element.attributes.attributeList) {
-                switch(element.attributes.attributeList[key].ValueScheme) {
+                switch (element.attributes.attributeList[key].ValueScheme) {
                     case 'string':
                         var attr_field = document.createElement('input');
                         attr_field.setAttribute('type', 'text');
                         attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + '_' + element.ID);
                         attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
                         attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name);
+                        attr_field.setAttribute("class", "element_attribute");
                 }
                 input.appendChild(attr_field);
             }
@@ -140,6 +141,11 @@ var formBuilder = {
                                     $(this).attr('id', 'lang_' + tempID);
                                     $(this).val(ccfOptions.language);
                                 });
+                        clonedElement.find(".element_attribute").each(
+                                function () {
+                                    $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
+                                    $(this).val("");
+                                });
                         clonedElement.insertAfter(that.parent());
                         createAutoCompletes();
                     };
@@ -182,11 +188,11 @@ var formBuilder = {
                 objectDisplay = false;
                 objectLevel = component.level;
             }
-            
+
         } else {
             objectDisplay = true;
         }
-        
+
         if (component.attributes.CardinalityMax !== '1')
         {
             //header.innerHTML = component.attributes.label;
@@ -658,19 +664,19 @@ function fillValues(record) {
 }
 
 function setfiles(files) {
-for (var key in files) {
-    $(".fileForm").eq(key).each(
-            function() {
-                $(this).parent().parent().attr("data-filename", files[key].file);
-                var msg = document.createElement('div');
-                msg.setAttribute("id", "msg" + $(this).attr("id"));
-                msg.setAttribute("class", "headerMsg");
-                msg.innerHTML = files[key].file;
-                $(this).parent().append(msg);
-                $(this).find(".resetUploadBtn").show();
-                $(this).find("[id^=files_]").hide();
-            })
-}
+    for (var key in files) {
+        $(".fileForm").eq(key).each(
+                function () {
+                    $(this).parent().parent().attr("data-filename", files[key].file);
+                    var msg = document.createElement('div');
+                    msg.setAttribute("id", "msg" + $(this).attr("id"));
+                    msg.setAttribute("class", "headerMsg");
+                    msg.innerHTML = files[key].file;
+                    $(this).parent().append(msg);
+                    $(this).find(".resetUploadBtn").show();
+                    $(this).find("[id^=files_]").hide();
+                })
+    }
 }
 
 function parseComponent(component) {
@@ -714,7 +720,6 @@ function parseElement(element) {
                 unit.attributes = {};
                 var id = $(this).attr("id");
                 unit.attributes.lang = $("#lang_" + id).val();
-                console.log(id);
                 $(this).parent().find("input[id^='attr_']").each(function () {
                     unit.attributes[$(this).attr("data-attribute_name")] = $(this).val();
                 });
@@ -749,7 +754,7 @@ function parseRecord(obj, set) {
                 } else {
                     var newSet = $(set).find("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 }
-                
+
 //                if (obj[key].attributes !== undefined) {
 //                    if (obj[key].attributes.ref !== undefined) {
 //                        var ref = obj[key].attributes.ref;
@@ -771,7 +776,7 @@ function parseRecord(obj, set) {
                     if (obj[key].attributes !== undefined) {
                         for (var attr_key in obj[key].attributes) {
                             if (attr_key !== 'xml:lang') {
-                               $(set).find("div[data-name='" + name + "']").find("input[data-attribute_name='" + attr_key + "']").first().val(obj[key].attributes[attr_key]); 
+                                $(set).find("div[data-name='" + name + "']").find("input[data-attribute_name='" + attr_key + "']").first().val(obj[key].attributes[attr_key]);
                             }
                         }
                     }
@@ -829,6 +834,14 @@ function duplicateField(obj, set) {
                 $(this).attr('id', 'lang_' + tempID);
                 $(this).val(language);
             });
+    clonedElement.find(".element_attribute").each(
+            function () {
+                $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
+                $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
+                //$(this).val("");
+                console.log(obj);
+            });
+   
     clonedElement.insertAfter(btn.parent());
     createAutoCompletes();
 }
@@ -907,7 +920,7 @@ function validateInput(key) {
                 $(errorSpace).append(error);
             }
         }
-         if (validationProfiles[key].attributes.ValueScheme === 'int' && this.value !== "") {
+        if (validationProfiles[key].attributes.ValueScheme === 'int' && this.value !== "") {
             var str = this.value;
             if (!isInteger(str)) {
                 inputOK = false;
@@ -918,17 +931,17 @@ function validateInput(key) {
             }
         }
         if (validationProfiles[key].attributes.attributeList !== undefined) {
-           if (this.value !== "") {
-              for (var att in validationProfiles[key].attributes.attributeList) {
-                  if (validationProfiles[key].attributes.attributeList[att].Required && $("#attr_" + validationProfiles[key].attributes.attributeList[att].name + "_" + this.id).val() === "") {
-                      inputOK = false;
-                      $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
-                  }
-              }
-           }
-       } 
+            if (this.value !== "") {
+                for (var att in validationProfiles[key].attributes.attributeList) {
+                    if (validationProfiles[key].attributes.attributeList[att].Required === 'true' && $("#attr_" + validationProfiles[key].attributes.attributeList[att].name + "_" + this.id).val() === "") {
+                        inputOK = false;
+                        $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
+                    }
+                }
+            }
+        }
     });
-    
+
 }
 
 
@@ -958,17 +971,17 @@ function validateTextArea(key) {
         } else {
             $("#errorMsg_" + this.id).html("");
         }
-         if (validationProfiles[key].attributes.attributeList !== undefined) {
-           if (this.value !== "") {
-              for (var att in validationProfiles[key].attributes.attributeList) {
-                  console.log(validationProfiles[key].attributes.attributeList[att].Required);
-                  if (validationProfiles[key].attributes.attributeList[att].Required) {
-                      inputOK = false;
-                      $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
-                  }
-              }
-           }
-       }
+        if (validationProfiles[key].attributes.attributeList !== undefined) {
+            if (this.value !== "") {
+                for (var att in validationProfiles[key].attributes.attributeList) {
+                    console.log(validationProfiles[key].attributes.attributeList[att].Required);
+                    if (validationProfiles[key].attributes.attributeList[att].Required) {
+                        inputOK = false;
+                        $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
+                    }
+                }
+            }
+        }
     });
 }
 
@@ -983,17 +996,17 @@ function validateSelect(key) {
         } else {
             $("#errorMsg_" + this.id).html("");
         }
-         if (validationProfiles[key].attributes.attributeList !== undefined) {
-           if (this.value !== "") {
-              for (var att in validationProfiles[key].attributes.attributeList) {
-                  console.log(validationProfiles[key].attributes.attributeList[att].Required);
-                  if (validationProfiles[key].attributes.attributeList[att].Required) {
-                      inputOK = false;
-                      $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
-                  }
-              }
-           }
-       }
+        if (validationProfiles[key].attributes.attributeList !== undefined) {
+            if (this.value !== "") {
+                for (var att in validationProfiles[key].attributes.attributeList) {
+                    console.log(validationProfiles[key].attributes.attributeList[att].Required);
+                    if (validationProfiles[key].attributes.attributeList[att].Required) {
+                        inputOK = false;
+                        $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
+                    }
+                }
+            }
+        }
     });
 }
 
