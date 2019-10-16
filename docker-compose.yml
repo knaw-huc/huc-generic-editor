@@ -1,0 +1,12 @@
+version: '2.1'
+
+services:
+  generic-editor:
+    build:
+      context: ./php-apache
+    ports:
+      - 8888:80
+    volumes:
+      - ./webroot:/var/www/html
+
+
