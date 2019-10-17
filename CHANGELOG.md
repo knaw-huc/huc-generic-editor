@@ -1,3 +1,10 @@
+### 17-10-2019
+
+* added a php/apache serve, with docker-compose for serving out the json (MvdP)
+* split and adapted the clientcode in two versions index.html and standalone.html
+* annotated the html files
+* adapted the README
+
 ### 16-10-2019
 
 * added example file index.html for demonstration and development (MvdP)
