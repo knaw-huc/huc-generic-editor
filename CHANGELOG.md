@@ -4,6 +4,7 @@
 * split and adapted the clientcode in two versions index.html and standalone.html
 * annotated the html files
 * adapted the README
+* removed unused directories
 
 ### 16-10-2019
 
