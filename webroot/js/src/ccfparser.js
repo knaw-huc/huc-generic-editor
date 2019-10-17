@@ -655,7 +655,8 @@ function sendForm() {
 
 function fillValues(record) {
     obj = record[2].value;
-    parseRecord(obj, null);
+    // console.log(obj);
+    parseRecord(obj.value, null);
 
     if (record[3] !== undefined) {
         setfiles(record[3]);
@@ -737,8 +738,11 @@ function parseElement(element) {
 }
 
 function parseRecord(obj, set) {
+    console.log(obj);
     var nameStack = {};
     for (var key in obj) {
+        // console.log(obj.value.key.va);
+
         if (obj[key] !== null) {
             if (nameStack[obj[key].name] === undefined) {
                 nameStack[obj[key].name] = 1;

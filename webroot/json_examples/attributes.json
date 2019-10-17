@@ -1,0 +1,69 @@
+{
+    "id": "clarin.eu:cr1:p_1554718024401",
+    "content": [
+        {
+            "type": "Component",
+            "level": 1,
+            "ID": "5da86c840982d",
+            "attributes": {
+                "name": "TestProfile",
+                "label": "TestProfile",
+                "CardinalityMin": "1",
+                "CardinalityMax": "1",
+                "initialOrder": 1
+            },
+            "content": [
+                {
+                    "type": "Component",
+                    "level": 2,
+                    "ID": "5da86c8409859",
+                    "attributes": {
+                        "name": "MyComponent",
+                        "label": "MyComponent",
+                        "CardinalityMin": "1",
+                        "CardinalityMax": "1",
+                        "initialOrder": 1
+                    },
+                    "content": [
+                        {
+                            "type": "Element",
+                            "level": 3,
+                            "ID": "5da86c840986a",
+                            "attributes": {
+                                "name": "myElement",
+                                "label": "myElement",
+                                "CardinalityMin": "1",
+                                "CardinalityMax": "unbounded",
+                                "duplicate": "yes",
+                                "attributeList": [
+                                    {
+                                        "name": "myAttribute",
+                                        "ValueScheme": "string",
+                                        "Required": "true"
+                                    },
+                                    {
+                                        "name": "bonzo",
+                                        "ValueScheme": "string",
+                                        "Required": "false"
+                                    },
+                                    {
+                                        "name": "valueType",
+                                        "ValueScheme": "dropDown",
+                                        "values": [
+                                            "string",
+                                            "mixed"
+                                        ],
+                                        "Required": "true"
+                                    }
+                                ],
+                                "ValueScheme": "string",
+                                "pattern": "[Cc][Cc][Ff]",
+                                "initialOrder": 1
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

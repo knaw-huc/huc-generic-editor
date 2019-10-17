@@ -23,7 +23,4 @@ You can edit the configuration file in:
 Open  ```webroot/standalone.html``` in your favourite browser.
 The json configuration is embedded in a JS object literal.
 
-## Treestructure
-```
 
-```

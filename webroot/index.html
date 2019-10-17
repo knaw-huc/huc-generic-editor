@@ -20,6 +20,7 @@ For a standalone-version without server: consult and test standalone.html
 <!--    <script src="js/config/ccf_config_en.js"></script>-->
 
     <script src="js/src/ccfparser.js"></script>
+
 </head>
 
 <body>
@@ -32,9 +33,10 @@ For a standalone-version without server: consult and test standalone.html
     fetch(serverurl).then(function(response) {
         response.json().then(function(json) {
             $('document').ready(function(){
+                // console.log(json);
             formBuilder.start(json);
     });
-    console.log(json);
+ 
   });
 });
 

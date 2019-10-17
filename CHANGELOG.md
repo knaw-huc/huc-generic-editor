@@ -1,10 +1,13 @@
 ### 17-10-2019
 
 * added a php/apache serve, with docker-compose for serving out the json (MvdP)
-* split and adapted the clientcode in two versions index.html and standalone.html
-* annotated the html files
-* adapted the README
-* removed unused directories
+* split and adapted the clientcode in two versions index.html and standalone.html (MvdP)
+* annotated the html files (MvdP)
+* adapted the README (MvdP)
+* removed unused directories (MvdP)
+* tested the docker-compose file SUCCES (RZ)
+* fixed defaultvalues bug (RZ & MvdP)
+* added attributes.json development (RZ)
 
 ### 16-10-2019
 
