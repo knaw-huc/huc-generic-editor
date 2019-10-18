@@ -18,6 +18,11 @@ You see a structured form, on-the-fly generated.
 You can edit the configuration file in:
 ```webroot/json_examples/timbuctoo_edit_metadata.json``` 
 
+For experimental features change the link in server.php to :
+```webroot/json_examples/timbuctoo_edit_metadata_dev.json``` 
+
+(or uncomment the line to the link)
+
 ### Without Docker
 
 Open  ```webroot/standalone.html``` in your favourite browser.
