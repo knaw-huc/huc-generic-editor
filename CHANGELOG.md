@@ -3,7 +3,7 @@
 
 MvdP
 * added multilingual attribute and free text attributes to dev-file
-* added timbuctoo_edit_metatdat_dev.json as dev-file for implementing/testing new features
+* added timbuctoo_edit_metatdata_dev.json as dev-file for implementing/testing new features
 * changed PHP Version Dockerfile to 7.3
 * changed Maintainer Dockerfile
 
