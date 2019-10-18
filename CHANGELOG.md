@@ -1,3 +1,12 @@
+
+### 18-10-2019
+
+MvdP
+* added multilingual attribute and free text attributes to dev-file
+* added timbuctoo_edit_metatdat_dev.json as dev-file for implementing/testing new features
+* changed PHP Version Dockerfile to 7.3
+* changed Maintainer Dockerfile
+
 ### 17-10-2019
 
 * added a php/apache serve, with docker-compose for serving out the json (MvdP)

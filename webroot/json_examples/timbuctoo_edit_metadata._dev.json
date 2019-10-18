@@ -21,7 +21,8 @@
                         "width": 60,
                         "label": "Title",
                         "name": "title",
-                        "ValueScheme": "string"
+                        "ValueScheme": "string",
+                        "Multilingual": "true"
 
                     }
                 },
@@ -35,7 +36,9 @@
                         "height": 8,
                         "label": "Description",
                         "name": "description",
-                        "ValueScheme": "string"
+                        "ValueScheme": "string",
+                        "Multilingual": "True"
+
                     }
                 },
                 {
@@ -70,7 +73,29 @@
                                 "label": "Name",
                                 "width": 60,
                                 "name": "name",
-                                "ValueScheme": "string"
+                                "ValueScheme": "string",
+                                "attributeList": [
+                                    {
+                                        "name": "attribute1",
+                                        "ValueScheme": "string",
+                                        "Required": "true"
+                                    },
+                                    {
+                                        "name": "attribute2",
+                                        "ValueScheme": "string",
+                                        "Required": "false"
+                                    },
+                                    {
+                                        "name": "valueType",
+                                        "ValueScheme": "dropDown",
+                                        "values": [
+                                            "string",
+                                            "mixed"
+                                        ],
+                                        "Required": "true"
+                                    }
+                                ]
+
                             }
                         },
                         {
