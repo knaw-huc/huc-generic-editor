@@ -100,6 +100,12 @@ var formBuilder = {
                     case 'dropDown':
                         console.log(element.attributes.attributeList[key].values);
                         var attr_field = document.createElement('select');
+                        // attr_field.setAttribute('type', 'text');
+                        attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + '_' + element.ID);
+                        attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
+                        // attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name);
+                        attr_field.setAttribute("class", "element_attribute");
+
                         var option = document.createElement('option');
                         for (var k in element.attributes.attributeList[key].values) {
                             var option = document.createElement('option');

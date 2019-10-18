@@ -2,6 +2,7 @@
 ### 18-10-2019
 
 MvdP
+* more attributes
 * extended parser, type list in json is now possible, in development
 * added multilingual attribute and free text attributes to dev-file
 * added timbuctoo_edit_metatdata_dev.json as dev-file for implementing/testing new features
