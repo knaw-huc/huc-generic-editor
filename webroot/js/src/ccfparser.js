@@ -95,60 +95,72 @@ var formBuilder = {
                         attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
                         attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name);
                         attr_field.setAttribute("class", "element_attribute");
+                    break;                            
+                    // New Feature in development MvdP 
+                    case 'dropDown':
+                        console.log(element.attributes.attributeList[key].values);
+                        var attr_field = document.createElement('select');
+                        var option = document.createElement('option');
+                        for (var k in element.attributes.attributeList[key].values) {
+                            var option = document.createElement('option');
+                            option.setAttribute('value', element.attributes.attributeList[key].values[k]);
+                            option.innerHTML = element.attributes.attributeList[key].values[k];
+                            attr_field.appendChild(option);    
+                        }        
+                    break;
                 }
                 input.appendChild(attr_field);
             }
         }
-        if (element.attributes.duplicate !== undefined)
-        {
+        if (element.attributes.duplicate !== undefined) {
             var btn = document.createElement('input');
             btn.setAttribute('type', 'button');
             btn.setAttribute('value', '+');
             btn.setAttribute('class', 'btn');
             btn.setAttribute('data-source', element.ID);
             btn.onclick =
-                    function (e) {
-                        var next = clone.nextClonePostfix();
-                        var that = $(this);
-                        var tempID;
-                        e.preventDefault();
-                        clonedElement = that.parent().clone();
-                        clonedElement.attr('class', 'clone');
-                        clonedElement.find(".btn").each(
-                                function () {
-                                    $(this).attr('value', '-');
-                                    $(this).on("click", function (e) {
-                                        e.preventDefault();
-                                        var that = $(this);
-                                        that.parent().remove();
-                                    });
-                                });
-                        clonedElement.find("#" + that.attr('data-source')).each(
-                                function () {
-                                    var id = $(this).attr('id');
-                                    $(this).val("");
-                                    tempID = id + '_' + next;
-                                    $(this).attr('id', tempID);
-                                });
-                        clonedElement.find(".errorMsg").each(
-                                function () {
-                                    var id = $(this).attr('id');
-                                    $(this).attr('id', id + '_' + next);
-                                    $(this).html("");
-                                });
-                        clonedElement.find(".language_dd").each(
-                                function () {
-                                    $(this).attr('id', 'lang_' + tempID);
-                                    $(this).val(ccfOptions.language);
-                                });
-                        clonedElement.find(".element_attribute").each(
-                                function () {
-                                    $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
-                                    $(this).val("");
-                                });
-                        clonedElement.insertAfter(that.parent());
-                        createAutoCompletes();
-                    };
+                function (e) {
+                    var next = clone.nextClonePostfix();
+                    var that = $(this);
+                    var tempID;
+                    e.preventDefault();
+                    clonedElement = that.parent().clone();
+                    clonedElement.attr('class', 'clone');
+                    clonedElement.find(".btn").each(
+                        function () {
+                            $(this).attr('value', '-');
+                            $(this).on("click", function (e) {
+                                e.preventDefault();
+                                var that = $(this);
+                                that.parent().remove();
+                            });
+                        });
+                    clonedElement.find("#" + that.attr('data-source')).each(
+                        function () {
+                            var id = $(this).attr('id');
+                            $(this).val("");
+                            tempID = id + '_' + next;
+                            $(this).attr('id', tempID);
+                        });
+                    clonedElement.find(".errorMsg").each(
+                        function () {
+                            var id = $(this).attr('id');
+                            $(this).attr('id', id + '_' + next);
+                            $(this).html("");
+                        });
+                    clonedElement.find(".language_dd").each(
+                        function () {
+                            $(this).attr('id', 'lang_' + tempID);
+                            $(this).val(ccfOptions.language);
+                        });
+                    clonedElement.find(".element_attribute").each(
+                        function () {
+                            $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
+                            $(this).val("");
+                        });
+                    clonedElement.insertAfter(that.parent());
+                    createAutoCompletes();
+                };
             input.appendChild(btn);
         }
         html.appendChild(label);
@@ -176,8 +188,7 @@ var formBuilder = {
         header = document.createElement('div');
         header.setAttribute('class', 'componentHeader');
         header.innerHTML = component.attributes.label;
-        if (component.attributes.CardinalityMin === '0')
-        {
+        if (component.attributes.CardinalityMin === '0') {
             var btn = document.createElement('input');
             btn.setAttribute('type', 'button');
             btn.setAttribute('value', "✓");
@@ -193,8 +204,7 @@ var formBuilder = {
             objectDisplay = true;
         }
 
-        if (component.attributes.CardinalityMax !== '1')
-        {
+        if (component.attributes.CardinalityMax !== '1') {
             //header.innerHTML = component.attributes.label;
             var btn = document.createElement('input');
             btn.setAttribute('type', 'button');
@@ -212,24 +222,24 @@ var formBuilder = {
                 clonedComponent.addClass("clonedComponent");
                 clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
                 clonedComponent.find(".compBtn").each(
-                        function () {
-                            $(this).attr('value', '-');
-                            $(this).on("click", function (e) {
-                                e.preventDefault();
-                                var that = $(this);
-                                that.parent().parent().remove();
-                            });
+                    function () {
+                        $(this).attr('value', '-');
+                        $(this).on("click", function (e) {
+                            e.preventDefault();
+                            var that = $(this);
+                            that.parent().parent().remove();
                         });
+                    });
                 clonedComponent.find(".clone").each(
-                        function () {
-                            $(this).remove();
-                        });
+                    function () {
+                        $(this).remove();
+                    });
                 clonedComponent.find(".errorMsg").each(
-                        function () {
-                            $(this).html('');
-                            var id = $(this).attr('id');
-                            $(this).attr('id', id + '_' + next);
-                        });
+                    function () {
+                        $(this).html('');
+                        var id = $(this).attr('id');
+                        $(this).attr('id', id + '_' + next);
+                    });
                 clonedComponent.find(".input_element").each(function () {
                     var id = $(this).attr("id");
                     $(this).attr('id', id + '_' + next);
@@ -286,8 +296,7 @@ var formBuilder = {
             header.appendChild(form);
         }
         html.appendChild(header);
-        if (componentID === undefined)
-        {
+        if (componentID === undefined) {
             $("#ccform").append(html);
         }
         else {
@@ -667,16 +676,16 @@ function fillValues(record) {
 function setfiles(files) {
     for (var key in files) {
         $(".fileForm").eq(key).each(
-                function () {
-                    $(this).parent().parent().attr("data-filename", files[key].file);
-                    var msg = document.createElement('div');
-                    msg.setAttribute("id", "msg" + $(this).attr("id"));
-                    msg.setAttribute("class", "headerMsg");
-                    msg.innerHTML = files[key].file;
-                    $(this).parent().append(msg);
-                    $(this).find(".resetUploadBtn").show();
-                    $(this).find("[id^=files_]").hide();
-                })
+            function () {
+                $(this).parent().parent().attr("data-filename", files[key].file);
+                var msg = document.createElement('div');
+                msg.setAttribute("id", "msg" + $(this).attr("id"));
+                msg.setAttribute("class", "headerMsg");
+                msg.innerHTML = files[key].file;
+                $(this).parent().append(msg);
+                $(this).find(".resetUploadBtn").show();
+                $(this).find("[id^=files_]").hide();
+            })
     }
 }
 
@@ -700,8 +709,7 @@ function parseComponent(component) {
                 element.type = 'element';
                 element.sortOrder = $(this).attr("data-order");
                 element.content = parseElement(this);
-                if (element.content !== "")
-                {
+                if (element.content !== "") {
                     retStruct.push(element);
                 }
 
@@ -728,8 +736,7 @@ function parseElement(element) {
             }
         }
     });
-    if (Object.keys(retVal).length > 0)
-    {
+    if (Object.keys(retVal).length > 0) {
         return retVal;
     }
     else {
@@ -738,7 +745,7 @@ function parseElement(element) {
 }
 
 function parseRecord(obj, set) {
-    console.log(obj);
+    // console.log(obj);
     var nameStack = {};
     for (var key in obj) {
         // console.log(obj.value.key.va);
@@ -759,13 +766,13 @@ function parseRecord(obj, set) {
                     var newSet = $(set).find("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 }
 
-//                if (obj[key].attributes !== undefined) {
-//                    if (obj[key].attributes.ref !== undefined) {
-//                        var ref = obj[key].attributes.ref;
-//                        $("div[data-name='" + obj[key].name + "']").
-//                    }
-//                    console.log(uploads[ref]);
-//            }
+                //                if (obj[key].attributes !== undefined) {
+                //                    if (obj[key].attributes.ref !== undefined) {
+                //                        var ref = obj[key].attributes.ref;
+                //                        $("div[data-name='" + obj[key].name + "']").
+                //                    }
+                //                    console.log(uploads[ref]);
+                //            }
                 parseRecord(obj[key].value, newSet);
             } else {
                 if (nameStack[obj[key].name] > 1) {
@@ -811,41 +818,41 @@ function duplicateField(obj, set) {
     clonedElement = $(set).find("div[data-name='" + name + "']").find(".control").first().clone();
     clonedElement.attr('class', 'clone');
     clonedElement.find(".btn").each(
-            function () {
-                $(this).attr('value', '-');
-                $(this).on("click", function (e) {
-                    e.preventDefault();
-                    var that = $(this);
-                    that.parent().remove();
-                });
+        function () {
+            $(this).attr('value', '-');
+            $(this).on("click", function (e) {
+                e.preventDefault();
+                var that = $(this);
+                that.parent().remove();
             });
+        });
     clonedElement.find("[id^=" + btn.attr('data-source') + "]").each(
-            function () {
-                var id = $(this).attr('data-validation-profile');
-                $(this).val(obj.value);
-                tempID = id + '_' + next;
-                console.log(tempID);
-                $(this).attr('id', tempID);
-            });
+        function () {
+            var id = $(this).attr('data-validation-profile');
+            $(this).val(obj.value);
+            tempID = id + '_' + next;
+            console.log(tempID);
+            $(this).attr('id', tempID);
+        });
     clonedElement.find(".errorMsg").each(
-            function () {
-                var id = $(this).attr('id');
-                $(this).attr('id', id + '_' + next);
-                $(this).html("");
-            });
+        function () {
+            var id = $(this).attr('id');
+            $(this).attr('id', id + '_' + next);
+            $(this).html("");
+        });
     clonedElement.find(".language_dd").each(
-            function () {
-                $(this).attr('id', 'lang_' + tempID);
-                $(this).val(language);
-            });
+        function () {
+            $(this).attr('id', 'lang_' + tempID);
+            $(this).val(language);
+        });
     clonedElement.find(".element_attribute").each(
-            function () {
-                $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
-                $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
-                //$(this).val("");
-                console.log(obj);
-            });
-   
+        function () {
+            $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
+            $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
+            //$(this).val("");
+            console.log(obj);
+        });
+
     clonedElement.insertAfter(btn.parent());
     createAutoCompletes();
 }
@@ -856,24 +863,24 @@ function duplicateComponent(obj, set) {
     clonedComponent.addClass("clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
     clonedComponent.find(".compBtn").each(
-            function () {
-                $(this).attr('value', '-');
-                $(this).on("click", function (e) {
-                    e.preventDefault();
-                    var that = $(this);
-                    that.parent().parent().remove();
-                });
+        function () {
+            $(this).attr('value', '-');
+            $(this).on("click", function (e) {
+                e.preventDefault();
+                var that = $(this);
+                that.parent().parent().remove();
             });
+        });
     clonedComponent.find(".clone").each(
-            function () {
-                $(this).remove();
-            });
+        function () {
+            $(this).remove();
+        });
     clonedComponent.find(".errorMsg").each(
-            function () {
-                $(this).html('');
-                var id = $(this).attr('id');
-                $(this).attr('id', id + '_' + next);
-            });
+        function () {
+            $(this).html('');
+            var id = $(this).attr('id');
+            $(this).attr('id', id + '_' + next);
+        });
     clonedComponent.find(".input_element").each(function () {
         var id = $(this).attr("id");
         $(this).attr('id', id + '_' + next);
@@ -888,11 +895,11 @@ function duplicateComponent(obj, set) {
         });
     });
 
-//    clonedComponent.find("input[type='reset']").each(function () {
-//       var target = $(this).attr('target');
-//       console.log(target);
-//       $(this).attr('target', target + '_' + next);
-//    });
+    //    clonedComponent.find("input[type='reset']").each(function () {
+    //       var target = $(this).attr('target');
+    //       console.log(target);
+    //       $(this).attr('target', target + '_' + next);
+    //    });
     clonedComponent.find(".optionalCompBtn").each(function () {
         $(this).attr('value', "✗");
         $(this).on("click", showComponentFields);

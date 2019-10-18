@@ -1,7 +1,7 @@
 version: '2.1'
 
 services:
-  generic-editor:
+  huc-generic-editor:
     build:
       context: ./php-apache
     ports:
