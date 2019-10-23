@@ -46,7 +46,7 @@ var formBuilder = {
         }
     },
     handleElement: function (element, componentID) {
-        html = document.createElement('div');
+        var html = document.createElement('div');
         if (objectDisplay) {
             html.setAttribute('class', 'element');
         } else {
@@ -103,7 +103,7 @@ var formBuilder = {
                         // attr_field.setAttribute('type', 'text');
                         attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + '_' + element.ID);
                         attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
-                        // attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name);
+                        // attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name); // niet nodig denk ik
                         attr_field.setAttribute("class", "element_attribute");
 
                         var option = document.createElement('option');
@@ -182,7 +182,7 @@ var formBuilder = {
         validationProfiles[element.ID] = element;
     },
     handleComponent: function (component, componentID) {
-        html = document.createElement('div');
+        var html = document.createElement('div');
         if (objectDisplay || Number(component.level) <= Number(objectLevel)) {
             html.setAttribute('class', 'component');
         } else {

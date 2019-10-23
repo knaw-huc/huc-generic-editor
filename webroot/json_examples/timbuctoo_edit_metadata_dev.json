@@ -36,9 +36,8 @@
                         "height": 8,
                         "label": "Description",
                         "name": "description",
-                        "ValueScheme": "string",
-                        "Multilingual": "True"
-
+                        "ValueScheme": "string"
+                     
                     }
                 },
                 {
@@ -50,7 +49,8 @@
                         "width": 80,
                         "label": "URI",
                         "name": "imageUrl",
-                        "ValueScheme": "string"
+                        "ValueScheme": "string",
+                        "duplicate": "True"                        
                     }
                 },
                 {
@@ -120,7 +120,8 @@
                         "CardinalityMin": "1",
                         "CardinalityMax": "1",
                         "label": "Contact",
-                        "name": "contact"
+                        "name": "contact",
+                        "resource": "True"
                     },
                     "content": [
                         {
