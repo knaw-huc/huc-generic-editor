@@ -3,6 +3,7 @@ var objectLevel = 1;
 var validationProfiles = {};
 var inputOK = true;
 var isUploading = false;
+var errorspace;
 var cloneBuffer;
 var panelError;
 var recordEdit = false;
@@ -66,7 +67,7 @@ var formBuilder = {
         }
         input = document.createElement('div');
         input.setAttribute('class', 'control');
-        control = this.createControl(element);
+        control = this.createControl(element); // ann. subfunction
         input.appendChild(control);
         if (element.attributes.Multilingual === 'true') {
             var dropdown = document.createElement('select');
@@ -98,7 +99,7 @@ var formBuilder = {
                     break;                            
                     // New Feature in development MvdP 
                     case 'dropDown':
-                        console.log(element.attributes.attributeList[key].values);
+                        // console.log(element.attributes.attributeList[key].values);
                         var attr_field = document.createElement('select');
                         // attr_field.setAttribute('type', 'text');
                         attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + '_' + element.ID);
@@ -179,7 +180,9 @@ var formBuilder = {
             $(html).addClass("hidden_element");
         }
         $("#" + componentID).append(html);
-        validationProfiles[element.ID] = element;
+        validationProfiles[element.ID] = element; // complete element added to the validationstack. 
+        // TODO maybe subtle addition of relevant validation rules (MvdP)
+        // console.log('valprofile: ', element.ID, element);
     },
     handleComponent: function (component, componentID) {
         var html = document.createElement('div');
@@ -311,7 +314,7 @@ var formBuilder = {
     },
     createControl: function (element) {
         var type = typeof element.attributes.ValueScheme;
-        if (type === "object") {
+        if (type === "object") { // DEPRECATED? MvdP
             control = this.setValueSchemeElement(element.attributes.ValueScheme[0], element.ID);
         }
         else {
@@ -355,7 +358,7 @@ var formBuilder = {
         $(control).addClass("input_element");
         return control;
     },
-    setValueSchemeElement: function (element, id) {
+    setValueSchemeElement: function (element, id) { // DEPRECATED?
         var control = document.createElement('select');
         control.setAttribute('id', id);
         var option = document.createElement('option');
@@ -457,6 +460,7 @@ var formBuilder = {
         control.setAttribute('type', 'button');
         control.setAttribute('value', ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
+
         control.onclick = function () {
             validate();
         };
@@ -479,7 +483,7 @@ var formBuilder = {
             };
             buttonFrame.appendChild(control);
         }
-        var errorSpace = document.createElement('div');
+        errorSpace = document.createElement('div'); // global
         errorSpace.setAttribute("id", "errorSpace");
         buttonFrame.appendChild(errorSpace);
         $("#ccform").append(buttonFrame);
@@ -601,10 +605,12 @@ function addUploadTrigger(obj) {
 
 function validate() {
     $("#errorSpace").html("");
+    // global objects/variables errorSpace, panelError, inputOK, validationProfiles, defined on top of this.file
+
     panelError = document.createElement("div");
     inputOK = true;
     for (var key in validationProfiles) {
-        switch (getInputType($("#" + key))) {
+        switch (getInputType($("#" + key))) { // user-function
             case "input":
                 validateInput(key);
                 break;
@@ -919,6 +925,7 @@ function duplicateComponent(obj, set) {
 function validateInput(key) {
     $("[data-validation-profile=" + key + "]").each(function () {
         if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
+            console.log('required')
             inputOK = false;
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
             var error = document.createElement('p');
@@ -947,20 +954,28 @@ function validateInput(key) {
                 $(errorSpace).append(error);
             }
         }
+        // Improved validation for attributes (MvdP)
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
+                var attribute_errorMsg = ''; 
                 for (var att in validationProfiles[key].attributes.attributeList) {
+                    // console.log('att', att, validationProfiles[key].attributes.attributeList );
+                    // console.log(validationProfiles[key].attributes.attributeList[att].Required );
                     if (validationProfiles[key].attributes.attributeList[att].Required === 'true' && $("#attr_" + validationProfiles[key].attributes.attributeList[att].name + "_" + this.id).val() === "") {
                         inputOK = false;
-                        $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
+                        attribute_errorMsg_template = ccfOptions.alert.attr_not_empty_field;
+                        attribute_errorMsg = ' ' + attribute_errorMsg_template.replace("$attributename", validationProfiles[key].attributes.attributeList[att].name);
+                        $("#errorMsg_" + this.id).append(attribute_errorMsg);
+                        $(errorSpace).append(attribute_errorMsg);
+
                     }
                 }
+
             }
         }
     });
 
 }
-
 
 
 function isInteger(x) {
@@ -991,7 +1006,7 @@ function validateTextArea(key) {
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
                 for (var att in validationProfiles[key].attributes.attributeList) {
-                    console.log(validationProfiles[key].attributes.attributeList[att].Required);
+                    // console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {
                         inputOK = false;
                         $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
@@ -1016,7 +1031,7 @@ function validateSelect(key) {
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
                 for (var att in validationProfiles[key].attributes.attributeList) {
-                    console.log(validationProfiles[key].attributes.attributeList[att].Required);
+                    // console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {
                         inputOK = false;
                         $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
@@ -1028,7 +1043,9 @@ function validateSelect(key) {
 }
 
 function getInputType(element) {
-    if (element.is("input")) {
+    if (element.is("input")) { // .is is a jQuery method https://api.jquery.com/is/
+    
+        // console.log('elementtest', element, )
         return "input";
     } else {
         if (element.is('textarea')) {

@@ -1,4 +1,8 @@
 
+### 23 october
+
+* started attributelist validation
+
 ### 18-10-2019
 
 MvdP

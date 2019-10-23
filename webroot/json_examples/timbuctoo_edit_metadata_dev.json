@@ -76,21 +76,22 @@
                                 "ValueScheme": "string",
                                 "attributeList": [
                                     {
-                                        "name": "attribute1",
+                                        "name": "gecko",
                                         "ValueScheme": "string",
                                         "Required": "true"
                                     },
                                     {
-                                        "name": "attribute2",
+                                        "name": "bonzo",
                                         "ValueScheme": "string",
-                                        "Required": "false"
+                                        "Required": "true"
                                     },
                                     {
                                         "name": "valueType",
                                         "ValueScheme": "dropDown",
                                         "values": [
                                             "string",
-                                            "mixed"
+                                            "mixed",
+                                            "frikandel"
                                         ],
                                         "Required": "true"
                                     }

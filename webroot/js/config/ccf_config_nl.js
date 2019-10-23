@@ -26,7 +26,7 @@ var ccfOptions = {
       date_string: 'jjjj-mm-dd',
       int_field: 'De waarde van dit veld moet numeriek zijn!',
       int_field_box: ': moet numeriek zijn!',
-      attr_not_empty_field: 'Attribuut is verplicht'
+      attr_not_empty_field: 'Attribuut: $attributename verplicht'
     }
 };
 
