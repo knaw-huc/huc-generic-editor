@@ -1,3 +1,12 @@
+var serverurl = "http://localhost:8888/server.php";
+fetch(serverurl).then(function (response) {
+    response.json().then(function (json) {
+        $('document').ready(function () {
+            // console.log(json);
+            formBuilder.start(json);
+        });
+    });
+});
 var objectDisplay = true;
 var objectLevel = 1;
 var validationProfiles = {};

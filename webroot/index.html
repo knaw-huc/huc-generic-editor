@@ -27,19 +27,5 @@ For a standalone-version without server: consult and test standalone.html
 <h1>Editor Demo with Server</h1>
 <div id="ccform"></div>
 
-
-<script>
-    let serverurl = "http://localhost:8888/server.php";
-    fetch(serverurl).then(function(response) {
-        response.json().then(function(json) {
-            $('document').ready(function(){
-                // console.log(json);
-            formBuilder.start(json);
-    });
- 
-  });
-});
-
-</script>
 </body>
 </html>
