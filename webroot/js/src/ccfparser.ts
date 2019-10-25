@@ -7,6 +7,8 @@ var errorspace;
 var cloneBuffer;
 var panelError;
 var recordEdit = false;
+
+
 var formBuilder = {
     profileID: null,
     start: function (obj) {
@@ -35,8 +37,7 @@ var formBuilder = {
                     Alert('Error: property type not defined');
                     break;
             }
-        }
-        else {
+        } else {
             for (var key in o) {
                 var type = typeof o[key];
                 if (type === 'object') {
@@ -49,8 +50,7 @@ var formBuilder = {
         var html = document.createElement('div');
         if (objectDisplay) {
             html.setAttribute('class', 'element');
-        }
-        else {
+        } else {
             html.setAttribute('class', 'disabledElement');
         }
         html.setAttribute('data-name', element.attributes.name);
@@ -59,8 +59,7 @@ var formBuilder = {
         label.setAttribute('class', 'label');
         if (element.attributes.CardinalityMin > 0) {
             label.innerHTML = element.attributes.label + ' *';
-        }
-        else {
+        } else {
             label.innerHTML = element.attributes.label;
         }
         if (element.attributes.ValueScheme === 'date') {
@@ -94,27 +93,28 @@ var formBuilder = {
                         var attr_field = document.createElement('input');
                         attr_field.setAttribute('type', 'text');
                         attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + '_' + element.ID);
-                        attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name);
+                        attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
                         attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name);
                         attr_field.setAttribute("class", "element_attribute");
-                        break;
+                    break;                            
                     // New Feature in development MvdP 
                     case 'dropDown':
                         // console.log(element.attributes.attributeList[key].values);
                         var attr_field = document.createElement('select');
                         // attr_field.setAttribute('type', 'text');
                         attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + '_' + element.ID);
-                        attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name);
+                        attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
                         // attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name); // niet nodig denk ik
                         attr_field.setAttribute("class", "element_attribute");
+
                         var option = document.createElement('option');
                         for (var k in element.attributes.attributeList[key].values) {
                             var option = document.createElement('option');
                             option.setAttribute('value', element.attributes.attributeList[key].values[k]);
                             option.innerHTML = element.attributes.attributeList[key].values[k];
-                            attr_field.appendChild(option);
-                        }
-                        break;
+                            attr_field.appendChild(option);    
+                        }        
+                    break;
                 }
                 input.appendChild(attr_field);
             }
@@ -133,33 +133,38 @@ var formBuilder = {
                     e.preventDefault();
                     clonedElement = that.parent().clone();
                     clonedElement.attr('class', 'clone');
-                    clonedElement.find(".btn").each(function () {
-                        $(this).attr('value', '-');
-                        $(this).on("click", function (e) {
-                            e.preventDefault();
-                            var that = $(this);
-                            that.parent().remove();
+                    clonedElement.find(".btn").each(
+                        function () {
+                            $(this).attr('value', '-');
+                            $(this).on("click", function (e) {
+                                e.preventDefault();
+                                var that = $(this);
+                                that.parent().remove();
+                            });
                         });
-                    });
-                    clonedElement.find("#" + that.attr('data-source')).each(function () {
-                        var id = $(this).attr('id');
-                        $(this).val("");
-                        tempID = id + '_' + next;
-                        $(this).attr('id', tempID);
-                    });
-                    clonedElement.find(".errorMsg").each(function () {
-                        var id = $(this).attr('id');
-                        $(this).attr('id', id + '_' + next);
-                        $(this).html("");
-                    });
-                    clonedElement.find(".language_dd").each(function () {
-                        $(this).attr('id', 'lang_' + tempID);
-                        $(this).val(ccfOptions.language);
-                    });
-                    clonedElement.find(".element_attribute").each(function () {
-                        $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
-                        $(this).val("");
-                    });
+                    clonedElement.find("#" + that.attr('data-source')).each(
+                        function () {
+                            var id = $(this).attr('id');
+                            $(this).val("");
+                            tempID = id + '_' + next;
+                            $(this).attr('id', tempID);
+                        });
+                    clonedElement.find(".errorMsg").each(
+                        function () {
+                            var id = $(this).attr('id');
+                            $(this).attr('id', id + '_' + next);
+                            $(this).html("");
+                        });
+                    clonedElement.find(".language_dd").each(
+                        function () {
+                            $(this).attr('id', 'lang_' + tempID);
+                            $(this).val(ccfOptions.language);
+                        });
+                    clonedElement.find(".element_attribute").each(
+                        function () {
+                            $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
+                            $(this).val("");
+                        });
                     clonedElement.insertAfter(that.parent());
                     createAutoCompletes();
                 };
@@ -183,8 +188,7 @@ var formBuilder = {
         var html = document.createElement('div');
         if (objectDisplay || Number(component.level) <= Number(objectLevel)) {
             html.setAttribute('class', 'component');
-        }
-        else {
+        } else {
             html.setAttribute('class', 'disabledComponent');
         }
         html.setAttribute('id', component.ID);
@@ -204,10 +208,11 @@ var formBuilder = {
                 objectDisplay = false;
                 objectLevel = component.level;
             }
-        }
-        else {
+
+        } else {
             objectDisplay = true;
         }
+
         if (component.attributes.CardinalityMax !== '1') {
             //header.innerHTML = component.attributes.label;
             var btn = document.createElement('input');
@@ -225,22 +230,25 @@ var formBuilder = {
                 clonedComponent = that.parent().parent().clone();
                 clonedComponent.addClass("clonedComponent");
                 clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
-                clonedComponent.find(".compBtn").each(function () {
-                    $(this).attr('value', '-');
-                    $(this).on("click", function (e) {
-                        e.preventDefault();
-                        var that = $(this);
-                        that.parent().parent().remove();
+                clonedComponent.find(".compBtn").each(
+                    function () {
+                        $(this).attr('value', '-');
+                        $(this).on("click", function (e) {
+                            e.preventDefault();
+                            var that = $(this);
+                            that.parent().parent().remove();
+                        });
                     });
-                });
-                clonedComponent.find(".clone").each(function () {
-                    $(this).remove();
-                });
-                clonedComponent.find(".errorMsg").each(function () {
-                    $(this).html('');
-                    var id = $(this).attr('id');
-                    $(this).attr('id', id + '_' + next);
-                });
+                clonedComponent.find(".clone").each(
+                    function () {
+                        $(this).remove();
+                    });
+                clonedComponent.find(".errorMsg").each(
+                    function () {
+                        $(this).html('');
+                        var id = $(this).attr('id');
+                        $(this).attr('id', id + '_' + next);
+                    });
                 clonedComponent.find(".input_element").each(function () {
                     var id = $(this).attr("id");
                     $(this).attr('id', id + '_' + next);
@@ -291,7 +299,7 @@ var formBuilder = {
                 $("#" + target).find(".headerMsg").remove();
                 $("#" + target).removeAttr("data-filename");
                 $(this).hide();
-            };
+            }
             $(resetUpload).hide();
             form.appendChild(resetUpload);
             header.appendChild(form);
@@ -339,10 +347,10 @@ var formBuilder = {
                     control.setAttribute('data-reset-value', 'line');
                     if (element.attributes.autoValue === undefined) {
                         control.setAttribute('value', "");
-                    }
-                    else {
+                    } else {
                         control.setAttribute('value', element.attributes.autoValue.value);
                     }
+
             }
         }
         control.setAttribute('data-validation-profile', element.ID);
@@ -350,7 +358,7 @@ var formBuilder = {
         $(control).addClass("input_element");
         return control;
     },
-    setValueSchemeElement: function (element, id) {
+    setValueSchemeElement: function (element, id) { // DEPRECATED?
         var control = document.createElement('select');
         control.setAttribute('id', id);
         var option = document.createElement('option');
@@ -362,10 +370,10 @@ var formBuilder = {
             option.setAttribute("value", element[key].value);
             if (element[key].label === undefined) {
                 option.innerHTML = element[key].value;
-            }
-            else {
+            } else {
                 option.innerHTML = element[key].label;
             }
+
             control.appendChild(option);
         }
         return control;
@@ -373,8 +381,7 @@ var formBuilder = {
     createTextInputField: function (element) {
         if (element.attributes.inputField === undefined) {
             var type = '';
-        }
-        else {
+        } else {
             var type = element.attributes.inputField;
         }
         switch (type) {
@@ -393,8 +400,7 @@ var formBuilder = {
                 control.setAttribute('data-reset-value', 'line');
                 if (element.attributes.autoValue === undefined) {
                     control.setAttribute('value', "");
-                }
-                else {
+                } else {
                     control.setAttribute('value', element.attributes.autoValue.value);
                 }
                 control.setAttribute('id', element.ID);
@@ -403,21 +409,20 @@ var formBuilder = {
                 }
                 break;
         }
+
         return control;
     },
     setInputFieldWidth: function (value) {
         if (value === undefined) {
             return 50;
-        }
-        else {
+        } else {
             return value;
         }
     },
     setInputFieldHeigth: function (value) {
         if (value === undefined) {
             return 8;
-        }
-        else {
+        } else {
             return value;
         }
     },
@@ -455,6 +460,7 @@ var formBuilder = {
         control.setAttribute('type', 'button');
         control.setAttribute('value', ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
+
         control.onclick = function () {
             validate();
         };
@@ -485,6 +491,7 @@ var formBuilder = {
     languages: ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'],
     controlHash: []
 };
+
 var clone = {
     clonePostfix: 0,
     nextClonePostfix: function () {
@@ -492,6 +499,8 @@ var clone = {
         return this.clonePostfix;
     }
 };
+
+
 function showComponentFields() {
     var that = $(this);
     var comp = that.parent().parent();
@@ -511,11 +520,13 @@ function showComponentFields() {
     header.find(".uploader").show();
     $(this).on("click", hideComponentFields);
 }
+
 function checkResourceFilter(sel, filter) {
     if (sel !== 'all') {
         $(sel).attr('accept', filter);
     }
 }
+
 function hideComponentFields() {
     var that = $(this);
     var comp = that.parent().parent();
@@ -538,6 +549,7 @@ function hideComponentFields() {
     $(this).attr("value", "✓");
     $(this).on("click", showComponentFields);
 }
+
 function createAutoCompletes() {
     $("input[data-auto='yes']").each(function () {
         $(this).devbridgeAutocomplete({
@@ -547,6 +559,7 @@ function createAutoCompletes() {
         });
     });
 }
+
 function addAutoComplete(clonedComponent) {
     clonedComponent.find("input[data-auto='yes']").each(function () {
         $(this).devbridgeAutocomplete({
@@ -556,6 +569,7 @@ function addAutoComplete(clonedComponent) {
         });
     });
 }
+
 function addUploadTrigger(obj) {
     var that = $(obj);
     that.parent().parent().find(".headerMsg").remove();
@@ -588,9 +602,11 @@ function addUploadTrigger(obj) {
         });
     }
 }
+
 function validate() {
     $("#errorSpace").html("");
     // global objects/variables errorSpace, panelError, inputOK, validationProfiles, defined on top of this.file
+
     panelError = document.createElement("div");
     inputOK = true;
     for (var key in validationProfiles) {
@@ -614,12 +630,12 @@ function validate() {
     if (inputOK) {
         //console.log(validationProfiles);
         sendForm();
-    }
-    else {
+    } else {
         $("#errorSpace").append(errorSpace);
     }
 }
 ;
+
 function sendForm() {
     var formValues = [];
     $(".clonedComponent").each(function () {
@@ -657,28 +673,34 @@ function sendForm() {
     $("#OKbtn").remove();
     $("#ccSendForm").submit();
 }
+
 function fillValues(record) {
     obj = record[2].value;
     // console.log(obj);
     parseRecord(obj.value, null);
+
     if (record[3] !== undefined) {
         setfiles(record[3]);
     }
+
 }
+
 function setfiles(files) {
     for (var key in files) {
-        $(".fileForm").eq(key).each(function () {
-            $(this).parent().parent().attr("data-filename", files[key].file);
-            var msg = document.createElement('div');
-            msg.setAttribute("id", "msg" + $(this).attr("id"));
-            msg.setAttribute("class", "headerMsg");
-            msg.innerHTML = files[key].file;
-            $(this).parent().append(msg);
-            $(this).find(".resetUploadBtn").show();
-            $(this).find("[id^=files_]").hide();
-        });
+        $(".fileForm").eq(key).each(
+            function () {
+                $(this).parent().parent().attr("data-filename", files[key].file);
+                var msg = document.createElement('div');
+                msg.setAttribute("id", "msg" + $(this).attr("id"));
+                msg.setAttribute("class", "headerMsg");
+                msg.innerHTML = files[key].file;
+                $(this).parent().append(msg);
+                $(this).find(".resetUploadBtn").show();
+                $(this).find("[id^=files_]").hide();
+            })
     }
 }
+
 function parseComponent(component) {
     var retStruct = [];
     $(component).children().each(function () {
@@ -692,8 +714,7 @@ function parseComponent(component) {
             }
             element.content = parseComponent(this);
             retStruct.push(element);
-        }
-        else {
+        } else {
             if ($(this).attr("class") === "element") {
                 var element = {};
                 element.name = $(this).attr("data-name");
@@ -703,11 +724,13 @@ function parseComponent(component) {
                 if (element.content !== "") {
                     retStruct.push(element);
                 }
+
             }
         }
     });
     return retStruct;
 }
+
 function parseElement(element) {
     var retVal = [];
     $(element).find(".input_element").each(function () {
@@ -732,16 +755,17 @@ function parseElement(element) {
         return "";
     }
 }
+
 function parseRecord(obj, set) {
     // console.log(obj);
     var nameStack = {};
     for (var key in obj) {
         // console.log(obj.value.key.va);
+
         if (obj[key] !== null) {
             if (nameStack[obj[key].name] === undefined) {
                 nameStack[obj[key].name] = 1;
-            }
-            else {
+            } else {
                 nameStack[obj[key].name]++;
             }
             if (obj[key].type === 'component') {
@@ -750,10 +774,10 @@ function parseRecord(obj, set) {
                 }
                 if (set === null) {
                     var newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
-                }
-                else {
+                } else {
                     var newSet = $(set).find("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 }
+
                 //                if (obj[key].attributes !== undefined) {
                 //                    if (obj[key].attributes.ref !== undefined) {
                 //                        var ref = obj[key].attributes.ref;
@@ -762,12 +786,10 @@ function parseRecord(obj, set) {
                 //                    console.log(uploads[ref]);
                 //            }
                 parseRecord(obj[key].value, newSet);
-            }
-            else {
+            } else {
                 if (nameStack[obj[key].name] > 1) {
                     duplicateField(obj[key], set);
-                }
-                else {
+                } else {
                     var name = obj[key].name;
                     $(set).find("div[data-name='" + name + "']").find(".input_element").first().val(obj[key].value);
                     var language = getLanguage(obj[key]);
@@ -786,6 +808,8 @@ function parseRecord(obj, set) {
         }
     }
 }
+
+
 function getLanguage(obj) {
     if (obj.attributes !== undefined) {
         for (var key in obj.attributes) {
@@ -796,6 +820,7 @@ function getLanguage(obj) {
     }
     return 0;
 }
+
 function duplicateField(obj, set) {
     var next = clone.nextClonePostfix();
     var language = getLanguage(obj);
@@ -804,60 +829,70 @@ function duplicateField(obj, set) {
     var btn = $(set).find("div[data-name='" + name + "']").find(".btn").first();
     clonedElement = $(set).find("div[data-name='" + name + "']").find(".control").first().clone();
     clonedElement.attr('class', 'clone');
-    clonedElement.find(".btn").each(function () {
-        $(this).attr('value', '-');
-        $(this).on("click", function (e) {
-            e.preventDefault();
-            var that = $(this);
-            that.parent().remove();
+    clonedElement.find(".btn").each(
+        function () {
+            $(this).attr('value', '-');
+            $(this).on("click", function (e) {
+                e.preventDefault();
+                var that = $(this);
+                that.parent().remove();
+            });
         });
-    });
-    clonedElement.find("[id^=" + btn.attr('data-source') + "]").each(function () {
-        var id = $(this).attr('data-validation-profile');
-        $(this).val(obj.value);
-        tempID = id + '_' + next;
-        console.log(tempID);
-        $(this).attr('id', tempID);
-    });
-    clonedElement.find(".errorMsg").each(function () {
-        var id = $(this).attr('id');
-        $(this).attr('id', id + '_' + next);
-        $(this).html("");
-    });
-    clonedElement.find(".language_dd").each(function () {
-        $(this).attr('id', 'lang_' + tempID);
-        $(this).val(language);
-    });
-    clonedElement.find(".element_attribute").each(function () {
-        $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
-        $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
-        //$(this).val("");
-        console.log(obj);
-    });
+    clonedElement.find("[id^=" + btn.attr('data-source') + "]").each(
+        function () {
+            var id = $(this).attr('data-validation-profile');
+            $(this).val(obj.value);
+            tempID = id + '_' + next;
+            console.log(tempID);
+            $(this).attr('id', tempID);
+        });
+    clonedElement.find(".errorMsg").each(
+        function () {
+            var id = $(this).attr('id');
+            $(this).attr('id', id + '_' + next);
+            $(this).html("");
+        });
+    clonedElement.find(".language_dd").each(
+        function () {
+            $(this).attr('id', 'lang_' + tempID);
+            $(this).val(language);
+        });
+    clonedElement.find(".element_attribute").each(
+        function () {
+            $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
+            $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
+            //$(this).val("");
+            console.log(obj);
+        });
+
     clonedElement.insertAfter(btn.parent());
     createAutoCompletes();
 }
+
 function duplicateComponent(obj, set) {
     var next = clone.nextClonePostfix();
     clonedComponent = $(set).find("div[data-name='" + obj.name + "']").first().clone();
     clonedComponent.addClass("clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
-    clonedComponent.find(".compBtn").each(function () {
-        $(this).attr('value', '-');
-        $(this).on("click", function (e) {
-            e.preventDefault();
-            var that = $(this);
-            that.parent().parent().remove();
+    clonedComponent.find(".compBtn").each(
+        function () {
+            $(this).attr('value', '-');
+            $(this).on("click", function (e) {
+                e.preventDefault();
+                var that = $(this);
+                that.parent().parent().remove();
+            });
         });
-    });
-    clonedComponent.find(".clone").each(function () {
-        $(this).remove();
-    });
-    clonedComponent.find(".errorMsg").each(function () {
-        $(this).html('');
-        var id = $(this).attr('id');
-        $(this).attr('id', id + '_' + next);
-    });
+    clonedComponent.find(".clone").each(
+        function () {
+            $(this).remove();
+        });
+    clonedComponent.find(".errorMsg").each(
+        function () {
+            $(this).html('');
+            var id = $(this).attr('id');
+            $(this).attr('id', id + '_' + next);
+        });
     clonedComponent.find(".input_element").each(function () {
         var id = $(this).attr("id");
         $(this).attr('id', id + '_' + next);
@@ -871,6 +906,7 @@ function duplicateComponent(obj, set) {
             addUploadTrigger(this);
         });
     });
+
     //    clonedComponent.find("input[type='reset']").each(function () {
     //       var target = $(this).attr('target');
     //       console.log(target);
@@ -884,17 +920,18 @@ function duplicateComponent(obj, set) {
     $(set).append(clonedComponent);
     addAutoComplete(clonedComponent);
 }
+
+
 function validateInput(key) {
     $("[data-validation-profile=" + key + "]").each(function () {
         if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
-            console.log('required');
+            console.log('required')
             inputOK = false;
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
             var error = document.createElement('p');
             $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
             $(errorSpace).append(error);
-        }
-        else {
+        } else {
             $("#errorMsg_" + this.id).html("");
         }
         if (validationProfiles[key].attributes.ValueScheme === 'date' && this.value !== "") {
@@ -920,7 +957,7 @@ function validateInput(key) {
         // Improved validation for attributes (MvdP)
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
-                var attribute_errorMsg = '';
+                var attribute_errorMsg = ''; 
                 for (var att in validationProfiles[key].attributes.attributeList) {
                     // console.log('att', att, validationProfiles[key].attributes.attributeList );
                     // console.log(validationProfiles[key].attributes.attributeList[att].Required );
@@ -930,24 +967,31 @@ function validateInput(key) {
                         attribute_errorMsg = ' ' + attribute_errorMsg_template.replace("$attributename", validationProfiles[key].attributes.attributeList[att].name);
                         $("#errorMsg_" + this.id).append(attribute_errorMsg);
                         $(errorSpace).append(attribute_errorMsg);
+
                     }
                 }
+
             }
         }
     });
+
 }
+
+
 function isInteger(x) {
     return (Number(x) !== NaN) && (x % 1 === 0);
 }
+
 function isValidDate(dateString) {
     var regEx = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateString.match(regEx))
-        return false; // Invalid format
+        return false;  // Invalid format
     var d = new Date(dateString);
     if (Number.isNaN(d.getTime()))
         return false; // Invalid date
     return d.toISOString().slice(0, 10) === dateString;
 }
+
 function validateTextArea(key) {
     $("[data-validation-profile=" + key + "]").each(function () {
         if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
@@ -956,8 +1000,7 @@ function validateTextArea(key) {
             var error = document.createElement('p');
             $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
             $(errorSpace).append(error);
-        }
-        else {
+        } else {
             $("#errorMsg_" + this.id).html("");
         }
         if (validationProfiles[key].attributes.attributeList !== undefined) {
@@ -973,6 +1016,7 @@ function validateTextArea(key) {
         }
     });
 }
+
 function validateSelect(key) {
     $("[data-validation-profile=" + key + "]").each(function () {
         if (validationProfiles[key].attributes.CardinalityMin === '1' && this.selectedIndex === 0 && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
@@ -981,8 +1025,7 @@ function validateSelect(key) {
             var error = document.createElement('p');
             $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
             $(errorSpace).append(error);
-        }
-        else {
+        } else {
             $("#errorMsg_" + this.id).html("");
         }
         if (validationProfiles[key].attributes.attributeList !== undefined) {
@@ -998,12 +1041,13 @@ function validateSelect(key) {
         }
     });
 }
+
 function getInputType(element) {
     if (element.is("input")) { // .is is a jQuery method https://api.jquery.com/is/
+    
         // console.log('elementtest', element, )
         return "input";
-    }
-    else {
+    } else {
         if (element.is('textarea')) {
             return "textarea";
         }
@@ -1017,3 +1061,8 @@ function getInputType(element) {
         }
     }
 }
+
+
+
+
+

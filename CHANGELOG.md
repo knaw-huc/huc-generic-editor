@@ -1,6 +1,7 @@
 
 ### 25-10-2019
 
+* added TypeScript (naive)
 * added attributelist validation
 
 ### 18-10-2019
