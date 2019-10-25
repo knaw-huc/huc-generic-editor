@@ -1,7 +1,7 @@
 
-### 23 october
+### 25-10-2019
 
-* started attributelist validation
+* added attributelist validation
 
 ### 18-10-2019
 
