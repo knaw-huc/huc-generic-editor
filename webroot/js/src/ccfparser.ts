@@ -144,9 +144,10 @@ let formBuilder = {
         }
         if (element.attributes.attributeList !== undefined) {
             for (var key in element.attributes.attributeList) {
+                let attr_field :any;
                 switch (element.attributes.attributeList[key].ValueScheme) {
                     case 'string':
-                        var attr_field = document.createElement('input');
+                        attr_field = document.createElement('input');
                         attr_field.setAttribute('type', 'text');
                         attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + '_' + element.ID);
                         attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
@@ -156,7 +157,7 @@ let formBuilder = {
                     // New Feature in development MvdP 
                     case 'dropDown':
                         // console.log(element.attributes.attributeList[key].values);
-                        var attr_field = document.createElement('select');
+                        attr_field = document.createElement('select');
                         // attr_field.setAttribute('type', 'text');
                         attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + '_' + element.ID);
                         attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
@@ -176,16 +177,16 @@ let formBuilder = {
             }
         }
         if (element.attributes.duplicate !== undefined) {
-            var btn = document.createElement('input');
+            let btn = document.createElement('input');
             btn.setAttribute('type', 'button');
             btn.setAttribute('value', '+');
             btn.setAttribute('class', 'btn');
             btn.setAttribute('data-source', element.ID);
             btn.onclick =
                 function (e) {
-                    var next = clone.nextClonePostfix();
-                    var that = $(this);
-                    var tempID;
+                    let next = clone.nextClonePostfix();
+                    let that = $(this);
+                    let tempID :any;
                     e.preventDefault();
                     let clonedElement = that.parent().clone();
                     clonedElement.attr('class', 'clone');
@@ -194,20 +195,20 @@ let formBuilder = {
                             $(this).attr('value', '-');
                             $(this).on("click", function (e) {
                                 e.preventDefault();
-                                var that = $(this);
+                                let that = $(this);
                                 that.parent().remove();
                             });
                         });
                     clonedElement.find("#" + that.attr('data-source')).each(
                         function () {
-                            var id = $(this).attr('id');
+                            let id = $(this).attr('id');
                             $(this).val("");
                             tempID = id + '_' + next;
                             $(this).attr('id', tempID);
                         });
                     clonedElement.find(".errorMsg").each(
                         function () {
-                            var id = $(this).attr('id');
+                            let id = $(this).attr('id');
                             $(this).attr('id', id + '_' + next);
                             $(this).html("");
                         });
@@ -369,35 +370,36 @@ let formBuilder = {
         }
     },
     createControl: function (element) {
-        var type = typeof element.attributes.ValueScheme;
+        let type = typeof element.attributes.ValueScheme;
+        let control :any;
         if (type === "object") { // DEPRECATED? MvdP
             control = this.setValueSchemeElement(element.attributes.ValueScheme[0], element.ID);
         }
         else {
             switch (element.attributes.ValueScheme) {
                 case 'boolean':
-                    var control = document.createElement('select');
+                    control = document.createElement('select');
                     control.setAttribute('id', element.ID);
                     control.setAttribute('data-reset-value', '');
-                    var option = document.createElement('option');
+                    let option = document.createElement('option');
                     option.setAttribute("value", '');
                     option.innerHTML = '--';
                     control.appendChild(option);
-                    var option = document.createElement('option');
+                    option = document.createElement('option');
                     option.setAttribute("value", "true");
                     option.innerHTML = 'Ja';
                     control.appendChild(option);
-                    var option = document.createElement('option');
+                    option = document.createElement('option');
                     option.setAttribute("value", "false");
                     option.innerHTML = 'Nee';
                     control.appendChild(option);
                     break;
                 case 'string':
                 case 'decimal':
-                    var control = this.createTextInputField(element);
+                    control = this.createTextInputField(element);
                     break;
                 default:
-                    var control = document.createElement('input');
+                    control = document.createElement('input');
                     control.setAttribute('id', element.ID);
                     control.setAttribute('type', 'text');
                     control.setAttribute('data-reset-value', 'line');
@@ -435,14 +437,16 @@ let formBuilder = {
         return control;
     },
     createTextInputField: function (element) {
+        let type :string;
         if (element.attributes.inputField === undefined) {
-            var type = '';
+            type = '';
         } else {
-            var type = element.attributes.inputField;
+            type = element.attributes.inputField;
         }
+        let control :any;
         switch (type) {
             case 'multiple':
-                var control = document.createElement('textarea');
+                control = document.createElement('textarea');
                 control.setAttribute('rows', this.setInputFieldHeigth(element.attributes.heigth));
                 control.setAttribute('cols', this.setInputFieldWidth(element.attributes.width));
                 control.setAttribute('data-reset-value', 'area');
@@ -450,7 +454,7 @@ let formBuilder = {
                 break;
             case 'single':
             default:
-                var control = document.createElement('input');
+                control = document.createElement('input');
                 control.setAttribute('type', 'text');
                 control.setAttribute('size', this.setInputFieldWidth(element.attributes.width));
                 control.setAttribute('data-reset-value', 'line');
@@ -693,7 +697,7 @@ function validate() {
 ;
 
 function sendForm() {
-    var formValues = [];
+    let formValues :any[]= [];
     $(".clonedComponent").each(function () {
         $(this).attr("class", "component");
     });
@@ -702,7 +706,7 @@ function sendForm() {
     });
     $("#ccform").children().each(function () {
         if ($(this).attr("class") === "component") {
-            var element = {};
+            let element = <any>{}; // TODO must neater, interface for this element?
             element.name = $(this).attr("data-name");
             element.type = 'component';
             element.sortOrder = 0;
@@ -758,10 +762,11 @@ function setfiles(files) {
 }
 
 function parseComponent(component) {
-    var retStruct = [];
+    let retStruct :any[]= []; // TODO make more specific
     $(component).children().each(function () {
+        var element = <any>{}; // TODO interface
+
         if ($(this).attr("class") === "component") {
-            var element = {};
             element.name = $(this).attr("data-name");
             element.type = 'component';
             element.sortOrder = $(this).attr("data-order");
@@ -772,7 +777,7 @@ function parseComponent(component) {
             retStruct.push(element);
         } else {
             if ($(this).attr("class") === "element") {
-                var element = {};
+                element = {};
                 element.name = $(this).attr("data-name");
                 element.type = 'element';
                 element.sortOrder = $(this).attr("data-order");
@@ -788,10 +793,10 @@ function parseComponent(component) {
 }
 
 function parseElement(element) {
-    var retVal = [];
+    let retVal :any[]= []; // TODO make more specific
     $(element).find(".input_element").each(function () {
         if ($(this).is("input") || $(this).is("select") || $(this).is("textarea")) {
-            var unit = {};
+            let unit = <any> {};
             unit.value = $(this).val();
             if (unit.value !== "") {
                 unit.attributes = {};
@@ -814,7 +819,7 @@ function parseElement(element) {
 
 function parseRecord(obj, set) {
     // console.log(obj);
-    var nameStack = {};
+    let nameStack = <any>{};
     for (var key in obj) {
         // console.log(obj.value.key.va);
 
@@ -828,6 +833,7 @@ function parseRecord(obj, set) {
                 if (nameStack[obj[key].name] > 1) {
                     duplicateComponent(obj[key], set);
                 }
+                var newSet;
                 if (set === null) {
                     var newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 } else {

@@ -133,9 +133,10 @@ var formBuilder = {
         }
         if (element.attributes.attributeList !== undefined) {
             for (var key in element.attributes.attributeList) {
+                var attr_field = void 0;
                 switch (element.attributes.attributeList[key].ValueScheme) {
                     case 'string':
-                        var attr_field = document.createElement('input');
+                        attr_field = document.createElement('input');
                         attr_field.setAttribute('type', 'text');
                         attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + '_' + element.ID);
                         attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name);
@@ -145,7 +146,7 @@ var formBuilder = {
                     // New Feature in development MvdP 
                     case 'dropDown':
                         // console.log(element.attributes.attributeList[key].values);
-                        var attr_field = document.createElement('select');
+                        attr_field = document.createElement('select');
                         // attr_field.setAttribute('type', 'text');
                         attr_field.setAttribute('id', 'attr_' + element.attributes.attributeList[key].name + '_' + element.ID);
                         attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name);
@@ -350,34 +351,35 @@ var formBuilder = {
     },
     createControl: function (element) {
         var type = typeof element.attributes.ValueScheme;
+        var control;
         if (type === "object") { // DEPRECATED? MvdP
             control = this.setValueSchemeElement(element.attributes.ValueScheme[0], element.ID);
         }
         else {
             switch (element.attributes.ValueScheme) {
                 case 'boolean':
-                    var control = document.createElement('select');
+                    control = document.createElement('select');
                     control.setAttribute('id', element.ID);
                     control.setAttribute('data-reset-value', '');
                     var option = document.createElement('option');
                     option.setAttribute("value", '');
                     option.innerHTML = '--';
                     control.appendChild(option);
-                    var option = document.createElement('option');
+                    option = document.createElement('option');
                     option.setAttribute("value", "true");
                     option.innerHTML = 'Ja';
                     control.appendChild(option);
-                    var option = document.createElement('option');
+                    option = document.createElement('option');
                     option.setAttribute("value", "false");
                     option.innerHTML = 'Nee';
                     control.appendChild(option);
                     break;
                 case 'string':
                 case 'decimal':
-                    var control = this.createTextInputField(element);
+                    control = this.createTextInputField(element);
                     break;
                 default:
-                    var control = document.createElement('input');
+                    control = document.createElement('input');
                     control.setAttribute('id', element.ID);
                     control.setAttribute('type', 'text');
                     control.setAttribute('data-reset-value', 'line');
@@ -415,15 +417,17 @@ var formBuilder = {
         return control;
     },
     createTextInputField: function (element) {
+        var type;
         if (element.attributes.inputField === undefined) {
-            var type = '';
+            type = '';
         }
         else {
-            var type = element.attributes.inputField;
+            type = element.attributes.inputField;
         }
+        var control;
         switch (type) {
             case 'multiple':
-                var control = document.createElement('textarea');
+                control = document.createElement('textarea');
                 control.setAttribute('rows', this.setInputFieldHeigth(element.attributes.heigth));
                 control.setAttribute('cols', this.setInputFieldWidth(element.attributes.width));
                 control.setAttribute('data-reset-value', 'area');
@@ -431,7 +435,7 @@ var formBuilder = {
                 break;
             case 'single':
             default:
-                var control = document.createElement('input');
+                control = document.createElement('input');
                 control.setAttribute('type', 'text');
                 control.setAttribute('size', this.setInputFieldWidth(element.attributes.width));
                 control.setAttribute('data-reset-value', 'line');
@@ -674,7 +678,7 @@ function sendForm() {
     });
     $("#ccform").children().each(function () {
         if ($(this).attr("class") === "component") {
-            var element = {};
+            var element = {}; // TODO must neater, interface for this element?
             element.name = $(this).attr("data-name");
             element.type = 'component';
             element.sortOrder = 0;
@@ -724,10 +728,10 @@ function setfiles(files) {
     }
 }
 function parseComponent(component) {
-    var retStruct = [];
+    var retStruct = []; // TODO make more specific
     $(component).children().each(function () {
+        var element = {}; // TODO interface
         if ($(this).attr("class") === "component") {
-            var element = {};
             element.name = $(this).attr("data-name");
             element.type = 'component';
             element.sortOrder = $(this).attr("data-order");
@@ -739,7 +743,7 @@ function parseComponent(component) {
         }
         else {
             if ($(this).attr("class") === "element") {
-                var element = {};
+                element = {};
                 element.name = $(this).attr("data-name");
                 element.type = 'element';
                 element.sortOrder = $(this).attr("data-order");
@@ -753,19 +757,19 @@ function parseComponent(component) {
     return retStruct;
 }
 function parseElement(element) {
-    var retVal = [];
+    var retVal = []; // TODO make more specific
     $(element).find(".input_element").each(function () {
         if ($(this).is("input") || $(this).is("select") || $(this).is("textarea")) {
-            var unit = {};
-            unit.value = $(this).val();
-            if (unit.value !== "") {
-                unit.attributes = {};
+            var unit_1 = {};
+            unit_1.value = $(this).val();
+            if (unit_1.value !== "") {
+                unit_1.attributes = {};
                 var id = $(this).attr("id");
-                unit.attributes.lang = $("#lang_" + id).val();
+                unit_1.attributes.lang = $("#lang_" + id).val();
                 $(this).parent().find("input[id^='attr_']").each(function () {
-                    unit.attributes[$(this).attr("data-attribute_name")] = $(this).val();
+                    unit_1.attributes[$(this).attr("data-attribute_name")] = $(this).val();
                 });
-                retVal.push(unit);
+                retVal.push(unit_1);
             }
         }
     });
@@ -792,6 +796,7 @@ function parseRecord(obj, set) {
                 if (nameStack[obj[key].name] > 1) {
                     duplicateComponent(obj[key], set);
                 }
+                var newSet;
                 if (set === null) {
                     var newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 }
