@@ -1,7 +1,9 @@
-var server = 'http://www.huc.localhost/clarin_cmdi_forms/';
+// variables server and ccfOptions undeclared out for the problems, stupid editor thing, the files are not included...
 
+server = 'http://www.huc.localhost/clarin_cmdi_forms/';
+console.log('modules');
 
-let ccfOptions = {
+ccfOptions = {
     uploadButton: {
         actionURI: server + 'upload.php'
     },
@@ -31,4 +33,6 @@ let ccfOptions = {
 };
 
 
+// export { server, ccfOptions };
+// https://stackoverflow.com/questions/41993445/exporting-a-function-on-typescript-declaration-or-statement-expected
 

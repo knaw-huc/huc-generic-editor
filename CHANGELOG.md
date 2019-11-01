@@ -1,7 +1,9 @@
 
 ### 1-11-2019
 
-
+* 139 problems
+* config variables included in scope
+* 178 problems
 * cannot find name problems declaration of variables (but not the one from the include file)
 * 434 problems
 * installed type definition file for JQuery ```npm install --save-dev @types/jquery```

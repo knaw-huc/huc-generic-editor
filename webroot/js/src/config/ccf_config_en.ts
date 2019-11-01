@@ -1,6 +1,6 @@
-var server = 'http://www.huc.localhost/clarin_cmdi_forms/';
+server = 'http://www.huc.localhost/clarin_cmdi_forms/';
 
-var ccfOptions = {
+ccfOptions = {
     uploadButton: {
         actionURI: server + 'upload.php'
     },
