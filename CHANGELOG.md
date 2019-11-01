@@ -1,7 +1,7 @@
 
 ### 1-11-2019
-* 99 problems
-* working through te code
+* 99 problems 
+* working through tha code
 * 139 problems
 * config variables included in scope
 * 178 problems

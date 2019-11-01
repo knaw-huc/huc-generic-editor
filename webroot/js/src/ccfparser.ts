@@ -59,7 +59,7 @@ let objectLevel = 1;
 let validationProfiles = {};
 let inputOK = true;
 let isUploading = false;
-let errorspace;
+let errorspace :any;
 let cloneBuffer;
 let panelError;
 let recordEdit = false;
@@ -691,7 +691,7 @@ function validate() {
         //console.log(validationProfiles);
         sendForm();
     } else {
-        $("#errorSpace").append(errorSpace);
+        $("#errorSpace").append(errorspace);
     }
 }
 ;
@@ -734,7 +734,7 @@ function sendForm() {
     $("#ccSendForm").submit();
 }
 
-function fillValues(record) {
+function fillValues(record :any) {
     let obj = record[2].value;
     // console.log(obj);
     parseRecord(obj.value, null);
@@ -745,8 +745,8 @@ function fillValues(record) {
 
 }
 
-function setfiles(files) {
-    for (var key in files) {
+function setfiles(files :any) {
+    for (let key in files) {
         $(".fileForm").eq(key).each(
             function () {
                 $(this).parent().parent().attr("data-filename", files[key].file);
@@ -761,7 +761,7 @@ function setfiles(files) {
     }
 }
 
-function parseComponent(component) {
+function parseComponent(component :any) {
     let retStruct :any[]= []; // TODO make more specific
     $(component).children().each(function () {
         var element = <any>{}; // TODO interface
@@ -792,7 +792,7 @@ function parseComponent(component) {
     return retStruct;
 }
 
-function parseElement(element) {
+function parseElement(element :any) {
     let retVal :any[]= []; // TODO make more specific
     $(element).find(".input_element").each(function () {
         if ($(this).is("input") || $(this).is("select") || $(this).is("textarea")) {
@@ -833,11 +833,11 @@ function parseRecord(obj, set) {
                 if (nameStack[obj[key].name] > 1) {
                     duplicateComponent(obj[key], set);
                 }
-                var newSet;
+                let newSet;
                 if (set === null) {
-                    var newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
+                    newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 } else {
-                    var newSet = $(set).find("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
+                    newSet = $(set).find("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 }
 
                 //                if (obj[key].attributes !== undefined) {

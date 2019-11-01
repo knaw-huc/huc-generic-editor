@@ -664,7 +664,7 @@ function validate() {
         sendForm();
     }
     else {
-        $("#errorSpace").append(errorSpace);
+        $("#errorSpace").append(errorspace);
     }
 }
 ;
@@ -714,7 +714,7 @@ function fillValues(record) {
     }
 }
 function setfiles(files) {
-    for (var key in files) {
+    var _loop_1 = function (key) {
         $(".fileForm").eq(key).each(function () {
             $(this).parent().parent().attr("data-filename", files[key].file);
             var msg = document.createElement('div');
@@ -725,6 +725,9 @@ function setfiles(files) {
             $(this).find(".resetUploadBtn").show();
             $(this).find("[id^=files_]").hide();
         });
+    };
+    for (var key in files) {
+        _loop_1(key);
     }
 }
 function parseComponent(component) {
@@ -796,12 +799,12 @@ function parseRecord(obj, set) {
                 if (nameStack[obj[key].name] > 1) {
                     duplicateComponent(obj[key], set);
                 }
-                var newSet;
+                var newSet = void 0;
                 if (set === null) {
-                    var newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
+                    newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 }
                 else {
-                    var newSet = $(set).find("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
+                    newSet = $(set).find("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 }
                 //                if (obj[key].attributes !== undefined) {
                 //                    if (obj[key].attributes.ref !== undefined) {
