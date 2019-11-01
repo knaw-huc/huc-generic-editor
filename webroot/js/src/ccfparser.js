@@ -1,3 +1,4 @@
+"use strict";
 var serverurl = "http://localhost:8888/server.php";
 fetch(serverurl).then(function (response) {
     response.json().then(function (json) {
@@ -7,6 +8,7 @@ fetch(serverurl).then(function (response) {
         });
     });
 });
+console.log('hello typescript');
 var objectDisplay = true;
 var objectLevel = 1;
 var validationProfiles = {};
@@ -41,7 +43,7 @@ var formBuilder = {
                     this.parse(o.content, o.ID);
                     break;
                 default:
-                    Alert('Error: property type not defined');
+                    alert('Error: property type not defined');
                     break;
             }
         }
@@ -64,7 +66,7 @@ var formBuilder = {
         }
         html.setAttribute('data-name', element.attributes.name);
         html.setAttribute('data-order', element.attributes.initialOrder);
-        label = document.createElement('div');
+        var label = document.createElement('div');
         label.setAttribute('class', 'label');
         if (element.attributes.CardinalityMin > 0) {
             label.innerHTML = element.attributes.label + ' *';
@@ -75,9 +77,9 @@ var formBuilder = {
         if (element.attributes.ValueScheme === 'date') {
             label.innerHTML = label.innerHTML + ' (' + ccfOptions.alert.date_string + ')';
         }
-        input = document.createElement('div');
+        var input = document.createElement('div');
         input.setAttribute('class', 'control');
-        control = this.createControl(element); // ann. subfunction
+        var control = this.createControl(element); // ann. subfunction
         input.appendChild(control);
         if (element.attributes.Multilingual === 'true') {
             var dropdown = document.createElement('select');
@@ -199,7 +201,7 @@ var formBuilder = {
         html.setAttribute('id', component.ID);
         html.setAttribute('data-name', component.attributes.name);
         html.setAttribute('data-order', component.attributes.initialOrder);
-        header = document.createElement('div');
+        var header = document.createElement('div');
         header.setAttribute('class', 'componentHeader');
         header.innerHTML = component.attributes.label;
         if (component.attributes.CardinalityMin === '0') {
@@ -486,7 +488,7 @@ var formBuilder = {
             };
             buttonFrame.appendChild(control);
         }
-        errorSpace = document.createElement('div'); // global
+        var errorSpace = document.createElement('div'); // global is it the SAME errorSpace vs errorspace?
         errorSpace.setAttribute("id", "errorSpace");
         buttonFrame.appendChild(errorSpace);
         $("#ccform").append(buttonFrame);
@@ -667,7 +669,7 @@ function sendForm() {
     $("#ccSendForm").submit();
 }
 function fillValues(record) {
-    obj = record[2].value;
+    var obj = record[2].value;
     // console.log(obj);
     parseRecord(obj.value, null);
     if (record[3] !== undefined) {

@@ -1,21 +1,25 @@
+"use strict";
+
 let serverurl = "http://localhost:8888/server.php";
-fetch(serverurl).then(function(response) {
-    response.json().then(function(json) {
-        $('document').ready(function(){
+fetch(serverurl).then(function (response) {
+    response.json().then(function (json) {
+        $('document').ready(function () {
             // console.log(json);
-        formBuilder.start(json);
+            formBuilder.start(json);
+        });
+
+    });
 });
 
-});
-});
 
+console.log('hello typescript');
 
 var objectDisplay = true;
 var objectLevel = 1;
 var validationProfiles = {};
 var inputOK = true;
 var isUploading = false;
-var errorspace;
+let errorspace;
 var cloneBuffer;
 var panelError;
 var recordEdit = false;
@@ -67,7 +71,7 @@ var formBuilder = {
         }
         html.setAttribute('data-name', element.attributes.name);
         html.setAttribute('data-order', element.attributes.initialOrder);
-        label = document.createElement('div');
+        let label = document.createElement('div');
         label.setAttribute('class', 'label');
         if (element.attributes.CardinalityMin > 0) {
             label.innerHTML = element.attributes.label + ' *';
@@ -77,9 +81,9 @@ var formBuilder = {
         if (element.attributes.ValueScheme === 'date') {
             label.innerHTML = label.innerHTML + ' (' + ccfOptions.alert.date_string + ')';
         }
-        input = document.createElement('div');
+        let input = document.createElement('div');
         input.setAttribute('class', 'control');
-        control = this.createControl(element); // ann. subfunction
+        let control = this.createControl(element); // ann. subfunction
         input.appendChild(control);
         if (element.attributes.Multilingual === 'true') {
             var dropdown = document.createElement('select');
@@ -108,7 +112,7 @@ var formBuilder = {
                         attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
                         attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name);
                         attr_field.setAttribute("class", "element_attribute");
-                    break;                            
+                        break;
                     // New Feature in development MvdP 
                     case 'dropDown':
                         // console.log(element.attributes.attributeList[key].values);
@@ -124,9 +128,9 @@ var formBuilder = {
                             var option = document.createElement('option');
                             option.setAttribute('value', element.attributes.attributeList[key].values[k]);
                             option.innerHTML = element.attributes.attributeList[key].values[k];
-                            attr_field.appendChild(option);    
-                        }        
-                    break;
+                            attr_field.appendChild(option);
+                        }
+                        break;
                 }
                 input.appendChild(attr_field);
             }
@@ -206,7 +210,7 @@ var formBuilder = {
         html.setAttribute('id', component.ID);
         html.setAttribute('data-name', component.attributes.name);
         html.setAttribute('data-order', component.attributes.initialOrder);
-        header = document.createElement('div');
+        let header = document.createElement('div');
         header.setAttribute('class', 'componentHeader');
         header.innerHTML = component.attributes.label;
         if (component.attributes.CardinalityMin === '0') {
@@ -495,7 +499,7 @@ var formBuilder = {
             };
             buttonFrame.appendChild(control);
         }
-        errorSpace = document.createElement('div'); // global
+       let errorSpace = document.createElement('div'); // global is it the SAME errorSpace vs errorspace?
         errorSpace.setAttribute("id", "errorSpace");
         buttonFrame.appendChild(errorSpace);
         $("#ccform").append(buttonFrame);
@@ -687,7 +691,7 @@ function sendForm() {
 }
 
 function fillValues(record) {
-    obj = record[2].value;
+    let obj = record[2].value;
     // console.log(obj);
     parseRecord(obj.value, null);
 
@@ -969,7 +973,7 @@ function validateInput(key) {
         // Improved validation for attributes (MvdP)
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
-                var attribute_errorMsg = ''; 
+                var attribute_errorMsg = '';
                 for (var att in validationProfiles[key].attributes.attributeList) {
                     // console.log('att', att, validationProfiles[key].attributes.attributeList );
                     // console.log(validationProfiles[key].attributes.attributeList[att].Required );
@@ -1056,7 +1060,7 @@ function validateSelect(key) {
 
 function getInputType(element) {
     if (element.is("input")) { // .is is a jQuery method https://api.jquery.com/is/
-    
+
         // console.log('elementtest', element, )
         return "input";
     } else {

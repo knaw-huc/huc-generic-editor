@@ -1,4 +1,11 @@
 
+### 1-11-2019
+
+
+* 520 problems
+* first added "use strict" => stopped working
+* 550 problems
+
 ### 25-10-2019
 
 * added TypeScript (naive)
