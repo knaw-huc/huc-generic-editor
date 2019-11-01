@@ -142,7 +142,7 @@ var formBuilder = {
                     var that = $(this);
                     var tempID;
                     e.preventDefault();
-                    clonedElement = that.parent().clone();
+                    var clonedElement = that.parent().clone();
                     clonedElement.attr('class', 'clone');
                     clonedElement.find(".btn").each(function () {
                         $(this).attr('value', '-');
@@ -233,7 +233,7 @@ var formBuilder = {
                 var next = clone.nextClonePostfix();
                 var that = $(this);
                 e.preventDefault();
-                clonedComponent = that.parent().parent().clone();
+                var clonedComponent = that.parent().parent().clone();
                 clonedComponent.addClass("clonedComponent");
                 clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
                 clonedComponent.find(".compBtn").each(function () {
@@ -436,7 +436,7 @@ var formBuilder = {
         var resourceFrame = document.createElement('div');
         resourceFrame.setAttribute('id', 'resourceFrame');
         resourceFrame.setAttribute('class', 'component');
-        header = document.createElement('div');
+        var header = document.createElement('div');
         header.setAttribute('class', 'componentHeader');
         header.innerHTML = 'Bestanden';
         var btn = document.createElement('input');
@@ -578,8 +578,8 @@ function addUploadTrigger(obj) {
     that.parent().parent().append(msg);
     var formdata = new FormData();
     if ($(obj).prop('files').length > 0) {
-        file = $(obj).prop('files')[0];
-        formdata.append("file", file);
+        var file_1 = $(obj).prop('files')[0];
+        formdata.append("file", file_1);
         $.ajax({
             url: ccfOptions.uploadButton.actionURI,
             type: "POST",
@@ -587,8 +587,8 @@ function addUploadTrigger(obj) {
             processData: false,
             contentType: false,
             success: function (result) {
-                that.parent().parent().parent().attr("data-filename", file.name);
-                that.parent().parent().find(".headerMsg").html(file.name);
+                that.parent().parent().parent().attr("data-filename", file_1.name);
+                that.parent().parent().find(".headerMsg").html(file_1.name);
                 that.parent().parent().find(".resetUploadBtn").show();
                 that.hide();
             },
@@ -813,7 +813,7 @@ function duplicateField(obj, set) {
     var tempID;
     var name = obj.name;
     var btn = $(set).find("div[data-name='" + name + "']").find(".btn").first();
-    clonedElement = $(set).find("div[data-name='" + name + "']").find(".control").first().clone();
+    var clonedElement = $(set).find("div[data-name='" + name + "']").find(".control").first().clone();
     clonedElement.attr('class', 'clone');
     clonedElement.find(".btn").each(function () {
         $(this).attr('value', '-');
@@ -887,7 +887,8 @@ function duplicateComponent(obj, set) {
     //       console.log(target);
     //       $(this).attr('target', target + '_' + next);
     //    });
-    clonedComponent.find(".optionalCompBtn").each(function () {
+    var clonedComponent, find;
+    (".optionalCompBtn").each(function () {
         $(this).attr('value', "✗");
         $(this).on("click", showComponentFields);
     });
@@ -937,7 +938,7 @@ function validateInput(key) {
                     // console.log(validationProfiles[key].attributes.attributeList[att].Required );
                     if (validationProfiles[key].attributes.attributeList[att].Required === 'true' && $("#attr_" + validationProfiles[key].attributes.attributeList[att].name + "_" + this.id).val() === "") {
                         inputOK = false;
-                        attribute_errorMsg_template = ccfOptions.alert.attr_not_empty_field;
+                        var attribute_errorMsg_template = ccfOptions.alert.attr_not_empty_field;
                         attribute_errorMsg = ' ' + attribute_errorMsg_template.replace("$attributename", validationProfiles[key].attributes.attributeList[att].name);
                         $("#errorMsg_" + this.id).append(attribute_errorMsg);
                         $(errorSpace).append(attribute_errorMsg);

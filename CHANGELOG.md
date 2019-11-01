@@ -2,6 +2,9 @@
 ### 1-11-2019
 
 
+* cannot find name problems declaration of variables (but not the one from the include file)
+* 434 problems
+* installed type definition file for JQuery ```npm install --save-dev @types/jquery```
 * 520 problems
 * first added "use strict" => stopped working
 * 550 problems

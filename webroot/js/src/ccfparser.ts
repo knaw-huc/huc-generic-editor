@@ -14,18 +14,18 @@ fetch(serverurl).then(function (response) {
 
 console.log('hello typescript');
 
-var objectDisplay = true;
-var objectLevel = 1;
-var validationProfiles = {};
-var inputOK = true;
-var isUploading = false;
+let objectDisplay = true;
+let objectLevel = 1;
+let validationProfiles = {};
+let inputOK = true;
+let isUploading = false;
 let errorspace;
-var cloneBuffer;
-var panelError;
-var recordEdit = false;
+let cloneBuffer;
+let panelError;
+let recordEdit = false;
 
 
-var formBuilder = {
+let formBuilder = {
     profileID: null,
     start: function (obj) {
         this.profileID = obj.id;
@@ -147,7 +147,7 @@ var formBuilder = {
                     var that = $(this);
                     var tempID;
                     e.preventDefault();
-                    clonedElement = that.parent().clone();
+                    let clonedElement = that.parent().clone();
                     clonedElement.attr('class', 'clone');
                     clonedElement.find(".btn").each(
                         function () {
@@ -243,7 +243,7 @@ var formBuilder = {
                 var next = clone.nextClonePostfix();
                 var that = $(this);
                 e.preventDefault();
-                clonedComponent = that.parent().parent().clone();
+                let clonedComponent = that.parent().parent().clone();
                 clonedComponent.addClass("clonedComponent");
                 clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
                 clonedComponent.find(".compBtn").each(
@@ -446,7 +446,7 @@ var formBuilder = {
         var resourceFrame = document.createElement('div');
         resourceFrame.setAttribute('id', 'resourceFrame');
         resourceFrame.setAttribute('class', 'component');
-        header = document.createElement('div');
+        let header = document.createElement('div');
         header.setAttribute('class', 'componentHeader');
         header.innerHTML = 'Bestanden';
         var btn = document.createElement('input');
@@ -597,7 +597,7 @@ function addUploadTrigger(obj) {
     that.parent().parent().append(msg);
     var formdata = new FormData();
     if ($(obj).prop('files').length > 0) {
-        file = $(obj).prop('files')[0];
+        let file = $(obj).prop('files')[0];
         formdata.append("file", file);
         $.ajax({
             url: ccfOptions.uploadButton.actionURI,
@@ -843,7 +843,7 @@ function duplicateField(obj, set) {
     var tempID;
     var name = obj.name;
     var btn = $(set).find("div[data-name='" + name + "']").find(".btn").first();
-    clonedElement = $(set).find("div[data-name='" + name + "']").find(".control").first().clone();
+    let clonedElement = $(set).find("div[data-name='" + name + "']").find(".control").first().clone();
     clonedElement.attr('class', 'clone');
     clonedElement.find(".btn").each(
         function () {
@@ -928,7 +928,7 @@ function duplicateComponent(obj, set) {
     //       console.log(target);
     //       $(this).attr('target', target + '_' + next);
     //    });
-    clonedComponent.find(".optionalCompBtn").each(function () {
+    let clonedComponent.find(".optionalCompBtn").each(function () {
         $(this).attr('value', "✗");
         $(this).on("click", showComponentFields);
     });
@@ -973,13 +973,13 @@ function validateInput(key) {
         // Improved validation for attributes (MvdP)
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
-                var attribute_errorMsg = '';
-                for (var att in validationProfiles[key].attributes.attributeList) {
+                let attribute_errorMsg = '';
+                for (let att in validationProfiles[key].attributes.attributeList) {
                     // console.log('att', att, validationProfiles[key].attributes.attributeList );
                     // console.log(validationProfiles[key].attributes.attributeList[att].Required );
                     if (validationProfiles[key].attributes.attributeList[att].Required === 'true' && $("#attr_" + validationProfiles[key].attributes.attributeList[att].name + "_" + this.id).val() === "") {
                         inputOK = false;
-                        attribute_errorMsg_template = ccfOptions.alert.attr_not_empty_field;
+                        let attribute_errorMsg_template = ccfOptions.alert.attr_not_empty_field;
                         attribute_errorMsg = ' ' + attribute_errorMsg_template.replace("$attributename", validationProfiles[key].attributes.attributeList[att].name);
                         $("#errorMsg_" + this.id).append(attribute_errorMsg);
                         $(errorSpace).append(attribute_errorMsg);
