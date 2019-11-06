@@ -1,5 +1,7 @@
-// import {server, ccfOptions} from "./config/ccf_config_nl";
 "use strict";
+// import * as foo from "./config/ccf_config_nl";
+// console.log(foo); 
+console.log('hello typeasript');
 // ugly for now, d
 var server = 'http://www.huc.localhost/clarin_cmdi_forms/';
 var ccfOptions = {
@@ -41,7 +43,6 @@ fetch(serverurl).then(function (response) {
         });
     });
 });
-console.log('hello typescriasdasdffpt');
 var objectDisplay = true;
 var objectLevel = 1;
 var validationProfiles = {};
