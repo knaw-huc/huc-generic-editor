@@ -1,7 +1,7 @@
 "use strict";
-// import * as foo from "./config/ccf_config_nl";
-// console.log(foo); 
-console.log('hello typeasript');
+// cwr = check with Rob
+// "use strict"
+console.log('hello typesript');
 // ugly for now, d
 var server = 'http://www.huc.localhost/clarin_cmdi_forms/';
 var ccfOptions = {
@@ -45,15 +45,16 @@ fetch(serverurl).then(function (response) {
 });
 var objectDisplay = true;
 var objectLevel = 1;
-var validationProfiles = {};
+var validationProfiles = [];
 var inputOK = true;
 var isUploading = false;
-var errorspace;
+var errorspace; // ??? cwr errorspace vs errorSpace
+var errorSpace; // ??? cwr errorspace vs errorSpace
 var cloneBuffer;
 var panelError;
 var recordEdit = false;
 var formBuilder = {
-    profileID: null,
+    profileID: '',
     start: function (obj) {
         this.profileID = obj.id;
         this.parse(obj.content);
@@ -65,6 +66,7 @@ var formBuilder = {
             $(".disabledComponent").addClass("component").removeClass("disabledComponent");
             $(".optionalCompBtn").click();
         }
+        console.log(validationProfiles);
     },
     parse: function (o, componentID) {
         if (o.hasOwnProperty('type')) {
@@ -119,15 +121,15 @@ var formBuilder = {
             var dropdown = document.createElement('select');
             dropdown.setAttribute('class', 'language_dd');
             dropdown.setAttribute('id', 'lang_' + element.ID);
-            var option = document.createElement('option');
-            option.setAttribute('value', 'none');
-            option.innerHTML = '--';
-            dropdown.appendChild(option);
+            var option_1 = document.createElement('option');
+            option_1.setAttribute('value', 'none');
+            option_1.innerHTML = '--';
+            dropdown.appendChild(option_1);
             for (var key in this.languages) {
-                var option = document.createElement('option');
-                option.setAttribute('value', this.languages[key]);
-                option.innerHTML = this.languages[key];
-                dropdown.appendChild(option);
+                var option_2 = document.createElement('option');
+                option_2.setAttribute('value', this.languages[key]);
+                option_2.innerHTML = this.languages[key];
+                dropdown.appendChild(option_2);
             }
             $(dropdown).val(ccfOptions.language);
             input.appendChild(dropdown);
@@ -174,6 +176,7 @@ var formBuilder = {
             btn.onclick =
                 function (e) {
                     var next = clone.nextClonePostfix();
+                    // let that: JQuery<GlobalEventHandlers> = $(this);
                     var that = $(this);
                     var tempID;
                     e.preventDefault();
@@ -206,7 +209,7 @@ var formBuilder = {
                         $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
                         $(this).val("");
                     });
-                    clonedElement.insertAfter(that.parent());
+                    clonedElement.insertAfter(that.parent()); // ugly fix 
                     createAutoCompletes();
                 };
             input.appendChild(btn);
@@ -643,6 +646,7 @@ function validate() {
     panelError = document.createElement("div");
     inputOK = true;
     for (var key in validationProfiles) {
+        // console.log(key);
         switch (getInputType($("#" + key))) { // user-function
             case "input":
                 validateInput(key);
@@ -700,7 +704,7 @@ function sendForm() {
     var inputField = document.createElement('input');
     $(inputField).attr('type', 'hidden');
     $(inputField).attr('name', 'ccProfileID');
-    $(inputField).val(formBuilder.profileID);
+    $(inputField).val(formBuilder.profileID); //??? cwr casting to string is possible but TypeScript wonders if it's sensible
     $(form).append(inputField);
     $("#ccform").append(form);
     $("#OKbtn").remove();
@@ -710,13 +714,14 @@ function fillValues(record) {
     var obj = record[2].value;
     // console.log(obj);
     parseRecord(obj.value, null);
-    if (record[3] !== undefined) {
+    if (record[3] !== undefined) { // ?? What happens here 
         setfiles(record[3]);
     }
 }
 function setfiles(files) {
     var _loop_1 = function (key) {
-        $(".fileForm").eq(key).each(function () {
+        $(".fileForm").eq(Number(key)).each(// cast to number Check with Rob
+        function () {
             $(this).parent().parent().attr("data-filename", files[key].file);
             var msg = document.createElement('div');
             msg.setAttribute("id", "msg" + $(this).attr("id"));
@@ -771,7 +776,8 @@ function parseElement(element) {
                 var id = $(this).attr("id");
                 unit_1.attributes.lang = $("#lang_" + id).val();
                 $(this).parent().find("input[id^='attr_']").each(function () {
-                    unit_1.attributes[$(this).attr("data-attribute_name")] = $(this).val();
+                    var x = $(this).attr("data-attribute_name"); // work-around undefined can't be a index cwr
+                    unit_1.attributes[x] = $(this).val();
                 });
                 retVal.push(unit_1);
             }
@@ -883,7 +889,8 @@ function duplicateField(obj, set) {
     });
     clonedElement.find(".element_attribute").each(function () {
         $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
-        $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
+        var x = $(this).attr("data-attribute_name");
+        $(this).val(obj.attributes[x]);
         //$(this).val("");
         console.log(obj);
     });
@@ -938,14 +945,17 @@ function duplicateComponent(obj, set) {
     addAutoComplete(clonedComponent);
 }
 function validateInput(key) {
+    // console.log(validationProfiles);
+    console.log(key, typeof (key));
     $("[data-validation-profile=" + key + "]").each(function () {
+        console.log(validationProfiles[key]);
         if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
             console.log('required');
             inputOK = false;
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
-            var error = document.createElement('p');
-            $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
-            $(errorSpace).append(error);
+            var error_1 = document.createElement('p');
+            $(error_1).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
+            $(errorSpace).append(error_1);
         }
         else {
             $("#errorMsg_" + this.id).html("");
@@ -962,7 +972,7 @@ function validateInput(key) {
         }
         if (validationProfiles[key].attributes.ValueScheme === 'int' && this.value !== "") {
             var str = this.value;
-            if (!isInteger(str)) {
+            if (!isInteger(Number(str))) { // added Number cast, cwr
                 inputOK = false;
                 $("#errorMsg_" + this.id).html(ccfOptions.alert.int_field);
                 var error = document.createElement('p');
