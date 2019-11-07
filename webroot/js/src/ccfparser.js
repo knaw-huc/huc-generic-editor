@@ -45,11 +45,11 @@ fetch(serverurl).then(function (response) {
 });
 var objectDisplay = true;
 var objectLevel = 1;
-var validationProfiles = [];
+// let validationProfiles: validationProfile[] = [];
+var validationProfiles = {};
 var inputOK = true;
 var isUploading = false;
-var errorspace; // ??? cwr errorspace vs errorSpace
-var errorSpace; // ??? cwr errorspace vs errorSpace
+var errorSpace;
 var cloneBuffer;
 var panelError;
 var recordEdit = false;
@@ -529,7 +529,7 @@ var formBuilder = {
             };
             buttonFrame.appendChild(control);
         }
-        var errorSpace = document.createElement('div'); // global is it the SAME errorSpace vs errorspace?
+        errorSpace = document.createElement('div'); // global  errorSpace
         errorSpace.setAttribute("id", "errorSpace");
         buttonFrame.appendChild(errorSpace);
         $("#ccform").append(buttonFrame);
@@ -645,6 +645,11 @@ function validate() {
     // global objects/variables errorSpace, panelError, inputOK, validationProfiles, defined on top of this.file
     panelError = document.createElement("div");
     inputOK = true;
+    console.log('VALIDATE', validationProfiles.length);
+    // for (let i = 0; i < validationProfiles.length; i++) {
+    //     console.log('validationProfiles array', validationProfiles[i]);
+    // }
+    // break;
     for (var key in validationProfiles) {
         // console.log(key);
         switch (getInputType($("#" + key))) { // user-function
@@ -669,7 +674,7 @@ function validate() {
         sendForm();
     }
     else {
-        $("#errorSpace").append(errorspace);
+        $("#errorSpace").append(errorSpace);
     }
 }
 ;
@@ -776,7 +781,7 @@ function parseElement(element) {
                 var id = $(this).attr("id");
                 unit_1.attributes.lang = $("#lang_" + id).val();
                 $(this).parent().find("input[id^='attr_']").each(function () {
-                    var x = $(this).attr("data-attribute_name"); // work-around undefined can't be a index cwr
+                    var x = $(this).attr("data-attribute_name"); // work-around undefined can't be a index
                     unit_1.attributes[x] = $(this).val();
                 });
                 retVal.push(unit_1);
@@ -946,7 +951,7 @@ function duplicateComponent(obj, set) {
 }
 function validateInput(key) {
     // console.log(validationProfiles);
-    console.log(key, typeof (key));
+    console.log('key:', key, typeof (key));
     $("[data-validation-profile=" + key + "]").each(function () {
         console.log(validationProfiles[key]);
         if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {

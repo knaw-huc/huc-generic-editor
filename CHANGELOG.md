@@ -1,7 +1,12 @@
+### 7-11-2019
+ 
+ * 0 problems
+ * improved interface validation profile
+
 
 ### 6-11-2019
-
-
+* some interfaces
+* 21 problems left
 
 ### 1-11-2019
 * 99 problems 

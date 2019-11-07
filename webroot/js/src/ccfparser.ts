@@ -53,9 +53,22 @@ fetch(serverurl).then(function (response) {
 
 
 interface validationProfile {
-    id: string;
-    attributes: {};
-    type: string
+    ID: string;
+    level: number;
+    type: string;
+    attributes: {
+        CardinalityMin: string;
+        CardinalityMax: string;
+        name?: string;        
+        ValueScheme: string;
+        Multilingual: string;
+        label: string;
+        attributeList: [{
+                        Required: string;
+                        name:string
+                    }];
+        Required: string;
+    }
 }
 
 interface JQuery {
@@ -68,11 +81,12 @@ interface JQuery {
 
 let objectDisplay = true;
 let objectLevel = 1;
-let validationProfiles: validationProfile[] = [];
+// let validationProfiles: validationProfile[] = [];
+let validationProfiles:{ [key: string]: validationProfile}  = {};
+
 let inputOK = true;
 let isUploading = false;
-let errorspace :any; // ??? cwr errorspace vs errorSpace
-let errorSpace :any; // ??? cwr errorspace vs errorSpace
+let errorSpace :any;
 
 let cloneBuffer;
 let panelError;
@@ -81,7 +95,7 @@ let recordEdit = false;
 
 
 let formBuilder = {
-    profileID: '', // gives a problem on 728 assignment with null to value of invissible field is it always a string we should set it to ''
+    profileID: '',
     start: function (obj: any) {
         this.profileID = obj.id;
         this.parse(obj.content);
@@ -433,7 +447,7 @@ let formBuilder = {
         $(control).addClass("input_element");
         return control;
     },
-    setValueSchemeElement: function (element: any, id: string) { // DEPRECATED?
+    setValueSchemeElement: function (element: any, id: string) { // DEPRECATED? cwr
         var control = document.createElement('select');
         control.setAttribute('id', id);
         var option = document.createElement('option');
@@ -560,7 +574,7 @@ let formBuilder = {
             };
             buttonFrame.appendChild(control);
         }
-       let errorSpace = document.createElement('div'); // global is it the SAME errorSpace vs errorspace?
+        errorSpace = document.createElement('div'); // global  errorSpace
         errorSpace.setAttribute("id", "errorSpace");
         buttonFrame.appendChild(errorSpace);
         $("#ccform").append(buttonFrame);
@@ -687,6 +701,12 @@ function validate(): void {
 
     panelError = document.createElement("div");
     inputOK = true;
+    console.log('VALIDATE', validationProfiles.length);
+
+    // for (let i = 0; i < validationProfiles.length; i++) {
+    //     console.log('validationProfiles array', validationProfiles[i]);
+    // }
+    // break;
     for (let key in validationProfiles) {
         // console.log(key);
         switch (getInputType($("#" + key))) { // user-function
@@ -710,7 +730,7 @@ function validate(): void {
         //console.log(validationProfiles);
         sendForm();
     } else {
-        $("#errorSpace").append(errorspace);
+        $("#errorSpace").append(errorSpace);
     }
 }
 ;
@@ -822,7 +842,7 @@ function parseElement(element :any) { // called from parseComponent function
                 var id = $(this).attr("id");
                 unit.attributes.lang = $("#lang_" + id).val();
                 $(this).parent().find("input[id^='attr_']").each(function () {
-                    let x: string = $(this).attr("data-attribute_name") as string; // work-around undefined can't be a index cwr
+                    let x: string = $(this).attr("data-attribute_name") as string; // work-around undefined can't be a index
                     unit.attributes[x] = $(this).val();
                 });
                 retVal.push(unit);
@@ -1007,11 +1027,11 @@ function duplicateComponent(obj: { name: string; }, set: any) {
 
 function validateInput(key: string) { // or key: string ?
     // console.log(validationProfiles);
-    console.log(key, typeof(key));
+    console.log('key:', key, typeof(key));
 
     $("[data-validation-profile=" + key + "]").each(function () {
         console.log(validationProfiles[key as any]);
-        if (validationProfiles[key as any].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
+        if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
             console.log('required')
             inputOK = false;
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
@@ -1109,7 +1129,7 @@ function validateSelect(key: string) {
         if (validationProfiles[key].attributes.CardinalityMin === '1' && this.selectedIndex === 0 && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
             inputOK = false;
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
-            var error = document.createElement('p');
+            let error = document.createElement('p');
             $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
             $(errorSpace).append(error);
         } else {
@@ -1117,7 +1137,7 @@ function validateSelect(key: string) {
         }
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
-                for (var att in validationProfiles[key].attributes.attributeList) {
+                for (let att in validationProfiles[key].attributes.attributeList) {
                     // console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {
                         inputOK = false;
