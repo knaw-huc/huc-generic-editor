@@ -51,25 +51,36 @@ fetch(serverurl).then(function (response) {
     });
 });
 
+interface json {
+    id: string;
+    content: [content];
+    record: [];
+}
 
-interface validationProfile {
+
+interface content {
     ID: string;
     level: number;
     type: string;
     attributes: {
         CardinalityMin: string;
         CardinalityMax: string;
-        name?: string;        
+        name: string;        
         ValueScheme: string;
         Multilingual: string;
         label: string;
         attributeList: [{
                         Required: string;
-                        name:string
+                        name: string;
+                        values: [];
                     }];
         Required: string;
     }
 }
+
+// interface validationprofile {
+//     a: content;
+// }
 
 interface JQuery {
     devbridgeAutocomplete(a: {
@@ -79,10 +90,11 @@ interface JQuery {
         :any;
 }
 
+
 let objectDisplay = true;
 let objectLevel = 1;
 // let validationProfiles: validationProfile[] = [];
-let validationProfiles:{ [key: string]: validationProfile}  = {};
+let validationProfiles:{ [key: string]: content}  = {};
 
 let inputOK = true;
 let isUploading = false;
@@ -92,12 +104,11 @@ let cloneBuffer;
 let panelError;
 let recordEdit = false;
 
-
-
 let formBuilder = {
     profileID: '',
-    start: function (obj: any) {
+    start: function (obj: json) {
         this.profileID = obj.id;
+        
         this.parse(obj.content);
         this.createButtons();
         createAutoCompletes();
@@ -163,7 +174,7 @@ let formBuilder = {
             option.setAttribute('value', 'none');
             option.innerHTML = '--';
             dropdown.appendChild(option);
-            for (var key in this.languages) {
+            for (let key in this.languages) {
                 let option = document.createElement('option');
                 option.setAttribute('value', this.languages[key]);
                 option.innerHTML = this.languages[key];
@@ -173,7 +184,7 @@ let formBuilder = {
             input.appendChild(dropdown);
         }
         if (element.attributes.attributeList !== undefined) {
-            for (var key in element.attributes.attributeList) {
+            for (let key in element.attributes.attributeList) {
                 let attr_field :any;
                 switch (element.attributes.attributeList[key].ValueScheme) {
                     case 'string':
@@ -194,9 +205,9 @@ let formBuilder = {
                         // attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name); // niet nodig denk ik
                         attr_field.setAttribute("class", "element_attribute");
 
-                        var option = document.createElement('option');
-                        for (var k in element.attributes.attributeList[key].values) {
-                            var option = document.createElement('option');
+                        let option = document.createElement('option');
+                        for (let k in element.attributes.attributeList[key].values) {
+                            let option = document.createElement('option');
                             option.setAttribute('value', element.attributes.attributeList[key].values[k]);
                             option.innerHTML = element.attributes.attributeList[key].values[k];
                             attr_field.appendChild(option);
@@ -286,7 +297,7 @@ let formBuilder = {
         header.setAttribute('class', 'componentHeader');
         header.innerHTML = component.attributes.label;
         if (component.attributes.CardinalityMin === '0') {
-            var btn = document.createElement('input');
+            let btn = document.createElement('input');
             btn.setAttribute('type', 'button');
             btn.setAttribute('value', "✓");
             btn.setAttribute('class', 'optionalCompBtn');
@@ -303,7 +314,7 @@ let formBuilder = {
 
         if (component.attributes.CardinalityMax !== '1') {
             //header.innerHTML = component.attributes.label;
-            var btn = document.createElement('input');
+            let btn = document.createElement('input');
             btn.setAttribute('type', 'button');
             btn.setAttribute('value', '+');
             btn.setAttribute('class', 'compBtn');
@@ -312,8 +323,8 @@ let formBuilder = {
                 $(btn).hide();
             }
             btn.onclick = function (e) {
-                var next = clone.nextClonePostfix();
-                var that = $(this);
+                let next = clone.nextClonePostfix();
+                let that = $(this);
                 e.preventDefault();
                 let clonedComponent = that.parent().parent().clone();
                 clonedComponent.addClass("clonedComponent");
@@ -323,7 +334,7 @@ let formBuilder = {
                         $(this).attr('value', '-');
                         $(this).on("click", function (e) {
                             e.preventDefault();
-                            var that = $(this);
+                            let that = $(this);
                             that.parent().parent().remove();
                         });
                     });
@@ -334,16 +345,16 @@ let formBuilder = {
                 clonedComponent.find(".errorMsg").each(
                     function () {
                         $(this).html('');
-                        var id = $(this).attr('id');
+                        let id = $(this).attr('id');
                         $(this).attr('id', id + '_' + next);
                     });
                 clonedComponent.find(".input_element").each(function () {
-                    var id = $(this).attr("id");
+                    let id = $(this).attr("id");
                     $(this).attr('id', id + '_' + next);
                     $(this).val("");
                 });
                 clonedComponent.find(".uploader").each(function () {
-                    var id = $(this).attr("id");
+                    let id = $(this).attr("id");
                     $(this).attr('id', id + '_' + next);
                     $(this).val("");
                     $(this).show();
@@ -361,10 +372,10 @@ let formBuilder = {
             header.appendChild(btn);
         }
         if (component.attributes.resource !== undefined) {
-            var form = document.createElement('form');
+            let form = document.createElement('form');
             form.setAttribute("method", "post");
             form.setAttribute("class", "fileForm");
-            var fileSelector = document.createElement('input');
+            let fileSelector = document.createElement('input');
             fileSelector.setAttribute('type', 'file');
             fileSelector.setAttribute('id', 'files_' + component.ID);
             fileSelector.setAttribute("class", "uploader");
@@ -376,13 +387,13 @@ let formBuilder = {
                 addUploadTrigger(this);
             };
             form.appendChild(fileSelector);
-            var resetUpload = document.createElement('input');
+            let resetUpload = document.createElement('input');
             resetUpload.setAttribute("type", "reset");
             resetUpload.setAttribute("target", component.ID);
             resetUpload.setAttribute("value", "x");
             resetUpload.setAttribute("class", "resetUploadBtn");
             resetUpload.onclick = function () {
-                var target = $(this).attr("target");
+                let target = $(this).attr("target");
                 $("#files_" + target).show();
                 $("#" + target).find(".headerMsg").remove();
                 $("#" + target).removeAttr("data-filename");
@@ -448,14 +459,14 @@ let formBuilder = {
         return control;
     },
     setValueSchemeElement: function (element: any, id: string) { // DEPRECATED? cwr
-        var control = document.createElement('select');
+        let control = document.createElement('select');
         control.setAttribute('id', id);
-        var option = document.createElement('option');
+        let option = document.createElement('option');
         option.setAttribute("value", '');
         option.innerHTML = '--';
         control.appendChild(option);
-        for (var key in element) {
-            var option = document.createElement('option');
+        for (let key in element) {
+            let option = document.createElement('option');
             option.setAttribute("value", element[key].value);
             if (element[key].label === undefined) {
                 option.innerHTML = element[key].value;
@@ -518,22 +529,22 @@ let formBuilder = {
         }
     },
     createResourcePanel: function () {
-        var resourceFrame = document.createElement('div');
+        let resourceFrame = document.createElement('div');
         resourceFrame.setAttribute('id', 'resourceFrame');
         resourceFrame.setAttribute('class', 'component');
         let header = document.createElement('div');
         header.setAttribute('class', 'componentHeader');
         header.innerHTML = 'Bestanden';
-        var btn = document.createElement('input');
+        let btn = document.createElement('input');
         btn.setAttribute('type', 'button');
         btn.setAttribute('value', '+');
         btn.setAttribute('class', 'compBtn');
         btn.setAttribute('id', 'resourceBtn');
         btn.onclick = function (e) {
-            var that = $(this);
+            let that = $(this);
             e.preventDefault();
-            var list = that.parent().parent();
-            var input = document.createElement('input');
+            let list = that.parent().parent();
+            let input = document.createElement('input');
             input.setAttribute('type', 'file');
             input.setAttribute('class', 'filename');
             input.setAttribute("id", "resList");
@@ -545,9 +556,9 @@ let formBuilder = {
         $("#ccform").append(resourceFrame);
     },
     createButtons: function () {
-        var buttonFrame = document.createElement('div');
+        let buttonFrame = document.createElement('div');
         buttonFrame.setAttribute('id', 'btnFrame');
-        var control = document.createElement('input');
+        let control = document.createElement('input');
         control.setAttribute('type', 'button');
         control.setAttribute('value', ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
@@ -556,7 +567,7 @@ let formBuilder = {
             validate();
         };
         buttonFrame.appendChild(control);
-        var control = document.createElement('input');
+        control = document.createElement('input');
         control.setAttribute('type', 'button');
         control.setAttribute('value', ccfOptions.saveButton.label);
         control.setAttribute('id', 'saveBtn');
@@ -565,7 +576,7 @@ let formBuilder = {
         };
         buttonFrame.appendChild(control);
         if (ccfOptions.resetButton !== null && ccfOptions.resetButton !== undefined) {
-            var control = document.createElement('input');
+            control = document.createElement('input');
             control.setAttribute('type', 'button');
             control.setAttribute('value', ccfOptions.resetButton.label);
             control.setAttribute('id', 'resetBtn');
@@ -583,7 +594,7 @@ let formBuilder = {
     controlHash: []
 };
 
-var clone = {
+let clone = {
     clonePostfix: 0,
     nextClonePostfix: function () {
         this.clonePostfix++;
@@ -593,9 +604,9 @@ var clone = {
 
 
 function showComponentFields(this: any): void {
-    var that = $(this);
-    var comp = that.parent().parent();
-    var header = that.parent();
+    let that = $(this);
+    let comp = that.parent().parent();
+    let header = that.parent();
     that.attr('value', "✗");
     $(comp).children().each(function () {
         switch ($(this).attr("class")) {
@@ -619,9 +630,9 @@ function checkResourceFilter(sel: any, filter: any) {
 }
 
 function hideComponentFields(this: any) {
-    var that = $(this);
-    var comp = that.parent().parent();
-    var header = that.parent();
+    let that = $(this);
+    let comp = that.parent().parent();
+    let header = that.parent();
     $(comp).children().each(function () {
         switch ($(this).attr("class")) {
             case 'component':
@@ -663,15 +674,15 @@ function addAutoComplete(clonedComponent: JQuery<GlobalEventHandlers> | JQuery<a
 }
 
 function addUploadTrigger(obj: any) {
-    var that = $(obj);
+    let that = $(obj);
     that.parent().parent().find(".headerMsg").remove();
-    var msg = document.createElement('div');
+    let msg = document.createElement('div');
     msg.setAttribute("id", "msg" + that.attr("id"));
     msg.setAttribute("class", "headerMsg");
     msg.innerHTML = 'Uploading...';
     //console.log(ccfOptions.uploadButton.actionURI);
     that.parent().parent().append(msg);
-    var formdata = new FormData();
+    let formdata = new FormData();
     if ($(obj).prop('files').length > 0) {
         let file = $(obj).prop('files')[0];
         formdata.append("file", file);
@@ -753,17 +764,17 @@ function sendForm(): void {
             formValues.push(element);
         }
     });
-    var ret = JSON.stringify(formValues);
-    var form = document.createElement('form');
+    let ret = JSON.stringify(formValues);
+    let form = document.createElement('form');
     $(form).attr('id', 'ccSendForm');
     $(form).attr('method', 'post');
     $(form).attr('action', ccfOptions.saveButton.actionURI);
-    var inputField = document.createElement('input');
+    let inputField = document.createElement('input');
     $(inputField).attr('type', 'hidden');
     $(inputField).attr('name', 'ccData');
     $(inputField).val(ret);
     $(form).append(inputField);
-    var inputField = document.createElement('input');
+    inputField = document.createElement('input');
     $(inputField).attr('type', 'hidden');
     $(inputField).attr('name', 'ccProfileID');
     $(inputField).val(formBuilder.profileID); //??? cwr casting to string is possible but TypeScript wonders if it's sensible
@@ -789,7 +800,7 @@ function setfiles(files: any) {
         $(".fileForm").eq(Number(key)).each( // cast to number Check with Rob
             function () {
                 $(this).parent().parent().attr("data-filename", files[key].file);
-                var msg = document.createElement('div');
+                let msg = document.createElement('div');
                 msg.setAttribute("id", "msg" + $(this).attr("id"));
                 msg.setAttribute("class", "headerMsg");
                 msg.innerHTML = files[key].file;
@@ -803,7 +814,7 @@ function setfiles(files: any) {
 function parseComponent(component :any) { // called from function sendform also recursive
     let retStruct :any[]= []; // TODO make more specific
     $(component).children().each(function () {
-        var element = <any>{}; // TODO interface
+        let element = <any>{}; // TODO interface
 
         if ($(this).attr("class") === "component") {
             element.name = $(this).attr("data-name");
@@ -839,7 +850,7 @@ function parseElement(element :any) { // called from parseComponent function
             unit.value = $(this).val();
             if (unit.value !== "") {
                 unit.attributes = {};
-                var id = $(this).attr("id");
+                let id = $(this).attr("id");
                 unit.attributes.lang = $("#lang_" + id).val();
                 $(this).parent().find("input[id^='attr_']").each(function () {
                     let x: string = $(this).attr("data-attribute_name") as string; // work-around undefined can't be a index
@@ -860,7 +871,7 @@ function parseElement(element :any) { // called from parseComponent function
 function parseRecord(obj: any, set: JQuery<any> | null) { // don't get the JQuery<any> syntax yet
     // console.log(obj);
     let nameStack = <any>{};
-    for (var key in obj) {
+    for (let key in obj) {
         // console.log(obj.value.key.va);
 
         if (obj[key] !== null) {
@@ -882,7 +893,7 @@ function parseRecord(obj: any, set: JQuery<any> | null) { // don't get the JQuer
 
                 //                if (obj[key].attributes !== undefined) {
                 //                    if (obj[key].attributes.ref !== undefined) {
-                //                        var ref = obj[key].attributes.ref;
+                //                        let ref = obj[key].attributes.ref;
                 //                        $("div[data-name='" + obj[key].name + "']").
                 //                    }
                 //                    console.log(uploads[ref]);
@@ -892,14 +903,14 @@ function parseRecord(obj: any, set: JQuery<any> | null) { // don't get the JQuer
                 if (nameStack[obj[key].name] > 1) {
                     duplicateField(obj[key], set);
                 } else {
-                    var name = obj[key].name;
+                    let name = obj[key].name;
                     $(set).find("div[data-name='" + name + "']").find(".input_element").first().val(obj[key].value);
-                    var language = getLanguage(obj[key]);
+                    let language = getLanguage(obj[key]);
                     if (language !== 0) {
                         $(set).find("div[data-name='" + name + "']").find(".language_dd").first().val(language);
                     }
                     if (obj[key].attributes !== undefined) {
-                        for (var attr_key in obj[key].attributes) {
+                        for (let attr_key in obj[key].attributes) {
                             if (attr_key !== 'xml:lang') {
                                 $(set).find("div[data-name='" + name + "']").find("input[data-attribute_name='" + attr_key + "']").first().val(obj[key].attributes[attr_key]);
                             }
@@ -914,7 +925,7 @@ function parseRecord(obj: any, set: JQuery<any> | null) { // don't get the JQuer
 
 function getLanguage(obj: { attributes: { [x: string]: any; } | undefined; }) {
     if (obj.attributes !== undefined) {
-        for (var key in obj.attributes) {
+        for (let key in obj.attributes) {
             if (key === 'xml:lang') {
                 return obj.attributes[key];
             }
@@ -924,11 +935,11 @@ function getLanguage(obj: { attributes: { [x: string]: any; } | undefined; }) {
 }
 
 function duplicateField(obj: { name: any; value: string | number | string[] | ((this: any, index: number, value: string) => string); attributes: { [x: string]: string | number | string[] | ((this: any, index: number, value: string) => string); }; }, set: any) {
-    var next = clone.nextClonePostfix();
-    var language = getLanguage(obj);
-    var tempID: string | number | ((this: any, index: number, attr: string) => string | number | void | undefined) | null;
-    var name = obj.name;
-    var btn = $(set).find("div[data-name='" + name + "']").find(".btn").first();
+    let next = clone.nextClonePostfix();
+    let language = getLanguage(obj);
+    let tempID: string | number | ((this: any, index: number, attr: string) => string | number | void | undefined) | null;
+    let name = obj.name;
+    let btn = $(set).find("div[data-name='" + name + "']").find(".btn").first();
     let clonedElement = $(set).find("div[data-name='" + name + "']").find(".control").first().clone();
     clonedElement.attr('class', 'clone');
     clonedElement.find(".btn").each(
@@ -942,7 +953,7 @@ function duplicateField(obj: { name: any; value: string | number | string[] | ((
         });
     clonedElement.find("[id^=" + btn.attr('data-source') + "]").each(
         function () {
-            var id = $(this).attr('data-validation-profile');
+            let id = $(this).attr('data-validation-profile');
             $(this).val(obj.value);
             tempID = id + '_' + next;
             console.log(tempID);
@@ -950,7 +961,7 @@ function duplicateField(obj: { name: any; value: string | number | string[] | ((
         });
     clonedElement.find(".errorMsg").each(
         function () {
-            var id = $(this).attr('id');
+            let id = $(this).attr('id');
             $(this).attr('id', id + '_' + next);
             $(this).html("");
         });
@@ -973,7 +984,7 @@ function duplicateField(obj: { name: any; value: string | number | string[] | ((
 }
 
 function duplicateComponent(obj: { name: string; }, set: any) {
-    var next = clone.nextClonePostfix();
+    let next = clone.nextClonePostfix();
     let clonedComponent = $(set).find("div[data-name='" + obj.name + "']").first().clone();
     clonedComponent.addClass("clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
@@ -993,16 +1004,16 @@ function duplicateComponent(obj: { name: string; }, set: any) {
     clonedComponent.find(".errorMsg").each(
         function () {
             $(this).html('');
-            var id = $(this).attr('id');
+            let id = $(this).attr('id');
             $(this).attr('id', id + '_' + next);
         });
     clonedComponent.find(".input_element").each(function () {
-        var id = $(this).attr("id");
+        let id = $(this).attr("id");
         $(this).attr('id', id + '_' + next);
         $(this).val("");
     });
     clonedComponent.find(".uploader").each(function () {
-        var id = $(this).attr("id");
+        let id = $(this).attr("id");
         $(this).attr('id', id + '_' + next);
         $(this).val("");
         $(this).on("change", function () {
@@ -1011,7 +1022,7 @@ function duplicateComponent(obj: { name: string; }, set: any) {
     });
 
     //    clonedComponent.find("input[type='reset']").each(function () {
-    //       var target = $(this).attr('target');
+    //       let target = $(this).attr('target');
     //       console.log(target);
     //       $(this).attr('target', target + '_' + next);
     //    });
@@ -1046,7 +1057,7 @@ function validateInput(key: string) { // or key: string ?
             if (!isValidDate(str)) {
                 inputOK = false;
                 $("#errorMsg_" + this.id).html(ccfOptions.alert.no_valid_date);
-                var error = document.createElement('p');
+                let error = document.createElement('p');
                 $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.no_valid_date_box);
                 $(errorSpace).append(error);
             }
@@ -1056,7 +1067,7 @@ function validateInput(key: string) { // or key: string ?
             if (!isInteger(Number(str))) { // added Number cast, cwr
                 inputOK = false;
                 $("#errorMsg_" + this.id).html(ccfOptions.alert.int_field);
-                var error = document.createElement('p');
+                let error = document.createElement('p');
                 $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.int_field_box);
                 $(errorSpace).append(error);
             }
@@ -1104,7 +1115,7 @@ function validateTextArea(key: string) {
         if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
             inputOK = false;
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
-            var error = document.createElement('p');
+            let error = document.createElement('p');
             $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
             $(errorSpace).append(error);
         } else {
@@ -1112,7 +1123,7 @@ function validateTextArea(key: string) {
         }
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
-                for (var att in validationProfiles[key].attributes.attributeList) {
+                for (let att in validationProfiles[key].attributes.attributeList) {
                     // console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {
                         inputOK = false;

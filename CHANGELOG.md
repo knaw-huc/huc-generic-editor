@@ -1,8 +1,10 @@
 ### 7-11-2019
  
- * 0 problems
+ * no var left
+ * added small php script to show the submitted values
+ * interface for the json file
+ * 0 problems left
  * improved interface validation profile
-
 
 ### 6-11-2019
 * some interfaces
