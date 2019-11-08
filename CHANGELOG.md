@@ -1,3 +1,7 @@
+### 8-11-2019
+
+* 10 new problems solved. related to casting  htmlelements in the context of this
+
 ### 7-11-2019
  
  * no var left
