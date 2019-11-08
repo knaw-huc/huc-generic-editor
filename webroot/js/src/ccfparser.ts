@@ -1100,12 +1100,12 @@ function isInteger(x: number): boolean {
     return (Number(x) !== NaN) && (x % 1 === 0);
 }
 
-function isValidDate(dateString: string): boolean | string { // codesmell?
+function isValidDate(dateString: string): boolean | string { // codesmell: different kind of returns possibles
     let regEx = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateString.match(regEx))
         return false;  // Invalid format
     let d = new Date(dateString);
-    if (Number.isNaN(d.getTime()))
+    if (isNaN(d.getTime()))
         return false; // Invalid date
     return d.toISOString().slice(0, 10) === dateString;
 }
@@ -1137,7 +1137,7 @@ function validateTextArea(key: string) {
 
 function validateSelect(key: string) {
     $("[data-validation-profile=" + key + "]").each(function () {
-        if (validationProfiles[key].attributes.CardinalityMin === '1' && this.selectedIndex === 0 && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
+        if (validationProfiles[key].attributes.CardinalityMin === '1' && (this as HTMLSelectElement).selectedIndex === 0 && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
             inputOK = false;
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
             let error = document.createElement('p');

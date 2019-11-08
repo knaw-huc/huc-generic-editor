@@ -1012,7 +1012,7 @@ function isValidDate(dateString) {
     if (!dateString.match(regEx))
         return false; // Invalid format
     var d = new Date(dateString);
-    if (Number.isNaN(d.getTime()))
+    if (isNaN(d.getTime()))
         return false; // Invalid date
     return d.toISOString().slice(0, 10) === dateString;
 }
