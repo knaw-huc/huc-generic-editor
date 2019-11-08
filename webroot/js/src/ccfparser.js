@@ -501,6 +501,7 @@ var FormBuilder = /** @class */ (function () {
         $("#ccform").append(resourceFrame);
     };
     FormBuilder.prototype.createButtons = function () {
+        var _this = this;
         var buttonFrame = document.createElement('div');
         buttonFrame.setAttribute('id', 'btnFrame');
         var control = document.createElement('input');
@@ -508,8 +509,9 @@ var FormBuilder = /** @class */ (function () {
         control.setAttribute('value', ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
         control.onclick = function () {
-            validate();
+            return _this.validate();
         };
+        ;
         buttonFrame.appendChild(control);
         control = document.createElement('input');
         control.setAttribute('type', 'button');
@@ -533,6 +535,38 @@ var FormBuilder = /** @class */ (function () {
         this.errorSpace.setAttribute("id", "errorSpace");
         buttonFrame.appendChild(this.errorSpace);
         $("#ccform").append(buttonFrame);
+    };
+    FormBuilder.prototype.validate = function () {
+        $("#errorSpace").html("");
+        // properties objects/variables errorSpace, panelError, inputOK, validationProfiles, defined on top of the class
+        this.panelError = document.createElement("div");
+        this.inputOK = true;
+        for (var key in this.validationProfiles) {
+            // console.log(key);
+            switch (getInputType($("#" + key))) { // user-function
+                case "input":
+                    validateInput(key);
+                    break;
+                case "textarea":
+                    validateTextArea(key);
+                    break;
+                case "select":
+                    validateSelect(key);
+                    break;
+                default:
+                    alert("Error: unknown input type!");
+                    this.inputOK = false;
+                    break;
+            }
+            //validateAttributes(key);
+        }
+        if (this.inputOK) {
+            //console.log(validationProfiles);
+            sendForm();
+        }
+        else {
+            $("#errorSpace").append(this.errorSpace);
+        }
     };
     return FormBuilder;
 }());
@@ -637,43 +671,6 @@ function addUploadTrigger(obj) {
                 that.parent().parent().find(".headerMsg").html('ERROR!');
             }
         });
-    }
-}
-function validate() {
-    $("#errorSpace").html("");
-    // global objects/variables errorSpace, panelError, inputOK, validationProfiles, defined on top of this.file
-    panelError = document.createElement("div");
-    inputOK = true;
-    console.log('VALIDATE', this.validationProfiles.length);
-    // for (let i = 0; i < validationProfiles.length; i++) {
-    //     console.log('validationProfiles array', validationProfiles[i]);
-    // }
-    // break;
-    for (var key in validationProfiles) {
-        // console.log(key);
-        switch (getInputType($("#" + key))) { // user-function
-            case "input":
-                validateInput(key);
-                break;
-            case "textarea":
-                validateTextArea(key);
-                break;
-            case "select":
-                validateSelect(key);
-                break;
-            default:
-                alert("Error: unknown input type!");
-                inputOK = false;
-                break;
-        }
-        //validateAttributes(key);
-    }
-    if (inputOK) {
-        //console.log(validationProfiles);
-        sendForm();
-    }
-    else {
-        $("#errorSpace").append(errorSpace);
     }
 }
 ;

@@ -18,7 +18,7 @@ let ccfOptions = {
     },
     saveButton: {
         actionURI: 'create_record.php',
-        label: 'Save'  
+        label: 'Save'
     },
     resetButton: {
         actionURI: 'javascript:history.back()',
@@ -26,14 +26,14 @@ let ccfOptions = {
     },
     language: 'en',
     alert: {
-      mandatory_field: 'This field is mandatory!',
-      mandatory_field_box: ' : mandatory!',
-      no_valid_date: 'This is not a valid date!',
-      no_valid_date_box: ': not a valid date!',
-      date_string: 'yyyy-mm-dd',
-      int_field: 'The value of this field must be an integer!',
-      int_field_box: 'must be an integer!',
-      attr_not_empty_field: 'Attribute(s) mandatory'
+        mandatory_field: 'This field is mandatory!',
+        mandatory_field_box: ' : mandatory!',
+        no_valid_date: 'This is not a valid date!',
+        no_valid_date_box: ': not a valid date!',
+        date_string: 'yyyy-mm-dd',
+        int_field: 'The value of this field must be an integer!',
+        int_field_box: 'must be an integer!',
+        attr_not_empty_field: 'Attribute(s) mandatory'
     }
 };
 
@@ -66,15 +66,15 @@ interface content {
     attributes: {
         CardinalityMin: string;
         CardinalityMax: string;
-        name: string;        
+        name: string;
         ValueScheme: string;
         Multilingual: string;
         label: string;
         attributeList: [{
-                        Required: string;
-                        name: string;
-                        values: [];
-                    }];
+            Required: string;
+            name: string;
+            values: [];
+        }];
         Required: string;
     }
 }
@@ -86,29 +86,30 @@ interface content {
 interface JQuery {
     devbridgeAutocomplete(a: {
         serviceUrl: string;
-        dataType:string;
-        paramName:string})
-        :any;
+        dataType: string;
+        paramName: string
+    })
+        : any;
 }
 
 class FormBuilder {
-        profileID: string = '';
-        objectLevel: number = 1;
-        objectDisplay: boolean = true;
-        validationProfiles:{ [key: string]: content}  = {};
-        inputOK: boolean = true;
-        isUploading: boolean =  false;
-        errorSpace :any;
+    profileID: string = '';
+    objectLevel: number = 1;
+    objectDisplay: boolean = true;
+    validationProfiles: { [key: string]: content } = {};
+    inputOK: boolean = true;
+    isUploading: boolean = false;
+    errorSpace: any;
 
-        cloneBuffer: any;
-        panelError: HTMLElement;
-        recordEdit: boolean = false;
-        languages: string[] = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
-        controlHash: string[] = []; // ?? is it string?
+    cloneBuffer: any;
+    panelError: HTMLElement;
+    recordEdit: boolean = false;
+    languages: string[] = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
+    controlHash: string[] = []; // ?? is it string?
 
     constructor(obj: json) {
         this.profileID = obj.id;
-        console.log('constructor');  
+        console.log('constructor');
         this.parse(obj.content);
         this.createButtons();
         createAutoCompletes();
@@ -120,7 +121,7 @@ class FormBuilder {
         }
         console.log(this.validationProfiles);
     }
-    parse(o: any, componentID?: string ) {
+    parse(o: any, componentID?: string) {
         if (o.hasOwnProperty('type')) {
             switch (o.type) {
                 case 'Element':
@@ -185,7 +186,7 @@ class FormBuilder {
         }
         if (element.attributes.attributeList !== undefined) {
             for (let key in element.attributes.attributeList) {
-                let attr_field :any;
+                let attr_field: any;
                 switch (element.attributes.attributeList[key].ValueScheme) {
                     case 'string':
                         attr_field = document.createElement('input');
@@ -227,8 +228,8 @@ class FormBuilder {
                 function (e) {
                     let next = clone.nextClonePostfix();
                     // let that: JQuery<GlobalEventHandlers> = $(this);
-                    let that = $(this);                    
-                    let tempID :any;
+                    let that = $(this);
+                    let tempID: any;
                     e.preventDefault();
                     let clonedElement = that.parent().clone();
                     clonedElement.attr('class', 'clone');
@@ -279,7 +280,7 @@ class FormBuilder {
             $(html).addClass("hidden_element");
         }
         $("#" + componentID).append(html);
-         this.validationProfiles[element.ID] = element; // complete element added to the validationstack. 
+        this.validationProfiles[element.ID] = element; // complete element added to the validationstack. 
         // TODO maybe subtle addition of relevant validation rules (MvdP)
         // console.log('valprofile: ', element.ID, element);
     }
@@ -413,7 +414,7 @@ class FormBuilder {
     }
     createControl(element: any) {
         let type = typeof element.attributes.ValueScheme;
-        let control :any;
+        let control: any;
         if (type === "object") { // DEPRECATED? MvdP
             control = this.setValueSchemeElement(element.attributes.ValueScheme[0], element.ID);
         }
@@ -479,13 +480,13 @@ class FormBuilder {
         return control;
     }
     createTextInputField(element: any) {
-        let type :string;
+        let type: string;
         if (element.attributes.inputField === undefined) {
             type = '';
         } else {
             type = element.attributes.inputField;
         }
-        let control :any;
+        let control: any;
         switch (type) {
             case 'multiple':
                 control = document.createElement('textarea');
@@ -555,7 +556,7 @@ class FormBuilder {
         resourceFrame.appendChild(header);
         $("#ccform").append(resourceFrame);
     }
-    createButtons () {
+    createButtons() {
         let buttonFrame = document.createElement('div');
         buttonFrame.setAttribute('id', 'btnFrame');
         let control = document.createElement('input');
@@ -563,9 +564,9 @@ class FormBuilder {
         control.setAttribute('value', ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
 
-        control.onclick = function () {
-            validate();
-        };
+        control.onclick = () => 
+            this.validate();
+        ;
         buttonFrame.appendChild(control);
         control = document.createElement('input');
         control.setAttribute('type', 'button');
@@ -590,8 +591,39 @@ class FormBuilder {
         buttonFrame.appendChild(this.errorSpace);
         $("#ccform").append(buttonFrame);
     }
- 
+    validate(): void {
+        $("#errorSpace").html("");
+        // properties objects/variables errorSpace, panelError, inputOK, validationProfiles, defined on top of the class
 
+        this.panelError = document.createElement("div");
+        this.inputOK = true;
+
+        for (let key in this.validationProfiles) {
+            // console.log(key);
+            switch (getInputType($("#" + key))) { // user-function
+                case "input":
+                    validateInput(key);
+                    break;
+                case "textarea":
+                    validateTextArea(key);
+                    break;
+                case "select":
+                    validateSelect(key);
+                    break;
+                default:
+                    alert("Error: unknown input type!");
+                    this.inputOK = false;
+                    break;
+            }
+            //validateAttributes(key);
+        }
+        if (this.inputOK) {
+            //console.log(validationProfiles);
+            sendForm();
+        } else {
+            $("#errorSpace").append(this.errorSpace);
+        }
+    }
 
 
 }
@@ -664,7 +696,7 @@ function createAutoCompletes() {
 }
 
 function addAutoComplete(clonedComponent: JQuery<GlobalEventHandlers> | JQuery<any>): void { // zal wel
-    
+
     clonedComponent.find("input[data-auto='yes']").each(function () {
         $(this).devbridgeAutocomplete({
             serviceUrl: server + 'proxy.php',
@@ -704,51 +736,18 @@ function addUploadTrigger(obj: any) {
                 that.parent().parent().find(".headerMsg").html('ERROR!');
             }
         });
+
+
+
+
     }
 }
 
-function validate(): void {
-    $("#errorSpace").html("");
-    // global objects/variables errorSpace, panelError, inputOK, validationProfiles, defined on top of this.file
 
-    panelError = document.createElement("div");
-    inputOK = true;
-    console.log('VALIDATE', this.validationProfiles.length);
-
-    // for (let i = 0; i < validationProfiles.length; i++) {
-    //     console.log('validationProfiles array', validationProfiles[i]);
-    // }
-    // break;
-    for (let key in validationProfiles) {
-        // console.log(key);
-        switch (getInputType($("#" + key))) { // user-function
-            case "input":
-                validateInput(key);
-                break;
-            case "textarea":
-                validateTextArea(key);
-                break;
-            case "select":
-                validateSelect(key);
-                break;
-            default:
-                alert("Error: unknown input type!");
-                inputOK = false;
-                break;
-        }
-        //validateAttributes(key);
-    }
-    if (inputOK) {
-        //console.log(validationProfiles);
-        sendForm();
-    } else {
-        $("#errorSpace").append(errorSpace);
-    }
-}
 ;
 
 function sendForm(): void {
-    let formValues :any[]= [];
+    let formValues: any[] = [];
     $(".clonedComponent").each(function () {
         $(this).attr("class", "component");
     });
@@ -785,7 +784,7 @@ function sendForm(): void {
     $("#ccSendForm").submit();
 }
 
-function fillValues(record :any): void {
+function fillValues(record: any): void {
     let obj = record[2].value;
     // console.log(obj);
     parseRecord(obj.value, null);
@@ -812,8 +811,8 @@ function setfiles(files: any) {
     }
 }
 
-function parseComponent(component :any) { // called from function sendform also recursive
-    let retStruct :any[]= []; // TODO make more specific
+function parseComponent(component: any) { // called from function sendform also recursive
+    let retStruct: any[] = []; // TODO make more specific
     $(component).children().each(function () {
         let element = <any>{}; // TODO interface
 
@@ -843,11 +842,11 @@ function parseComponent(component :any) { // called from function sendform also 
     return retStruct;
 }
 
-function parseElement(element :any) { // called from parseComponent function
-    let retVal :any[]= []; // TODO make more specific
+function parseElement(element: any) { // called from parseComponent function
+    let retVal: any[] = []; // TODO make more specific
     $(element).find(".input_element").each(function () {
         if ($(this).is("input") || $(this).is("select") || $(this).is("textarea")) {
-            let unit = <any> {};
+            let unit = <any>{};
             unit.value = $(this).val();
             if (unit.value !== "") {
                 unit.attributes = {};
@@ -1053,8 +1052,8 @@ function validateInput(key: string) { // or key: string ?
         } else {
             $("#errorMsg_" + this.id).html("");
         }
-        if (validationProfiles[key].attributes.ValueScheme === 'date' &&  (<HTMLInputElement>this).value !== "") { // don't know the interface 
-            let str =  (<HTMLInputElement>this).value;
+        if (validationProfiles[key].attributes.ValueScheme === 'date' && (<HTMLInputElement>this).value !== "") { // don't know the interface 
+            let str = (<HTMLInputElement>this).value;
             if (!isValidDate(str)) {
                 inputOK = false;
                 $("#errorMsg_" + this.id).html(ccfOptions.alert.no_valid_date);
@@ -1063,8 +1062,8 @@ function validateInput(key: string) { // or key: string ?
                 $(errorSpace).append(error);
             }
         }
-        if (validationProfiles[key].attributes.ValueScheme === 'int' &&  (<HTMLInputElement>this).value !== "") {
-            let str =  (<HTMLInputElement>this).value;
+        if (validationProfiles[key].attributes.ValueScheme === 'int' && (<HTMLInputElement>this).value !== "") {
+            let str = (<HTMLInputElement>this).value;
             if (!isInteger(Number(str))) { // added Number cast, cwr
                 inputOK = false;
                 $("#errorMsg_" + this.id).html(ccfOptions.alert.int_field);
@@ -1075,7 +1074,7 @@ function validateInput(key: string) { // or key: string ?
         }
         // Improved validation for attributes (MvdP)
         if (validationProfiles[key].attributes.attributeList !== undefined) {
-            if ( (<HTMLInputElement>this).value !== "") {
+            if ((<HTMLInputElement>this).value !== "") {
                 let attribute_errorMsg = '';
                 for (let att in validationProfiles[key].attributes.attributeList) {
                     // console.log('att', att, validationProfiles[key].attributes.attributeList );
@@ -1113,7 +1112,7 @@ function isValidDate(dateString: string): boolean | string { // codesmell: diffe
 
 function validateTextArea(key: string) {
     $("[data-validation-profile=" + key + "]").each(function () {
-        if (validationProfiles[key].attributes.CardinalityMin === '1' &&  (<HTMLInputElement>this).value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
+        if (validationProfiles[key].attributes.CardinalityMin === '1' && (<HTMLInputElement>this).value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
             inputOK = false;
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
             let error = document.createElement('p');
@@ -1123,7 +1122,7 @@ function validateTextArea(key: string) {
             $("#errorMsg_" + this.id).html("");
         }
         if (validationProfiles[key].attributes.attributeList !== undefined) {
-            if ( (<HTMLInputElement>this).value !== "") {
+            if ((<HTMLInputElement>this).value !== "") {
                 for (let att in validationProfiles[key].attributes.attributeList) {
                     // console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {
@@ -1148,7 +1147,7 @@ function validateSelect(key: string) {
             $("#errorMsg_" + this.id).html("");
         }
         if (validationProfiles[key].attributes.attributeList !== undefined) {
-            if ( (this as HTMLInputElement).value !== "") {
+            if ((this as HTMLInputElement).value !== "") {
                 for (let att in validationProfiles[key].attributes.attributeList) {
                     // console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {
