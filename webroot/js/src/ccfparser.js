@@ -39,24 +39,24 @@ fetch(serverurl).then(function (response) {
     response.json().then(function (json) {
         $('document').ready(function () {
             // console.log(json);
-            formBuilder.start(json);
+            var fb = new FormBuilder(json);
+            // formBuilder.start(json);
         });
     });
 });
-var objectDisplay = true;
-var objectLevel = 1;
-// let validationProfiles: validationProfile[] = [];
-var validationProfiles = {};
-var inputOK = true;
-var isUploading = false;
-var errorSpace;
-var cloneBuffer;
-var panelError;
-var recordEdit = false;
-var formBuilder = {
-    profileID: '',
-    start: function (obj) {
+var FormBuilder = /** @class */ (function () {
+    function FormBuilder(obj) {
+        this.profileID = '';
+        this.objectLevel = 1;
+        this.objectDisplay = true;
+        this.validationProfiles = {};
+        this.inputOK = true;
+        this.isUploading = false;
+        this.recordEdit = false;
+        this.languages = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
+        this.controlHash = []; // ?? is it string?
         this.profileID = obj.id;
+        console.log('constructor');
         this.parse(obj.content);
         this.createButtons();
         createAutoCompletes();
@@ -66,9 +66,9 @@ var formBuilder = {
             $(".disabledComponent").addClass("component").removeClass("disabledComponent");
             $(".optionalCompBtn").click();
         }
-        console.log(validationProfiles);
-    },
-    parse: function (o, componentID) {
+        console.log(this.validationProfiles);
+    }
+    FormBuilder.prototype.parse = function (o, componentID) {
         if (o.hasOwnProperty('type')) {
             switch (o.type) {
                 case 'Element':
@@ -91,10 +91,10 @@ var formBuilder = {
                 }
             }
         }
-    },
-    handleElement: function (element, componentID) {
+    };
+    FormBuilder.prototype.handleElement = function (element, componentID) {
         var html = document.createElement('div');
-        if (objectDisplay) {
+        if (this.objectDisplay) {
             html.setAttribute('class', 'element');
         }
         else {
@@ -224,13 +224,13 @@ var formBuilder = {
             $(html).addClass("hidden_element");
         }
         $("#" + componentID).append(html);
-        validationProfiles[element.ID] = element; // complete element added to the validationstack. 
+        this.validationProfiles[element.ID] = element; // complete element added to the validationstack. 
         // TODO maybe subtle addition of relevant validation rules (MvdP)
         // console.log('valprofile: ', element.ID, element);
-    },
-    handleComponent: function (component, componentID) {
+    };
+    FormBuilder.prototype.handleComponent = function (component, componentID) {
         var html = document.createElement('div');
-        if (objectDisplay || Number(component.level) <= Number(objectLevel)) {
+        if (this.objectDisplay || Number(component.level) <= Number(this.objectLevel)) {
             html.setAttribute('class', 'component');
         }
         else {
@@ -249,13 +249,13 @@ var formBuilder = {
             btn.setAttribute('class', 'optionalCompBtn');
             $(btn).on("click", showComponentFields);
             header.appendChild(btn);
-            if (objectDisplay) {
-                objectDisplay = false;
-                objectLevel = component.level;
+            if (this.objectDisplay) {
+                this.objectDisplay = false;
+                this.objectLevel = component.level;
             }
         }
         else {
-            objectDisplay = true;
+            this.objectDisplay = true;
         }
         if (component.attributes.CardinalityMax !== '1') {
             //header.innerHTML = component.attributes.label;
@@ -352,8 +352,8 @@ var formBuilder = {
         else {
             $("#" + componentID).append(html);
         }
-    },
-    createControl: function (element) {
+    };
+    FormBuilder.prototype.createControl = function (element) {
         var type = typeof element.attributes.ValueScheme;
         var control;
         if (type === "object") { // DEPRECATED? MvdP
@@ -399,8 +399,8 @@ var formBuilder = {
         //control.setAttribute('data-order', element.attributes.initialOrder);
         $(control).addClass("input_element");
         return control;
-    },
-    setValueSchemeElement: function (element, id) {
+    };
+    FormBuilder.prototype.setValueSchemeElement = function (element, id) {
         var control = document.createElement('select');
         control.setAttribute('id', id);
         var option = document.createElement('option');
@@ -419,8 +419,8 @@ var formBuilder = {
             control.appendChild(option_3);
         }
         return control;
-    },
-    createTextInputField: function (element) {
+    };
+    FormBuilder.prototype.createTextInputField = function (element) {
         var type;
         if (element.attributes.inputField === undefined) {
             type = '';
@@ -456,24 +456,24 @@ var formBuilder = {
                 break;
         }
         return control;
-    },
-    setInputFieldWidth: function (value) {
+    };
+    FormBuilder.prototype.setInputFieldWidth = function (value) {
         if (value === undefined) {
             return 50;
         }
         else {
             return value;
         }
-    },
-    setInputFieldHeigth: function (value) {
+    };
+    FormBuilder.prototype.setInputFieldHeigth = function (value) {
         if (value === undefined) {
             return 8;
         }
         else {
             return value;
         }
-    },
-    createResourcePanel: function () {
+    };
+    FormBuilder.prototype.createResourcePanel = function () {
         var resourceFrame = document.createElement('div');
         resourceFrame.setAttribute('id', 'resourceFrame');
         resourceFrame.setAttribute('class', 'component');
@@ -499,8 +499,8 @@ var formBuilder = {
         header.appendChild(btn);
         resourceFrame.appendChild(header);
         $("#ccform").append(resourceFrame);
-    },
-    createButtons: function () {
+    };
+    FormBuilder.prototype.createButtons = function () {
         var buttonFrame = document.createElement('div');
         buttonFrame.setAttribute('id', 'btnFrame');
         var control = document.createElement('input');
@@ -529,14 +529,13 @@ var formBuilder = {
             };
             buttonFrame.appendChild(control);
         }
-        errorSpace = document.createElement('div'); // global  errorSpace
-        errorSpace.setAttribute("id", "errorSpace");
-        buttonFrame.appendChild(errorSpace);
+        this.errorSpace = document.createElement('div'); // global  errorSpace
+        this.errorSpace.setAttribute("id", "errorSpace");
+        buttonFrame.appendChild(this.errorSpace);
         $("#ccform").append(buttonFrame);
-    },
-    languages: ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'],
-    controlHash: []
-};
+    };
+    return FormBuilder;
+}());
 var clone = {
     clonePostfix: 0,
     nextClonePostfix: function () {
@@ -645,7 +644,7 @@ function validate() {
     // global objects/variables errorSpace, panelError, inputOK, validationProfiles, defined on top of this.file
     panelError = document.createElement("div");
     inputOK = true;
-    console.log('VALIDATE', validationProfiles.length);
+    console.log('VALIDATE', this.validationProfiles.length);
     // for (let i = 0; i < validationProfiles.length; i++) {
     //     console.log('validationProfiles array', validationProfiles[i]);
     // }

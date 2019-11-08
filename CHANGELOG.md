@@ -1,6 +1,7 @@
 ### 8-11-2019
 
 * 10 new problems solved. related to casting  htmlelements in the context of this
+* starting to make a class from the formbuilder
 
 ### 7-11-2019
  

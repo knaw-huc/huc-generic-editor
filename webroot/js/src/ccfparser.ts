@@ -45,7 +45,8 @@ fetch(serverurl).then(function (response) {
     response.json().then(function (json) {
         $('document').ready(function () {
             // console.log(json);
-            formBuilder.start(json);
+            let fb = new FormBuilder(json);
+            // formBuilder.start(json);
         });
 
     });
@@ -90,25 +91,24 @@ interface JQuery {
         :any;
 }
 
+class FormBuilder {
+        profileID: string = '';
+        objectLevel: number = 1;
+        objectDisplay: boolean = true;
+        validationProfiles:{ [key: string]: content}  = {};
+        inputOK: boolean = true;
+        isUploading: boolean =  false;
+        errorSpace :any;
 
-let objectDisplay = true;
-let objectLevel = 1;
-// let validationProfiles: validationProfile[] = [];
-let validationProfiles:{ [key: string]: content}  = {};
+        cloneBuffer: any;
+        panelError: HTMLElement;
+        recordEdit: boolean = false;
+        languages: string[] = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
+        controlHash: string[] = []; // ?? is it string?
 
-let inputOK = true;
-let isUploading = false;
-let errorSpace :any;
-
-let cloneBuffer;
-let panelError;
-let recordEdit = false;
-
-let formBuilder = {
-    profileID: '',
-    start: function (obj: json) {
+    constructor(obj: json) {
         this.profileID = obj.id;
-        
+        console.log('constructor');  
         this.parse(obj.content);
         this.createButtons();
         createAutoCompletes();
@@ -118,9 +118,9 @@ let formBuilder = {
             $(".disabledComponent").addClass("component").removeClass("disabledComponent");
             $(".optionalCompBtn").click();
         }
-        console.log(validationProfiles);
-    },
-    parse: function (o: any, componentID?: string ) {
+        console.log(this.validationProfiles);
+    }
+    parse(o: any, componentID?: string ) {
         if (o.hasOwnProperty('type')) {
             switch (o.type) {
                 case 'Element':
@@ -142,10 +142,10 @@ let formBuilder = {
                 }
             }
         }
-    },
-    handleElement: function (element: any, componentID?: string) {
+    }
+    handleElement(element: any, componentID?: string) {
         let html = document.createElement('div');
-        if (objectDisplay) {
+        if (this.objectDisplay) {
             html.setAttribute('class', 'element');
         } else {
             html.setAttribute('class', 'disabledElement');
@@ -279,13 +279,13 @@ let formBuilder = {
             $(html).addClass("hidden_element");
         }
         $("#" + componentID).append(html);
-         validationProfiles[element.ID] = element; // complete element added to the validationstack. 
+         this.validationProfiles[element.ID] = element; // complete element added to the validationstack. 
         // TODO maybe subtle addition of relevant validation rules (MvdP)
         // console.log('valprofile: ', element.ID, element);
-    },
-    handleComponent: function (component: any, componentID?: string) {
+    }
+    handleComponent(component: any, componentID?: string) {
         let html = document.createElement('div');
-        if (objectDisplay || Number(component.level) <= Number(objectLevel)) {
+        if (this.objectDisplay || Number(component.level) <= Number(this.objectLevel)) {
             html.setAttribute('class', 'component');
         } else {
             html.setAttribute('class', 'disabledComponent');
@@ -303,13 +303,13 @@ let formBuilder = {
             btn.setAttribute('class', 'optionalCompBtn');
             $(btn).on("click", showComponentFields);
             header.appendChild(btn);
-            if (objectDisplay) {
-                objectDisplay = false;
-                objectLevel = component.level;
+            if (this.objectDisplay) {
+                this.objectDisplay = false;
+                this.objectLevel = component.level;
             }
 
         } else {
-            objectDisplay = true;
+            this.objectDisplay = true;
         }
 
         if (component.attributes.CardinalityMax !== '1') {
@@ -410,8 +410,8 @@ let formBuilder = {
         else {
             $("#" + componentID).append(html);
         }
-    },
-    createControl: function (element: any) {
+    }
+    createControl(element: any) {
         let type = typeof element.attributes.ValueScheme;
         let control :any;
         if (type === "object") { // DEPRECATED? MvdP
@@ -457,8 +457,8 @@ let formBuilder = {
         //control.setAttribute('data-order', element.attributes.initialOrder);
         $(control).addClass("input_element");
         return control;
-    },
-    setValueSchemeElement: function (element: any, id: string) { // DEPRECATED? cwr
+    }
+    setValueSchemeElement(element: any, id: string) { // DEPRECATED? cwr
         let control = document.createElement('select');
         control.setAttribute('id', id);
         let option = document.createElement('option');
@@ -477,8 +477,8 @@ let formBuilder = {
             control.appendChild(option);
         }
         return control;
-    },
-    createTextInputField: function (element: any) {
+    }
+    createTextInputField(element: any) {
         let type :string;
         if (element.attributes.inputField === undefined) {
             type = '';
@@ -513,22 +513,22 @@ let formBuilder = {
         }
 
         return control;
-    },
-    setInputFieldWidth: function (value: number) {
+    }
+    setInputFieldWidth(value: number) {
         if (value === undefined) {
             return 50;
         } else {
             return value;
         }
-    },
-    setInputFieldHeigth: function (value: number) {
+    }
+    setInputFieldHeigth(value: number) {
         if (value === undefined) {
             return 8;
         } else {
             return value;
         }
-    },
-    createResourcePanel: function () {
+    }
+    createResourcePanel() {
         let resourceFrame = document.createElement('div');
         resourceFrame.setAttribute('id', 'resourceFrame');
         resourceFrame.setAttribute('class', 'component');
@@ -554,8 +554,8 @@ let formBuilder = {
         header.appendChild(btn);
         resourceFrame.appendChild(header);
         $("#ccform").append(resourceFrame);
-    },
-    createButtons: function () {
+    }
+    createButtons () {
         let buttonFrame = document.createElement('div');
         buttonFrame.setAttribute('id', 'btnFrame');
         let control = document.createElement('input');
@@ -585,15 +585,16 @@ let formBuilder = {
             };
             buttonFrame.appendChild(control);
         }
-        errorSpace = document.createElement('div'); // global  errorSpace
-        errorSpace.setAttribute("id", "errorSpace");
-        buttonFrame.appendChild(errorSpace);
+        this.errorSpace = document.createElement('div'); // global  errorSpace
+        this.errorSpace.setAttribute("id", "errorSpace");
+        buttonFrame.appendChild(this.errorSpace);
         $("#ccform").append(buttonFrame);
-    },
-    languages: ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'],
-    controlHash: []
-};
+    }
+ 
 
+
+
+}
 let clone = {
     clonePostfix: 0,
     nextClonePostfix: function () {
@@ -712,7 +713,7 @@ function validate(): void {
 
     panelError = document.createElement("div");
     inputOK = true;
-    console.log('VALIDATE', validationProfiles.length);
+    console.log('VALIDATE', this.validationProfiles.length);
 
     // for (let i = 0; i < validationProfiles.length; i++) {
     //     console.log('validationProfiles array', validationProfiles[i]);
