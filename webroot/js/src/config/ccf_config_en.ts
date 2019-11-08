@@ -1,6 +1,7 @@
-server = 'http://www.huc.localhost/clarin_cmdi_forms/';
+var server = 'http://www.huc.localhost/clarin_cmdi_forms/';
+// let you can't declare
 
-ccfOptions = {
+var ccfOptions = {
     uploadButton: {
         actionURI: server + 'upload.php'
     },
@@ -25,7 +26,7 @@ ccfOptions = {
       date_string: 'yyyy-mm-dd',
       int_field: 'The value of this field must be an integer!',
       int_field_box: 'must be an integer!',
-      attr_not_empty_field: 'Attribute(s) mandatory'
+      attr_not_empty_field: 'Attribute(s) $attributename mandatory'
     }
 };
 

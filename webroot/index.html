@@ -8,7 +8,6 @@ You can adapt the json file (json_examples) and refresh the page and see the res
 For a standalone-version without server: consult and test standalone.html
 
 -->
-
 <html lang="en">
 
 <head>
@@ -18,10 +17,25 @@ For a standalone-version without server: consult and test standalone.html
     <script src="js/lib/jquery-3.2.1.min.js"></script>
     <script src="js/lib/jquery.autocomplete.min.js"></script>
     <script src="js/lib/jquery-ui/jquery-ui.min.js"></script>
-
+    <!-- <script src="js/src/config/ccf_config_nl.js"></script> in global space so vars not nice but import not working without js bundlers-->
+    <script src="js/src/config/ccf_config_en.js"></script>
     <script src="js/src/ccfparser.js"></script>
-</head>
+    <script>
+            let serverurl = "http://localhost:8888/server.php";
+            fetch(serverurl).then(function (response) {
+            response.json().then(function (json) {
+                $('document').ready(function () {
+                    let fb = new FormBuilder(json, ccfOptions);
+                    // let ab = new FormBuilder(json, ccfOptions); // gek hoor...
 
+                });
+
+            });
+        });
+    </script>
+
+
+</head>
 <body>
     <h1>Editor Demo with Server</h1>
     <div id="ccform"></div>

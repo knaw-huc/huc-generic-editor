@@ -1,64 +1,9 @@
-
-// cwr = check with Rob
-
 "use strict"
-
-console.log('hello typesript');
-
-// ugly for now, d
-let server = 'http://www.huc.localhost/clarin_cmdi_forms/';
-
-let ccfOptions = {
-    uploadButton: {
-        actionURI: server + 'upload.php'
-    },
-    submitButton: {
-        actionURI: 'create_record.php',
-        label: 'Submit'
-    },
-    saveButton: {
-        actionURI: 'create_record.php',
-        label: 'Save'
-    },
-    resetButton: {
-        actionURI: 'javascript:history.back()',
-        label: 'Back'
-    },
-    language: 'en',
-    alert: {
-        mandatory_field: 'This field is mandatory!',
-        mandatory_field_box: ' : mandatory!',
-        no_valid_date: 'This is not a valid date!',
-        no_valid_date_box: ': not a valid date!',
-        date_string: 'yyyy-mm-dd',
-        int_field: 'The value of this field must be an integer!',
-        int_field_box: 'must be an integer!',
-        attr_not_empty_field: 'Attribute(s) mandatory'
-    }
-};
-
-// import a module for side-effects only # d
-// not recommended practice, some modules set up some global state that can be used by other modules.
-
-let serverurl = "http://localhost:8888/server.php";
-fetch(serverurl).then(function (response) {
-    response.json().then(function (json) {
-        $('document').ready(function () {
-            
-            let fb = new FormBuilder(json, ccfOptions);
-            // let ab = new FormBuilder(json, ccfOptions); // gek hoor...
-
-        });
-
-    });
-});
-
 interface json {
     id: string;
     content: [content];
     record: [];
 }
-
 
 interface content {
     ID: string;
@@ -79,10 +24,6 @@ interface content {
         Required: string;
     }
 }
-
-// interface validationprofile {
-//     a: content;
-// }
 
 interface JQuery {
     devbridgeAutocomplete(a: {
@@ -123,7 +64,7 @@ class FormBuilder {
             $(".disabledComponent").addClass("component").removeClass("disabledComponent");
             $(".optionalCompBtn").click();
         }
-        console.log(this.validationProfiles);
+        // console.log(this.validationProfiles);
     }
     parse(o: any, componentID?: string) {
         if (o.hasOwnProperty('type')) {
@@ -149,6 +90,7 @@ class FormBuilder {
         }
     }
     handleElement(element: any, componentID?: string) {
+        let ccfOptions = this.ccfOptions;
         let html = document.createElement('div');
         if (this.objectDisplay) {
             html.setAttribute('class', 'element');
@@ -262,7 +204,7 @@ class FormBuilder {
                     clonedElement.find(".language_dd").each(
                         function () {
                             $(this).attr('id', 'lang_' + tempID);
-                            $(this).val(this.ccfOptions.language); // hiss oplossing
+                            $(this).val(ccfOptions.language); // ccfOptions top of the function
                         });
                     clonedElement.find(".element_attribute").each(
                         function () {
@@ -567,7 +509,6 @@ class FormBuilder {
         control.setAttribute('type', 'button');
         control.setAttribute('value', this.ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
-
         control.onclick = () => 
             this.validate();
         ;
@@ -577,7 +518,7 @@ class FormBuilder {
         control.setAttribute('value', this.ccfOptions.saveButton.label);
         control.setAttribute('id', 'saveBtn');
         control.onclick = () => {
-            sendForm(this.profileID);
+            this.sendForm();
         };
         buttonFrame.appendChild(control);
         if (this.ccfOptions.resetButton !== null && this.ccfOptions.resetButton !== undefined) {
@@ -623,7 +564,7 @@ class FormBuilder {
         }
         if (this.inputOK) {
             //console.log(validationProfiles);
-            sendForm(this.profileID);
+            this.sendForm();
         } else {
             $("#errorSpace").append(this.errorSpace);
         }
@@ -636,6 +577,8 @@ class FormBuilder {
         // this confusion cause change to arrow function necessary for this.validationProfiles
         // but for Jquery you need the this inside the each loop, but you can give it a name in the call, make it explicit
         // the hiss is a substitute for the JQuery this
+
+        // Maybe OTHER SOLUTION let validationProfiles = this.validationProfiles; // No this.inputOK needs to be set and needs than a reference to this
 
         $("[data-validation-profile=" + key + "]").each((index, hiss) => {
             console.log('kv',key);
@@ -685,7 +628,6 @@ class FormBuilder {
     
                         }
                     }
-    
                 }
             }
         });
@@ -741,6 +683,47 @@ class FormBuilder {
             }
         });
     }
+
+    sendForm(): void { // create a form not an action
+        let ccfOptions = this.ccfOptions;
+        let profileID = this.profileID;
+        let formValues: any[] = [];
+        $(".clonedComponent").each(function () {
+            $(this).attr("class", "component");
+        });
+        $(".hidden_element").each(function () {
+            $(this).removeClass("hidden_element");
+        });
+        $("#ccform").children().each(function () {
+            if ($(this).attr("class") === "component") {
+                let element = <any>{}; // TODO must neater, interface for this element?
+                element.name = $(this).attr("data-name");
+                element.type = 'component';
+                element.sortOrder = 0;
+                element.content = parseComponent(this);
+                formValues.push(element);
+            }
+        });
+        let ret = JSON.stringify(formValues);
+        let form = document.createElement('form');
+        $(form).attr('id', 'ccSendForm');
+        $(form).attr('method', 'post');
+        $(form).attr('action',ccfOptions.saveButton.actionURI);
+        let inputField = document.createElement('input');
+        $(inputField).attr('type', 'hidden');
+        $(inputField).attr('name', 'ccData');
+        $(inputField).val(ret);
+        $(form).append(inputField);
+        inputField = document.createElement('input');
+        $(inputField).attr('type', 'hidden');
+        $(inputField).attr('name', 'ccProfileID');
+        $(inputField).val(profileID); //??? cwr casting to string is possible but TypeScript wonders if it's sensible
+        $(form).append(inputField);
+        $("#ccform").append(form);
+        $("#OKbtn").remove();
+        $("#ccSendForm").submit();
+    }
+
 
 
 }
@@ -802,7 +785,7 @@ function hideComponentFields(this: any) {
     $(this).on("click", showComponentFields);
 }
 
-function createAutoCompletes() {
+function createAutoCompletes() { 
     $("input[data-auto='yes']").each(function () {
         $(this).devbridgeAutocomplete({
             serviceUrl: server + 'proxy.php',
@@ -863,43 +846,7 @@ function addUploadTrigger(obj: any) {
 
 ;
 
-function sendForm(this: any, profileID: string): void {
-    let formValues: any[] = [];
-    $(".clonedComponent").each(function () {
-        $(this).attr("class", "component");
-    });
-    $(".hidden_element").each(function () {
-        $(this).removeClass("hidden_element");
-    });
-    $("#ccform").children().each(function () {
-        if ($(this).attr("class") === "component") {
-            let element = <any>{}; // TODO must neater, interface for this element?
-            element.name = $(this).attr("data-name");
-            element.type = 'component';
-            element.sortOrder = 0;
-            element.content = parseComponent(this);
-            formValues.push(element);
-        }
-    });
-    let ret = JSON.stringify(formValues);
-    let form = document.createElement('form');
-    $(form).attr('id', 'ccSendForm');
-    $(form).attr('method', 'post');
-    $(form).attr('action',this.ccfOptions.saveButton.actionURI);
-    let inputField = document.createElement('input');
-    $(inputField).attr('type', 'hidden');
-    $(inputField).attr('name', 'ccData');
-    $(inputField).val(ret);
-    $(form).append(inputField);
-    inputField = document.createElement('input');
-    $(inputField).attr('type', 'hidden');
-    $(inputField).attr('name', 'ccProfileID');
-    $(inputField).val(profileID); //??? cwr casting to string is possible but TypeScript wonders if it's sensible
-    $(form).append(inputField);
-    $("#ccform").append(form);
-    $("#OKbtn").remove();
-    $("#ccSendForm").submit();
-}
+
 
 function fillValues(record: any): void { // stays outside gives default values 
     let obj = record[2].value;

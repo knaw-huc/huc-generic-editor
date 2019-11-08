@@ -1,8 +1,12 @@
 ### 8-11-2019
 
+* bug attributename solved
+* split the call to FormBuilder to html
+* working 
 * JQuery this vs TypeScript class this problemsolving
 * 10 new problems solved. related to casting  htmlelements in the context of this
 * starting to make a class from the formbuilder
+* branch classversion 
 
 ### 7-11-2019
  
@@ -46,7 +50,7 @@ MvdP
 
 ### 17-10-2019
 
-* added a php/apache serve, with docker-compose for serving out the json (MvdP)
+* added a php/apache server, with docker-compose for serving out the json (MvdP)
 * split and adapted the clientcode in two versions index.html and standalone.html (MvdP)
 * annotated the html files (MvdP)
 * adapted the README (MvdP)
