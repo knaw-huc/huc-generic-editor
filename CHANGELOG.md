@@ -1,5 +1,6 @@
 ### 8-11-2019
 
+* JQuery this vs TypeScript class this problemsolving
 * 10 new problems solved. related to casting  htmlelements in the context of this
 * starting to make a class from the formbuilder
 

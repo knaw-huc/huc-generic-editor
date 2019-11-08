@@ -102,7 +102,7 @@ class FormBuilder {
     errorSpace: any;
 
     cloneBuffer: any;
-    panelError: HTMLElement;
+    panelError: any;
     recordEdit: boolean = false;
     languages: string[] = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
     controlHash: string[] = []; // ?? is it string?
@@ -602,7 +602,7 @@ class FormBuilder {
             // console.log(key);
             switch (getInputType($("#" + key))) { // user-function
                 case "input":
-                    validateInput(key);
+                    this.validateInput(key);
                     break;
                 case "textarea":
                     validateTextArea(key);
@@ -624,6 +624,72 @@ class FormBuilder {
             $("#errorSpace").append(this.errorSpace);
         }
     }
+    validateInput(key: string) { 
+
+        // console.log(validationProfiles);
+        // console.log('key:', key, typeof(key));
+        // https://learn.jquery.com/using-jquery-core/iterating/
+        // this confusion cause change to arrow function necessary for this.validationProfiles
+        // but for Jquery you need the this inside the each loop, but you can give it a name in the call, make it explicit
+        // the hiss is a substitute for the JQuery this
+
+        $("[data-validation-profile=" + key + "]").each((index, hiss) => {
+            console.log('kv',key);
+            if (this.validationProfiles[key].attributes.CardinalityMin === '1' && (<HTMLInputElement>hiss).value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
+                // console.log('required')
+                this.inputOK = false;
+                $("#errorMsg_" + hiss.id).html(ccfOptions.alert.mandatory_field);
+                let error = document.createElement('p');
+                $(error).html(this.validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
+                $(this.errorSpace).append(error);
+            } else {
+                $("#errorMsg_" + hiss.id).html("");
+            }
+            if (this.validationProfiles[key].attributes.ValueScheme === 'date' && (<HTMLInputElement>hiss).value !== "") { // don't know the interface 
+                let str = (<HTMLInputElement>hiss).value;
+                if (!isValidDate(str)) {
+                    this.inputOK = false;
+                    $("#errorMsg_" + hiss.id).html(ccfOptions.alert.no_valid_date);
+                    let error = document.createElement('p');
+                    $(error).html(this.validationProfiles[key].attributes.label + ccfOptions.alert.no_valid_date_box);
+                    $(this.errorSpace).append(error);
+                }
+            }
+            if (this.validationProfiles[key].attributes.ValueScheme === 'int' && (<HTMLInputElement>hiss).value !== "") {
+                let str = (<HTMLInputElement>hiss).value;
+                if (!isInteger(Number(str))) { // added Number cast, cwr
+                    this.inputOK = false;
+                    $("#errorMsg_" + hiss.id).html(ccfOptions.alert.int_field);
+                    let error = document.createElement('p');
+                    $(error).html(this.validationProfiles[key].attributes.label + ccfOptions.alert.int_field_box);
+                    $(this.errorSpace).append(error);
+                }
+            }
+            // Improved validation for attributes (MvdP)
+            if (this.validationProfiles[key].attributes.attributeList !== undefined) {
+                if ((<HTMLInputElement>hiss).value !== "") {
+                    let attribute_errorMsg = '';
+                    for (let att in this.validationProfiles[key].attributes.attributeList) {
+                        // console.log('att', att, validationProfiles[key].attributes.attributeList );
+                        // console.log(validationProfiles[key].attributes.attributeList[att].Required );
+                        if (this.validationProfiles[key].attributes.attributeList[att].Required === 'true' && $("#attr_" + this.validationProfiles[key].attributes.attributeList[att].name + "_" + hiss.id).val() === "") {
+                            this.inputOK = false;
+                            let attribute_errorMsg_template = ccfOptions.alert.attr_not_empty_field;
+                            attribute_errorMsg = ' ' + attribute_errorMsg_template.replace("$attributename", this.validationProfiles[key].attributes.attributeList[att].name);
+                            $("#errorMsg_" + hiss.id).append(attribute_errorMsg);
+                            $(this.errorSpace).append(attribute_errorMsg);
+    
+                        }
+                    }
+    
+                }
+            }
+        });
+    
+    }
+
+
+
 
 
 }
@@ -1036,64 +1102,7 @@ function duplicateComponent(obj: { name: string; }, set: any) {
 }
 
 
-function validateInput(key: string) { // or key: string ?
-    // console.log(validationProfiles);
-    // console.log('key:', key, typeof(key));
 
-    $("[data-validation-profile=" + key + "]").each(function () {
-        // console.log(validationProfiles[key as any]);
-        if (validationProfiles[key].attributes.CardinalityMin === '1' && (<HTMLInputElement>this).value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
-            // console.log('required')
-            inputOK = false;
-            $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
-            let error = document.createElement('p');
-            $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
-            $(errorSpace).append(error);
-        } else {
-            $("#errorMsg_" + this.id).html("");
-        }
-        if (validationProfiles[key].attributes.ValueScheme === 'date' && (<HTMLInputElement>this).value !== "") { // don't know the interface 
-            let str = (<HTMLInputElement>this).value;
-            if (!isValidDate(str)) {
-                inputOK = false;
-                $("#errorMsg_" + this.id).html(ccfOptions.alert.no_valid_date);
-                let error = document.createElement('p');
-                $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.no_valid_date_box);
-                $(errorSpace).append(error);
-            }
-        }
-        if (validationProfiles[key].attributes.ValueScheme === 'int' && (<HTMLInputElement>this).value !== "") {
-            let str = (<HTMLInputElement>this).value;
-            if (!isInteger(Number(str))) { // added Number cast, cwr
-                inputOK = false;
-                $("#errorMsg_" + this.id).html(ccfOptions.alert.int_field);
-                let error = document.createElement('p');
-                $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.int_field_box);
-                $(errorSpace).append(error);
-            }
-        }
-        // Improved validation for attributes (MvdP)
-        if (validationProfiles[key].attributes.attributeList !== undefined) {
-            if ((<HTMLInputElement>this).value !== "") {
-                let attribute_errorMsg = '';
-                for (let att in validationProfiles[key].attributes.attributeList) {
-                    // console.log('att', att, validationProfiles[key].attributes.attributeList );
-                    // console.log(validationProfiles[key].attributes.attributeList[att].Required );
-                    if (validationProfiles[key].attributes.attributeList[att].Required === 'true' && $("#attr_" + validationProfiles[key].attributes.attributeList[att].name + "_" + this.id).val() === "") {
-                        inputOK = false;
-                        let attribute_errorMsg_template = ccfOptions.alert.attr_not_empty_field;
-                        attribute_errorMsg = ' ' + attribute_errorMsg_template.replace("$attributename", validationProfiles[key].attributes.attributeList[att].name);
-                        $("#errorMsg_" + this.id).append(attribute_errorMsg);
-                        $(errorSpace).append(attribute_errorMsg);
-
-                    }
-                }
-
-            }
-        }
-    });
-
-}
 
 
 function isInteger(x: number): boolean {

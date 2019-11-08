@@ -545,7 +545,7 @@ var FormBuilder = /** @class */ (function () {
             // console.log(key);
             switch (getInputType($("#" + key))) { // user-function
                 case "input":
-                    validateInput(key);
+                    this.validateInput(key);
                     break;
                 case "textarea":
                     validateTextArea(key);
@@ -567,6 +567,66 @@ var FormBuilder = /** @class */ (function () {
         else {
             $("#errorSpace").append(this.errorSpace);
         }
+    };
+    FormBuilder.prototype.validateInput = function (key) {
+        // console.log(validationProfiles);
+        // console.log('key:', key, typeof(key));
+        // https://learn.jquery.com/using-jquery-core/iterating/
+        // this confusion cause change to arrow function necessary for this.validationProfiles
+        // but for Jquery you need the this inside the each loop, but you can give it a name in the call, make it explicit
+        // the hiss is a substitute for the JQuery this
+        var _this = this;
+        $("[data-validation-profile=" + key + "]").each(function (index, hiss) {
+            console.log('kv', key);
+            if (_this.validationProfiles[key].attributes.CardinalityMin === '1' && hiss.value === "" && $(_this).parent().parent().attr("class") !== 'disabledElement' && $(_this).parent().parent().parent().attr("class") !== 'disabledComponent') {
+                // console.log('required')
+                _this.inputOK = false;
+                $("#errorMsg_" + hiss.id).html(ccfOptions.alert.mandatory_field);
+                var error = document.createElement('p');
+                $(error).html(_this.validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
+                $(_this.errorSpace).append(error);
+            }
+            else {
+                $("#errorMsg_" + hiss.id).html("");
+            }
+            if (_this.validationProfiles[key].attributes.ValueScheme === 'date' && hiss.value !== "") { // don't know the interface 
+                var str = hiss.value;
+                if (!isValidDate(str)) {
+                    _this.inputOK = false;
+                    $("#errorMsg_" + hiss.id).html(ccfOptions.alert.no_valid_date);
+                    var error = document.createElement('p');
+                    $(error).html(_this.validationProfiles[key].attributes.label + ccfOptions.alert.no_valid_date_box);
+                    $(_this.errorSpace).append(error);
+                }
+            }
+            if (_this.validationProfiles[key].attributes.ValueScheme === 'int' && hiss.value !== "") {
+                var str = hiss.value;
+                if (!isInteger(Number(str))) { // added Number cast, cwr
+                    _this.inputOK = false;
+                    $("#errorMsg_" + hiss.id).html(ccfOptions.alert.int_field);
+                    var error = document.createElement('p');
+                    $(error).html(_this.validationProfiles[key].attributes.label + ccfOptions.alert.int_field_box);
+                    $(_this.errorSpace).append(error);
+                }
+            }
+            // Improved validation for attributes (MvdP)
+            if (_this.validationProfiles[key].attributes.attributeList !== undefined) {
+                if (hiss.value !== "") {
+                    var attribute_errorMsg = '';
+                    for (var att in _this.validationProfiles[key].attributes.attributeList) {
+                        // console.log('att', att, validationProfiles[key].attributes.attributeList );
+                        // console.log(validationProfiles[key].attributes.attributeList[att].Required );
+                        if (_this.validationProfiles[key].attributes.attributeList[att].Required === 'true' && $("#attr_" + _this.validationProfiles[key].attributes.attributeList[att].name + "_" + hiss.id).val() === "") {
+                            _this.inputOK = false;
+                            var attribute_errorMsg_template = ccfOptions.alert.attr_not_empty_field;
+                            attribute_errorMsg = ' ' + attribute_errorMsg_template.replace("$attributename", _this.validationProfiles[key].attributes.attributeList[att].name);
+                            $("#errorMsg_" + hiss.id).append(attribute_errorMsg);
+                            $(_this.errorSpace).append(attribute_errorMsg);
+                        }
+                    }
+                }
+            }
+        });
     };
     return FormBuilder;
 }());
@@ -944,61 +1004,6 @@ function duplicateComponent(obj, set) {
     clonedComponent.attr("data-filename", null);
     $(set).append(clonedComponent);
     addAutoComplete(clonedComponent);
-}
-function validateInput(key) {
-    // console.log(validationProfiles);
-    // console.log('key:', key, typeof(key));
-    $("[data-validation-profile=" + key + "]").each(function () {
-        // console.log(validationProfiles[key as any]);
-        if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
-            // console.log('required')
-            inputOK = false;
-            $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
-            var error = document.createElement('p');
-            $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
-            $(errorSpace).append(error);
-        }
-        else {
-            $("#errorMsg_" + this.id).html("");
-        }
-        if (validationProfiles[key].attributes.ValueScheme === 'date' && this.value !== "") { // don't know the interface 
-            var str = this.value;
-            if (!isValidDate(str)) {
-                inputOK = false;
-                $("#errorMsg_" + this.id).html(ccfOptions.alert.no_valid_date);
-                var error = document.createElement('p');
-                $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.no_valid_date_box);
-                $(errorSpace).append(error);
-            }
-        }
-        if (validationProfiles[key].attributes.ValueScheme === 'int' && this.value !== "") {
-            var str = this.value;
-            if (!isInteger(Number(str))) { // added Number cast, cwr
-                inputOK = false;
-                $("#errorMsg_" + this.id).html(ccfOptions.alert.int_field);
-                var error = document.createElement('p');
-                $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.int_field_box);
-                $(errorSpace).append(error);
-            }
-        }
-        // Improved validation for attributes (MvdP)
-        if (validationProfiles[key].attributes.attributeList !== undefined) {
-            if (this.value !== "") {
-                var attribute_errorMsg = '';
-                for (var att in validationProfiles[key].attributes.attributeList) {
-                    // console.log('att', att, validationProfiles[key].attributes.attributeList );
-                    // console.log(validationProfiles[key].attributes.attributeList[att].Required );
-                    if (validationProfiles[key].attributes.attributeList[att].Required === 'true' && $("#attr_" + validationProfiles[key].attributes.attributeList[att].name + "_" + this.id).val() === "") {
-                        inputOK = false;
-                        var attribute_errorMsg_template = ccfOptions.alert.attr_not_empty_field;
-                        attribute_errorMsg = ' ' + attribute_errorMsg_template.replace("$attributename", validationProfiles[key].attributes.attributeList[att].name);
-                        $("#errorMsg_" + this.id).append(attribute_errorMsg);
-                        $(errorSpace).append(attribute_errorMsg);
-                    }
-                }
-            }
-        }
-    });
 }
 function isInteger(x) {
     return (Number(x) !== NaN) && (x % 1 === 0);
