@@ -1038,12 +1038,12 @@ function duplicateComponent(obj: { name: string; }, set: any) {
 
 function validateInput(key: string) { // or key: string ?
     // console.log(validationProfiles);
-    console.log('key:', key, typeof(key));
+    // console.log('key:', key, typeof(key));
 
     $("[data-validation-profile=" + key + "]").each(function () {
-        console.log(validationProfiles[key as any]);
-        if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
-            console.log('required')
+        // console.log(validationProfiles[key as any]);
+        if (validationProfiles[key].attributes.CardinalityMin === '1' && (<HTMLInputElement>this).value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
+            // console.log('required')
             inputOK = false;
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
             let error = document.createElement('p');
@@ -1052,8 +1052,8 @@ function validateInput(key: string) { // or key: string ?
         } else {
             $("#errorMsg_" + this.id).html("");
         }
-        if (validationProfiles[key].attributes.ValueScheme === 'date' && this.value !== "") {
-            let str = this.value;
+        if (validationProfiles[key].attributes.ValueScheme === 'date' &&  (<HTMLInputElement>this).value !== "") { // don't know the interface 
+            let str =  (<HTMLInputElement>this).value;
             if (!isValidDate(str)) {
                 inputOK = false;
                 $("#errorMsg_" + this.id).html(ccfOptions.alert.no_valid_date);
@@ -1062,8 +1062,8 @@ function validateInput(key: string) { // or key: string ?
                 $(errorSpace).append(error);
             }
         }
-        if (validationProfiles[key].attributes.ValueScheme === 'int' && this.value !== "") {
-            let str = this.value;
+        if (validationProfiles[key].attributes.ValueScheme === 'int' &&  (<HTMLInputElement>this).value !== "") {
+            let str =  (<HTMLInputElement>this).value;
             if (!isInteger(Number(str))) { // added Number cast, cwr
                 inputOK = false;
                 $("#errorMsg_" + this.id).html(ccfOptions.alert.int_field);
@@ -1074,7 +1074,7 @@ function validateInput(key: string) { // or key: string ?
         }
         // Improved validation for attributes (MvdP)
         if (validationProfiles[key].attributes.attributeList !== undefined) {
-            if (this.value !== "") {
+            if ( (<HTMLInputElement>this).value !== "") {
                 let attribute_errorMsg = '';
                 for (let att in validationProfiles[key].attributes.attributeList) {
                     // console.log('att', att, validationProfiles[key].attributes.attributeList );
@@ -1112,7 +1112,7 @@ function isValidDate(dateString: string): boolean | string { // codesmell?
 
 function validateTextArea(key: string) {
     $("[data-validation-profile=" + key + "]").each(function () {
-        if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
+        if (validationProfiles[key].attributes.CardinalityMin === '1' &&  (<HTMLInputElement>this).value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
             inputOK = false;
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
             let error = document.createElement('p');
@@ -1122,7 +1122,7 @@ function validateTextArea(key: string) {
             $("#errorMsg_" + this.id).html("");
         }
         if (validationProfiles[key].attributes.attributeList !== undefined) {
-            if (this.value !== "") {
+            if ( (<HTMLInputElement>this).value !== "") {
                 for (let att in validationProfiles[key].attributes.attributeList) {
                     // console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {
@@ -1147,7 +1147,7 @@ function validateSelect(key: string) {
             $("#errorMsg_" + this.id).html("");
         }
         if (validationProfiles[key].attributes.attributeList !== undefined) {
-            if (this.value !== "") {
+            if ( (this as HTMLInputElement).value !== "") {
                 for (let att in validationProfiles[key].attributes.attributeList) {
                     // console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {

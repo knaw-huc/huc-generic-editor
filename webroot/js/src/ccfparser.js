@@ -121,15 +121,15 @@ var formBuilder = {
             var dropdown = document.createElement('select');
             dropdown.setAttribute('class', 'language_dd');
             dropdown.setAttribute('id', 'lang_' + element.ID);
-            var option_1 = document.createElement('option');
-            option_1.setAttribute('value', 'none');
-            option_1.innerHTML = '--';
-            dropdown.appendChild(option_1);
+            var option = document.createElement('option');
+            option.setAttribute('value', 'none');
+            option.innerHTML = '--';
+            dropdown.appendChild(option);
             for (var key in this.languages) {
-                var option_2 = document.createElement('option');
-                option_2.setAttribute('value', this.languages[key]);
-                option_2.innerHTML = this.languages[key];
-                dropdown.appendChild(option_2);
+                var option_1 = document.createElement('option');
+                option_1.setAttribute('value', this.languages[key]);
+                option_1.innerHTML = this.languages[key];
+                dropdown.appendChild(option_1);
             }
             $(dropdown).val(ccfOptions.language);
             input.appendChild(dropdown);
@@ -157,10 +157,10 @@ var formBuilder = {
                         attr_field.setAttribute("class", "element_attribute");
                         var option = document.createElement('option');
                         for (var k in element.attributes.attributeList[key].values) {
-                            var option = document.createElement('option');
-                            option.setAttribute('value', element.attributes.attributeList[key].values[k]);
-                            option.innerHTML = element.attributes.attributeList[key].values[k];
-                            attr_field.appendChild(option);
+                            var option_2 = document.createElement('option');
+                            option_2.setAttribute('value', element.attributes.attributeList[key].values[k]);
+                            option_2.innerHTML = element.attributes.attributeList[key].values[k];
+                            attr_field.appendChild(option_2);
                         }
                         break;
                 }
@@ -408,15 +408,15 @@ var formBuilder = {
         option.innerHTML = '--';
         control.appendChild(option);
         for (var key in element) {
-            var option = document.createElement('option');
-            option.setAttribute("value", element[key].value);
+            var option_3 = document.createElement('option');
+            option_3.setAttribute("value", element[key].value);
             if (element[key].label === undefined) {
-                option.innerHTML = element[key].value;
+                option_3.innerHTML = element[key].value;
             }
             else {
-                option.innerHTML = element[key].label;
+                option_3.innerHTML = element[key].label;
             }
-            control.appendChild(option);
+            control.appendChild(option_3);
         }
         return control;
     },
@@ -511,7 +511,7 @@ var formBuilder = {
             validate();
         };
         buttonFrame.appendChild(control);
-        var control = document.createElement('input');
+        control = document.createElement('input');
         control.setAttribute('type', 'button');
         control.setAttribute('value', ccfOptions.saveButton.label);
         control.setAttribute('id', 'saveBtn');
@@ -520,7 +520,7 @@ var formBuilder = {
         };
         buttonFrame.appendChild(control);
         if (ccfOptions.resetButton !== null && ccfOptions.resetButton !== undefined) {
-            var control = document.createElement('input');
+            control = document.createElement('input');
             control.setAttribute('type', 'button');
             control.setAttribute('value', ccfOptions.resetButton.label);
             control.setAttribute('id', 'resetBtn');
@@ -706,7 +706,7 @@ function sendForm() {
     $(inputField).attr('name', 'ccData');
     $(inputField).val(ret);
     $(form).append(inputField);
-    var inputField = document.createElement('input');
+    inputField = document.createElement('input');
     $(inputField).attr('type', 'hidden');
     $(inputField).attr('name', 'ccProfileID');
     $(inputField).val(formBuilder.profileID); //??? cwr casting to string is possible but TypeScript wonders if it's sensible
@@ -820,7 +820,7 @@ function parseRecord(obj, set) {
                 }
                 //                if (obj[key].attributes !== undefined) {
                 //                    if (obj[key].attributes.ref !== undefined) {
-                //                        var ref = obj[key].attributes.ref;
+                //                        let ref = obj[key].attributes.ref;
                 //                        $("div[data-name='" + obj[key].name + "']").
                 //                    }
                 //                    console.log(uploads[ref]);
@@ -832,16 +832,16 @@ function parseRecord(obj, set) {
                     duplicateField(obj[key], set);
                 }
                 else {
-                    var name = obj[key].name;
-                    $(set).find("div[data-name='" + name + "']").find(".input_element").first().val(obj[key].value);
+                    var name_1 = obj[key].name;
+                    $(set).find("div[data-name='" + name_1 + "']").find(".input_element").first().val(obj[key].value);
                     var language = getLanguage(obj[key]);
                     if (language !== 0) {
-                        $(set).find("div[data-name='" + name + "']").find(".language_dd").first().val(language);
+                        $(set).find("div[data-name='" + name_1 + "']").find(".language_dd").first().val(language);
                     }
                     if (obj[key].attributes !== undefined) {
                         for (var attr_key in obj[key].attributes) {
                             if (attr_key !== 'xml:lang') {
-                                $(set).find("div[data-name='" + name + "']").find("input[data-attribute_name='" + attr_key + "']").first().val(obj[key].attributes[attr_key]);
+                                $(set).find("div[data-name='" + name_1 + "']").find("input[data-attribute_name='" + attr_key + "']").first().val(obj[key].attributes[attr_key]);
                             }
                         }
                     }
@@ -937,7 +937,7 @@ function duplicateComponent(obj, set) {
         });
     });
     //    clonedComponent.find("input[type='reset']").each(function () {
-    //       var target = $(this).attr('target');
+    //       let target = $(this).attr('target');
     //       console.log(target);
     //       $(this).attr('target', target + '_' + next);
     //    });
@@ -951,21 +951,21 @@ function duplicateComponent(obj, set) {
 }
 function validateInput(key) {
     // console.log(validationProfiles);
-    console.log('key:', key, typeof (key));
+    // console.log('key:', key, typeof(key));
     $("[data-validation-profile=" + key + "]").each(function () {
-        console.log(validationProfiles[key]);
+        // console.log(validationProfiles[key as any]);
         if (validationProfiles[key].attributes.CardinalityMin === '1' && this.value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
-            console.log('required');
+            // console.log('required')
             inputOK = false;
             $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
-            var error_1 = document.createElement('p');
-            $(error_1).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
-            $(errorSpace).append(error_1);
+            var error = document.createElement('p');
+            $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
+            $(errorSpace).append(error);
         }
         else {
             $("#errorMsg_" + this.id).html("");
         }
-        if (validationProfiles[key].attributes.ValueScheme === 'date' && this.value !== "") {
+        if (validationProfiles[key].attributes.ValueScheme === 'date' && this.value !== "") { // don't know the interface 
             var str = this.value;
             if (!isValidDate(str)) {
                 inputOK = false;
