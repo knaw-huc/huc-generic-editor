@@ -1,7 +1,7 @@
 
 // cwr = check with Rob
 
-// "use strict"
+"use strict"
 
 console.log('hello typesript');
 
@@ -44,9 +44,10 @@ let serverurl = "http://localhost:8888/server.php";
 fetch(serverurl).then(function (response) {
     response.json().then(function (json) {
         $('document').ready(function () {
-            // console.log(json);
-            let fb = new FormBuilder(json);
-            // formBuilder.start(json);
+            
+            let fb = new FormBuilder(json, ccfOptions);
+            // let ab = new FormBuilder(json, ccfOptions); // gek hoor...
+
         });
 
     });
@@ -94,6 +95,8 @@ interface JQuery {
 
 class FormBuilder {
     profileID: string = '';
+    ccfOptions: any;
+
     objectLevel: number = 1;
     objectDisplay: boolean = true;
     validationProfiles: { [key: string]: content } = {};
@@ -107,9 +110,10 @@ class FormBuilder {
     languages: string[] = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
     controlHash: string[] = []; // ?? is it string?
 
-    constructor(obj: json) {
+    constructor(obj: json, ccfOptions: any) {
         this.profileID = obj.id;
-        console.log('constructor');
+        this.ccfOptions = ccfOptions;
+        
         this.parse(obj.content);
         this.createButtons();
         createAutoCompletes();
@@ -161,7 +165,7 @@ class FormBuilder {
             label.innerHTML = element.attributes.label;
         }
         if (element.attributes.ValueScheme === 'date') {
-            label.innerHTML = label.innerHTML + ' (' + ccfOptions.alert.date_string + ')';
+            label.innerHTML = label.innerHTML + ' (' + this.ccfOptions.alert.date_string + ')';
         }
         let input = document.createElement('div');
         input.setAttribute('class', 'control');
@@ -181,7 +185,7 @@ class FormBuilder {
                 option.innerHTML = this.languages[key];
                 dropdown.appendChild(option);
             }
-            $(dropdown).val(ccfOptions.language);
+            $(dropdown).val(this.ccfOptions.language);
             input.appendChild(dropdown);
         }
         if (element.attributes.attributeList !== undefined) {
@@ -258,7 +262,7 @@ class FormBuilder {
                     clonedElement.find(".language_dd").each(
                         function () {
                             $(this).attr('id', 'lang_' + tempID);
-                            $(this).val(ccfOptions.language);
+                            $(this).val(this.ccfOptions.language); // hiss oplossing
                         });
                     clonedElement.find(".element_attribute").each(
                         function () {
@@ -561,7 +565,7 @@ class FormBuilder {
         buttonFrame.setAttribute('id', 'btnFrame');
         let control = document.createElement('input');
         control.setAttribute('type', 'button');
-        control.setAttribute('value', ccfOptions.submitButton.label);
+        control.setAttribute('value', this.ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
 
         control.onclick = () => 
@@ -570,16 +574,16 @@ class FormBuilder {
         buttonFrame.appendChild(control);
         control = document.createElement('input');
         control.setAttribute('type', 'button');
-        control.setAttribute('value', ccfOptions.saveButton.label);
+        control.setAttribute('value', this.ccfOptions.saveButton.label);
         control.setAttribute('id', 'saveBtn');
-        control.onclick = function () {
-            sendForm();
+        control.onclick = () => {
+            sendForm(this.profileID);
         };
         buttonFrame.appendChild(control);
-        if (ccfOptions.resetButton !== null && ccfOptions.resetButton !== undefined) {
+        if (this.ccfOptions.resetButton !== null && this.ccfOptions.resetButton !== undefined) {
             control = document.createElement('input');
             control.setAttribute('type', 'button');
-            control.setAttribute('value', ccfOptions.resetButton.label);
+            control.setAttribute('value', this.ccfOptions.resetButton.label);
             control.setAttribute('id', 'resetBtn');
             control.onclick = function () {
                 history.back();
@@ -605,10 +609,10 @@ class FormBuilder {
                     this.validateInput(key);
                     break;
                 case "textarea":
-                    validateTextArea(key);
+                    this.validateTextArea(key);
                     break;
                 case "select":
-                    validateSelect(key);
+                    this.validateSelect(key);
                     break;
                 default:
                     alert("Error: unknown input type!");
@@ -619,7 +623,7 @@ class FormBuilder {
         }
         if (this.inputOK) {
             //console.log(validationProfiles);
-            sendForm();
+            sendForm(this.profileID);
         } else {
             $("#errorSpace").append(this.errorSpace);
         }
@@ -638,9 +642,9 @@ class FormBuilder {
             if (this.validationProfiles[key].attributes.CardinalityMin === '1' && (<HTMLInputElement>hiss).value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
                 // console.log('required')
                 this.inputOK = false;
-                $("#errorMsg_" + hiss.id).html(ccfOptions.alert.mandatory_field);
+                $("#errorMsg_" + hiss.id).html(this.ccfOptions.alert.mandatory_field);
                 let error = document.createElement('p');
-                $(error).html(this.validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
+                $(error).html(this.validationProfiles[key].attributes.label + this.ccfOptions.alert.mandatory_field_box);
                 $(this.errorSpace).append(error);
             } else {
                 $("#errorMsg_" + hiss.id).html("");
@@ -649,9 +653,9 @@ class FormBuilder {
                 let str = (<HTMLInputElement>hiss).value;
                 if (!isValidDate(str)) {
                     this.inputOK = false;
-                    $("#errorMsg_" + hiss.id).html(ccfOptions.alert.no_valid_date);
+                    $("#errorMsg_" + hiss.id).html(this.ccfOptions.alert.no_valid_date);
                     let error = document.createElement('p');
-                    $(error).html(this.validationProfiles[key].attributes.label + ccfOptions.alert.no_valid_date_box);
+                    $(error).html(this.validationProfiles[key].attributes.label + this.ccfOptions.alert.no_valid_date_box);
                     $(this.errorSpace).append(error);
                 }
             }
@@ -659,9 +663,9 @@ class FormBuilder {
                 let str = (<HTMLInputElement>hiss).value;
                 if (!isInteger(Number(str))) { // added Number cast, cwr
                     this.inputOK = false;
-                    $("#errorMsg_" + hiss.id).html(ccfOptions.alert.int_field);
+                    $("#errorMsg_" + hiss.id).html(this.ccfOptions.alert.int_field);
                     let error = document.createElement('p');
-                    $(error).html(this.validationProfiles[key].attributes.label + ccfOptions.alert.int_field_box);
+                    $(error).html(this.validationProfiles[key].attributes.label + this.ccfOptions.alert.int_field_box);
                     $(this.errorSpace).append(error);
                 }
             }
@@ -674,7 +678,7 @@ class FormBuilder {
                         // console.log(validationProfiles[key].attributes.attributeList[att].Required );
                         if (this.validationProfiles[key].attributes.attributeList[att].Required === 'true' && $("#attr_" + this.validationProfiles[key].attributes.attributeList[att].name + "_" + hiss.id).val() === "") {
                             this.inputOK = false;
-                            let attribute_errorMsg_template = ccfOptions.alert.attr_not_empty_field;
+                            let attribute_errorMsg_template = this.ccfOptions.alert.attr_not_empty_field;
                             attribute_errorMsg = ' ' + attribute_errorMsg_template.replace("$attributename", this.validationProfiles[key].attributes.attributeList[att].name);
                             $("#errorMsg_" + hiss.id).append(attribute_errorMsg);
                             $(this.errorSpace).append(attribute_errorMsg);
@@ -688,8 +692,55 @@ class FormBuilder {
     
     }
 
-
-
+    validateTextArea(key: string) {
+        $("[data-validation-profile=" + key + "]").each((index, hiss) =>  {
+            if (this.validationProfiles[key].attributes.CardinalityMin === '1' && (<HTMLInputElement>hiss).value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
+                this.inputOK = false;
+                $("#errorMsg_" + hiss.id).html(this.ccfOptions.alert.mandatory_field);
+                let error = document.createElement('p');
+                $(error).html(this.validationProfiles[key].attributes.label + this.ccfOptions.alert.mandatory_field_box);
+                $(this.errorSpace).append(error);
+            } else {
+                $("#errorMsg_" + hiss.id).html("");
+            }
+            if (this.validationProfiles[key].attributes.attributeList !== undefined) {
+                if ((<HTMLInputElement>hiss).value !== "") {
+                    for (let att in this.validationProfiles[key].attributes.attributeList) {
+                        // console.log(validationProfiles[key].attributes.attributeList[att].Required);
+                        if (this.validationProfiles[key].attributes.attributeList[att].Required) {
+                            this.inputOK = false;
+                            $("#errorMsg_" + hiss.id).html(this.ccfOptions.alert.attr_not_empty_field);
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    validateSelect(key: string) {
+        $("[data-validation-profile=" + key + "]").each((index, hiss)=>  {
+            if (this.validationProfiles[key].attributes.CardinalityMin === '1' && (hiss as HTMLSelectElement).selectedIndex === 0 && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
+                this.inputOK = false;
+                $("#errorMsg_" + hiss.id).html(this.ccfOptions.alert.mandatory_field);
+                let error = document.createElement('p');
+                $(error).html(this.validationProfiles[key].attributes.label + this.ccfOptions.alert.mandatory_field_box);
+                $(this.errorSpace).append(error);
+            } else {
+                $("#errorMsg_" + hiss.id).html("");
+            }
+            if (this.validationProfiles[key].attributes.attributeList !== undefined) {
+                if ((hiss as HTMLInputElement).value !== "") {
+                    for (let att in this.validationProfiles[key].attributes.attributeList) {
+                        // console.log(validationProfiles[key].attributes.attributeList[att].Required);
+                        if (this.validationProfiles[key].attributes.attributeList[att].Required) {
+                            this.inputOK = false;
+                            $("#errorMsg_" + hiss.id).html(this.ccfOptions.alert.attr_not_empty_field);
+                        }
+                    }
+                }
+            }
+        });
+    }
 
 
 }
@@ -812,7 +863,7 @@ function addUploadTrigger(obj: any) {
 
 ;
 
-function sendForm(): void {
+function sendForm(this: any, profileID: string): void {
     let formValues: any[] = [];
     $(".clonedComponent").each(function () {
         $(this).attr("class", "component");
@@ -834,7 +885,7 @@ function sendForm(): void {
     let form = document.createElement('form');
     $(form).attr('id', 'ccSendForm');
     $(form).attr('method', 'post');
-    $(form).attr('action', ccfOptions.saveButton.actionURI);
+    $(form).attr('action',this.ccfOptions.saveButton.actionURI);
     let inputField = document.createElement('input');
     $(inputField).attr('type', 'hidden');
     $(inputField).attr('name', 'ccData');
@@ -843,20 +894,20 @@ function sendForm(): void {
     inputField = document.createElement('input');
     $(inputField).attr('type', 'hidden');
     $(inputField).attr('name', 'ccProfileID');
-    $(inputField).val(formBuilder.profileID); //??? cwr casting to string is possible but TypeScript wonders if it's sensible
+    $(inputField).val(profileID); //??? cwr casting to string is possible but TypeScript wonders if it's sensible
     $(form).append(inputField);
     $("#ccform").append(form);
     $("#OKbtn").remove();
     $("#ccSendForm").submit();
 }
 
-function fillValues(record: any): void {
+function fillValues(record: any): void { // stays outside gives default values 
     let obj = record[2].value;
     // console.log(obj);
-    parseRecord(obj.value, null);
+    parseRecord(obj.value, null); // stays outsides
 
     if (record[3] !== undefined) { // ?? What happens here 
-        setfiles(record[3]);
+        setfiles(record[3]); // stays outsides
     }
 
 }
@@ -1119,55 +1170,7 @@ function isValidDate(dateString: string): boolean | string { // codesmell: diffe
     return d.toISOString().slice(0, 10) === dateString;
 }
 
-function validateTextArea(key: string) {
-    $("[data-validation-profile=" + key + "]").each(function () {
-        if (validationProfiles[key].attributes.CardinalityMin === '1' && (<HTMLInputElement>this).value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
-            inputOK = false;
-            $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
-            let error = document.createElement('p');
-            $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
-            $(errorSpace).append(error);
-        } else {
-            $("#errorMsg_" + this.id).html("");
-        }
-        if (validationProfiles[key].attributes.attributeList !== undefined) {
-            if ((<HTMLInputElement>this).value !== "") {
-                for (let att in validationProfiles[key].attributes.attributeList) {
-                    // console.log(validationProfiles[key].attributes.attributeList[att].Required);
-                    if (validationProfiles[key].attributes.attributeList[att].Required) {
-                        inputOK = false;
-                        $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
-                    }
-                }
-            }
-        }
-    });
-}
 
-function validateSelect(key: string) {
-    $("[data-validation-profile=" + key + "]").each(function () {
-        if (validationProfiles[key].attributes.CardinalityMin === '1' && (this as HTMLSelectElement).selectedIndex === 0 && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
-            inputOK = false;
-            $("#errorMsg_" + this.id).html(ccfOptions.alert.mandatory_field);
-            let error = document.createElement('p');
-            $(error).html(validationProfiles[key].attributes.label + ccfOptions.alert.mandatory_field_box);
-            $(errorSpace).append(error);
-        } else {
-            $("#errorMsg_" + this.id).html("");
-        }
-        if (validationProfiles[key].attributes.attributeList !== undefined) {
-            if ((this as HTMLInputElement).value !== "") {
-                for (let att in validationProfiles[key].attributes.attributeList) {
-                    // console.log(validationProfiles[key].attributes.attributeList[att].Required);
-                    if (validationProfiles[key].attributes.attributeList[att].Required) {
-                        inputOK = false;
-                        $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
-                    }
-                }
-            }
-        }
-    });
-}
 
 function getInputType(element: JQuery<HTMLElement>) {
     if (element.is("input")) { // .is is a jQuery method https://api.jquery.com/is/
