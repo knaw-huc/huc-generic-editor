@@ -172,10 +172,10 @@ class FormBuilder {
             btn.setAttribute('data-source', element.ID);
             btn.onclick =
                 function (e) {
-                    let clone = new Clone();
-                    let next = clone.nexClonePostfix();
+                    // let clone = new Clone();
+                    let next = Clone.clonePostfix++; // Static variable in Clone class
+                    // let next = clone.nextClonePostfix();
                     console.log('next:' , next)
-                    // let that: JQuery<GlobalEventHandlers> = $(this);
                     let that = $(this);
                     let tempID: any;
                     e.preventDefault();
@@ -731,11 +731,7 @@ class FormBuilder {
 }
 
 class Clone {
-    static clonePostfix: number = 0;
-    nexClonePostfix(): number {
-        Clone.clonePostfix++;
-        return Clone.clonePostfix;
-    }    
+    static clonePostfix: number = 1;
 }
 
 // let clone = {

@@ -131,10 +131,10 @@ var FormBuilder = /** @class */ (function () {
             btn.setAttribute('data-source', element.ID);
             btn.onclick =
                 function (e) {
-                    var clone = new Clone();
-                    var next = clone.nexClonePostfix();
+                    // let clone = new Clone();
+                    var next = Clone.clonePostfix++; // Static variable in Clone class
+                    // let next = clone.nextClonePostfix();
                     console.log('next:', next);
-                    // let that: JQuery<GlobalEventHandlers> = $(this);
                     var that = $(this);
                     var tempID;
                     e.preventDefault();
@@ -683,11 +683,7 @@ var FormBuilder = /** @class */ (function () {
 var Clone = /** @class */ (function () {
     function Clone() {
     }
-    Clone.prototype.nexClonePostfix = function () {
-        Clone.clonePostfix++;
-        return Clone.clonePostfix;
-    };
-    Clone.clonePostfix = 0;
+    Clone.clonePostfix = 1;
     return Clone;
 }());
 // let clone = {
