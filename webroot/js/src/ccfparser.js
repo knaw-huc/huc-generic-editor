@@ -10,6 +10,7 @@ var FormBuilder = /** @class */ (function () {
         this.recordEdit = false;
         this.languages = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
         this.controlHash = []; // ?? is it string?
+        this.clonePostfix = 0;
         this.profileID = obj.id;
         this.ccfOptions = ccfOptions;
         this.parse(obj.content);
@@ -21,7 +22,7 @@ var FormBuilder = /** @class */ (function () {
             $(".disabledComponent").addClass("component").removeClass("disabledComponent");
             $(".optionalCompBtn").click();
         }
-        // console.log(this.validationProfiles);
+        console.log(this.validationProfiles);
     }
     FormBuilder.prototype.parse = function (o, componentID) {
         if (o.hasOwnProperty('type')) {
@@ -48,6 +49,7 @@ var FormBuilder = /** @class */ (function () {
         }
     };
     FormBuilder.prototype.handleElement = function (element, componentID) {
+        var _this = this;
         var ccfOptions = this.ccfOptions;
         var html = document.createElement('div');
         if (this.objectDisplay) {
@@ -131,9 +133,10 @@ var FormBuilder = /** @class */ (function () {
             btn.setAttribute('data-source', element.ID);
             btn.onclick =
                 function (e) {
-                    var next = clone.nextClonePostfix();
+                    // let next = clone.nextClonePostfix();
+                    var next = _this.nextClonePostfix();
                     // let that: JQuery<GlobalEventHandlers> = $(this);
-                    var that = $(this);
+                    var that = $(_this);
                     var tempID;
                     e.preventDefault();
                     var clonedElement = that.parent().clone();
@@ -675,6 +678,10 @@ var FormBuilder = /** @class */ (function () {
         $("#ccform").append(form);
         $("#OKbtn").remove();
         $("#ccSendForm").submit();
+    };
+    FormBuilder.prototype.nextClonePostfix = function () {
+        this.clonePostfix++;
+        return this.clonePostfix;
     };
     return FormBuilder;
 }());
