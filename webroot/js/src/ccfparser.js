@@ -226,7 +226,7 @@ var FormBuilder = /** @class */ (function () {
                 $(btn).hide();
             }
             btn.onclick = function (e) {
-                var next = clone.nextClonePostfix();
+                var next = Clone.clonePostfix++;
                 var that = $(this);
                 e.preventDefault();
                 var clonedComponent = that.parent().parent().clone();
@@ -936,7 +936,7 @@ function getLanguage(obj) {
     return 0;
 }
 function duplicateField(obj, set) {
-    var next = clone.nextClonePostfix();
+    var next = Clone.clonePostfix++;
     var language = getLanguage(obj);
     var tempID;
     var name = obj.name;
@@ -978,7 +978,7 @@ function duplicateField(obj, set) {
     createAutoCompletes();
 }
 function duplicateComponent(obj, set) {
-    var next = clone.nextClonePostfix();
+    var next = Clone.clonePostfix++;
     var clonedComponent = $(set).find("div[data-name='" + obj.name + "']").first().clone();
     clonedComponent.addClass("clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);

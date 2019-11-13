@@ -58,7 +58,7 @@
                     "level": 2,
                     "type": "Component",
                     "attributes": {
-                        "CardinalityMin": "1",
+                        "CardinalityMin": "0",
                         "CardinalityMax": "1",
                         "label": "Owner",
                         "name": "owner"
