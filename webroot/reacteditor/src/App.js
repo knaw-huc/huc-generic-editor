@@ -35,13 +35,12 @@ class App extends React.Component {
       return (
         <div>
           <Title title="HuC Editor React" />
-          <Form description={this.state.formdescription} />
-          <ButtonFrame localisation={this.state.localisation} />
+          <Form description={this.state.formdescription} localisation={this.state.localisation} />
         </div>
       )
-    ;
+        ;
     } else {
-      return <div>S..N...OR.RR..RRR...R...R.R.RR.R.R.R.R.................................................................</div>;
+      return <div>S..N...OR.RR..RRR...R...R.R.RR.R.R.R.R...........................</div>;
     }
   }
 }
@@ -49,12 +48,12 @@ class App extends React.Component {
 function Form(props) {
   // console.log('binnen form', props.description.content);
   // let profileid = props.description.id;
-  let ID = props.description.content[0].ID;
+  // let ID = props.description.content[0].ID;
   return (
     <div id="ccform">
-      <div id={ID} className="component" data-name={props.description.content[0].attributes.name} data-order="undefined"></div>
-      <div className="componentHeader">{props.description.content[0].attributes.label}</div>
-      <Content content={props.description.content[0].content} />
+      <Content content={props.description.content} />
+      <ButtonFrame localisation={props.localisation} />
+      {/* </div> */}
     </div>
   )
 }
@@ -62,12 +61,25 @@ function Form(props) {
 function Content(props) {
   console.log('props', props);
   const content = props.content.map((thing, index) => {
-      if(thing.type === 'Element') {
-         return <div key={index} className={thing.type} data-name={thing.attributes.name} data-order="undefined" >{thing.type} {thing.attributes.label}</div>
-      } else if(thing.type === 'Component') {
-          let componentje = <div id={thing.id} className="component" data-name={thing.attributes.name}></div>; // TODO recursiviteit checken 
-         return <Content key={index} content={thing.content} />
-      }
+    if (thing.type === 'Element') {
+      return (
+        <div key={index} className={thing.type} data-name={thing.attributes.name} data-order="undefined">
+          <div className="label">{thing.attributes.label}</div>
+          <div className="control">
+            <input id={thing.ID} className="input_element" type="text" size="60" data-reset-value="line" data-validation-profile={thing.id} />
+          </div>
+        </div>
+      )
+    } else if (thing.type === 'Component') {
+      return (
+        <div key={index} >
+          <div id={thing.id} className="component" data-name={thing.attributes.name}>
+            <div className="componentHeader">{thing.attributes.label}</div>
+            <Content content={thing.content} />
+          </div>
+        </div>
+      )
+    }
   });
   return <div>{content}</div>
 }
@@ -76,12 +88,12 @@ function Content(props) {
 function ButtonFrame(props) { // TODO Eventlisteners
   // console.log('props  localisation', props.localisation);
   return (
-  <div id="btnFrame">
-    <input type="button" value={props.localisation.submitButton.label} id="OKbtn" />
-    <input type="button" value={props.localisation.saveButton.label} id="saveBtn" />
-    <input type="button" value={props.localisation.resetButton.label} id="resetBtn" />
-    <ErrorSpace />
-  </div>
+    <div id="btnFrame">
+      <input type="button" value={props.localisation.submitButton.label} id="OKbtn" />
+      <input type="button" value={props.localisation.saveButton.label} id="saveBtn" />
+      <input type="button" value={props.localisation.resetButton.label} id="resetBtn" />
+      <ErrorSpace />
+    </div>
   )
 }
 
@@ -91,8 +103,6 @@ function ErrorSpace(props) {
 function Title(props) {
   return <h1>{props.title}</h1>
 }
-
-
 export default App;
 
 

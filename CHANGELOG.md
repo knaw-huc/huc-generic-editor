@@ -1,5 +1,7 @@
 ### 14-11-2019
 
+* primary version, all fields generated
+* recursive components in REACT
 * started REACT version
 * no TypeScript/React yet
 
