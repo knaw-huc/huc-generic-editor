@@ -1,3 +1,14 @@
+### 14-11-2019
+
+* started REACT version
+* no TypeScript/React yet
+
+### 13-11-2019
+
+* setup development environment for a REACT version
+* branch reactversion 
+* finished class based version (stopped because of change to react)
+
 ### 8-11-2019
 
 * bug attributename solved

@@ -272,7 +272,7 @@ class FormBuilder {
                 $(btn).hide();
             }
             btn.onclick = function (e) {
-                let next = clone.nextClonePostfix();
+                let next = Clone.clonePostfix++;
                 let that = $(this);
                 e.preventDefault();
                 let clonedComponent = that.parent().parent().clone();
@@ -1006,7 +1006,7 @@ function getLanguage(obj: { attributes: { [x: string]: any; } | undefined; }) {
 }
 
 function duplicateField(obj: { name: any; value: string | number | string[] | ((this: any, index: number, value: string) => string); attributes: { [x: string]: string | number | string[] | ((this: any, index: number, value: string) => string); }; }, set: any) {
-    let next = clone.nextClonePostfix();
+    let next = Clone.clonePostfix++;
     let language = getLanguage(obj);
     let tempID: string | number | ((this: any, index: number, attr: string) => string | number | void | undefined) | null;
     let name = obj.name;
@@ -1055,7 +1055,7 @@ function duplicateField(obj: { name: any; value: string | number | string[] | ((
 }
 
 function duplicateComponent(obj: { name: string; }, set: any) {
-    let next = clone.nextClonePostfix();
+    let next = Clone.clonePostfix++;
     let clonedComponent = $(set).find("div[data-name='" + obj.name + "']").first().clone();
     clonedComponent.addClass("clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);

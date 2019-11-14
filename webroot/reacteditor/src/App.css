@@ -26,16 +26,17 @@ and open the template in the editor.
   display: block;
   }
   
-  #btnFrame{
-  display: inline-block;
+  #btnFrame {
+  /* display: inline-block; MvdP*/
   width: 18%;
-  margin-left: 16px;
-  position: fixed;
+  /* margin-left: 16px; */
+  /* position: fixed;   */
   /* // position: -webkit-sticky; */
   top:67px;
   border: 1px solid #000;
   border-radius: 6px;
   background-color: #ddd;
+  /* padding-bottom: 50px; */
   }
   
   .componentHeader{

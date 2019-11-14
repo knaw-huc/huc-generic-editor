@@ -1,5 +1,5 @@
 {
-    "id": "metadata/u33707283d426f900d4d33707283d426f900d4d0d__hpp6demo",
+    "id": "metadata/blubbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     "content": [
         {
             "type": "Component",
@@ -58,7 +58,7 @@
                     "level": 2,
                     "type": "Component",
                     "attributes": {
-                        "CardinalityMin": "1",
+                        "CardinalityMin": "0",
                         "CardinalityMax": "1",
                         "label": "Owner",
                         "name": "owner"

@@ -5,8 +5,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      localisation: '',
-      formdescription: ''
+      localisation: {},
+      formdescription: {}
     }
   }
 
@@ -20,7 +20,7 @@ class App extends React.Component {
         // console.log('data:', data);
         this.setState({ formdescription: data })
       });
-    serverurl = "http://localhost:8888/localisation.php?lang=nl";
+    serverurl = "http://localhost:8888/localisation.php?lang=en";
     fetch(serverurl)
       .then(res => res.json())
       .then((data) => {
@@ -30,65 +30,56 @@ class App extends React.Component {
   }
 
   render() {
-    // let buttontexts = ['Submit', 'Save', 'Back'];
-    // console.log('na mount (localisation): ', this.state.localisation);
 
-    return (
-      <div id="ccform" className="App">
-        <Title title="HuC Editor React" />
-        <Form description="{this.state.formdescription}" />
-        <ButtonFrame localisation={this.state.localisation} />
-      </div>
-    );
+    if (this.state.formdescription.hasOwnProperty('id') && this.state.localisation.hasOwnProperty('uploadButton')) {
+      return (
+        <div>
+          <Title title="HuC Editor React" />
+          <Form description={this.state.formdescription} />
+          <ButtonFrame localisation={this.state.localisation} />
+        </div>
+      )
+    ;
+    } else {
+      return <div>S..N...OR.RR..RRR...R...R.R.RR.R.R.R.R.................................................................</div>;
+    }
   }
 }
 
 function Form(props) {
-  return <div><form></form></div>
+  // console.log('binnen form', props.description.content);
+  // let profileid = props.description.id;
+  let ID = props.description.content[0].ID;
+  return (
+    <div id="ccform">
+      <div id={ID} className="component" data-name={props.description.content[0].attributes.name} data-order="undefined"></div>
+      <div className="componentHeader">{props.description.content[0].attributes.label}</div>
+      <Content content={props.description.content[0].content} />
+    </div>
+  )
 }
 
-function ButtonFrame(props) {
-  // const texts = props.buttontexts;
-  // const buttons = texts.map((text) => <button>{text}</button>);
-  //  return <div id="btnFrame">{buttons}</div>
-  
+function Content(props) {
   console.log('props', props);
-  // console.log('props localisation', props.localisation.submitButton);
-  let submitbutton = props.localisation.submitButton;
-  // console.log('submitbutton', submitbutton);
-  // let label = props.localisation.submitButton["label"];
-  // First attempt
-  // console.log(submitbutton.hasOwnProperty("label"));
-    // let label = submitbutton["label"];
-    // console.log('label', label);s
-  
-    // if (submitbutton["label"]){
-
-    // }
-
-  // let k = submitbutton.hasOwnProperty();
-  let r = [];
-
-  for(let p in submitbutton) {
-    if (submitbutton.hasOwnProperty(p)) {
-      // Do things here
-      console.log('property:', p, 'value:', submitbutton[p]);
-      if(p === 'label') {
-        r['label'] = submitbutton[p];
+  const content = props.content.map((thing, index) => {
+      if(thing.type === 'Element') {
+         return <div key={index} className={thing.type} data-name={thing.attributes.name} data-order="undefined" >{thing.type} {thing.attributes.label}</div>
+      } else if(thing.type === 'Component') {
+          let componentje = <div id={thing.id} className="component" data-name={thing.attributes.name}></div>; // TODO recursiviteit checken 
+         return <Content key={index} content={thing.content} />
       }
-    }
-  }
+  });
+  return <div>{content}</div>
+}
 
-  // 2nd Alternative
-  // for (var property of Object.keys(submitbutton)) {
-  //     console.log('property', property);
-  //     console.log('value?', submitbutton.property);
-  // }
 
-  return (<div id="btnFrame">
-    <input type="button" value={r.label} id="OKbtn" />
-    <input type="button" value="Save" id="saveBtn" />
-    <input type="button" value="Back" id="resetBtn" />
+function ButtonFrame(props) { // TODO Eventlisteners
+  // console.log('props  localisation', props.localisation);
+  return (
+  <div id="btnFrame">
+    <input type="button" value={props.localisation.submitButton.label} id="OKbtn" />
+    <input type="button" value={props.localisation.saveButton.label} id="saveBtn" />
+    <input type="button" value={props.localisation.resetButton.label} id="resetBtn" />
     <ErrorSpace />
   </div>
   )
