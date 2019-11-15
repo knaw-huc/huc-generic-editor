@@ -1,5 +1,6 @@
 ### 15-11-2019
 
+* restored standalone original for comparison 
 * adapted README
 * added launchscript
 

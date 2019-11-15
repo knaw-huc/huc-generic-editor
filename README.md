@@ -40,7 +40,7 @@ Visit: ```http://localhost:3000/```
 
 ### Without Docker
 
-Open  ```webroot/standalone.html``` in your favourite browser.
+Open  ```webroot/standalone_original/index.html``` in your favourite browser.
 The json configuration is embedded in a JS object literal.
 
 

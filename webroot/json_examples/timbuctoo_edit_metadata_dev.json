@@ -1,5 +1,5 @@
 {
-    "id": "metadata/blubbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "id": "metadata/blub",
     "content": [
         {
             "type": "Component",
@@ -31,7 +31,7 @@
                     "level": 2,
                     "type": "Element",
                     "attributes": {
-                        "CardinalityMin": "1",
+                        "CardinalityMin": "0",
                         "width": 60,
                         "height": 8,
                         "label": "Description",
@@ -209,6 +209,19 @@
                                 "CardinalityMin": "1",
                                 "label": "URI",
                                 "width": 100,
+                                "valueType": "string",
+                                "name": "uri",
+                                "ValueScheme": "string"
+                            }
+                        },
+                        {
+                            "ID": "5da6d8c990011",
+                            "level": 3,
+                            "type": "Element",
+                            "attributes": {
+                                "CardinalityMin": "0",
+                                "label": "Added field (not required)",
+                                "width": 10,
                                 "valueType": "string",
                                 "name": "uri",
                                 "ValueScheme": "string"
