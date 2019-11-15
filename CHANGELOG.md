@@ -1,3 +1,8 @@
+### 15-11-2019
+
+* adapted README
+* added launchscript
+
 ### 14-11-2019
 
 * primary version, all fields generated

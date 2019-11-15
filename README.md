@@ -2,9 +2,22 @@
 
 Typescript editor for structured data
 
-## Demo
+### Demo with Docker & React 
 
-### With Docker
+Use:
+```./launch.sh```
+for starting the php-container for php and the react app.
+
+* On http://localhost:8888/ the TypeScript version
+* On http://localhost:8888/server.php the json-response of the PHP server
+* On http://localhost:3000/ the React version (alpha)
+
+A lightweight PHP server is started for serving the json-configuration files. 
+You can edit the configuration file in:
+```webroot/json_examples/timbuctoo_edit_metadata_dev.json```
+
+
+####  Docker by hand
 
 From the README.md directory:
 
@@ -13,17 +26,10 @@ From the README.md directory:
 A lightweight PHP server is started for serving the json-configuration files. 
 
 Visit http://localhost:8888/  in your browser. 
-You see a structured form, on-the-fly generated. Typescript.
+You see a structured form, on-the-fly generated. 
 
-You can edit the configuration file in:
-```webroot/json_examples/timbuctoo_edit_metadata.json``` 
-
-For experimental features change the link in server.php to :
-```webroot/json_examples/timbuctoo_edit_metadata_dev.json``` 
-
-(or uncomment the line to the link)
-
-### Added React(alpha)
+ 
+#### Start React by hand (alpha)
 
 Navigate to: ```webroot/reacteditor/```
 
