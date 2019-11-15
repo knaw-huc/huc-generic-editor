@@ -62,24 +62,25 @@ function Content(props) {
   console.log('props', props);
   const content = props.content.map((thing, index) => {
     if (thing.type === 'Element') {
+      const errorID = "errorMsg_" + thing.ID;
       if (thing.attributes.inputField === 'multiple') { //TEXTAREA no test necessary for eXistenZ field ?
         return (
           <div key={index} className="element" data-name={thing.attributes.name}>
             <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
             <div className="control">
               <textarea id={thing.ID} className="input_element" rows={thing.attributes.height} cols={thing.attributes.width} data-reset-value="line" data-validation-profile={thing.id}></textarea>
+              <div id={errorID} class="errorMsg"></div>
             </div>
           </div>
         )
       }
       else {
-
-
         return (
           <div key={index} className="element" data-name={thing.attributes.name}>
             <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
             <div className="control">
               <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width} data-reset-value="line" data-validation-profile={thing.id} />
+              <div id={errorID} class="errorMsg"></div>
             </div>
           </div>
         )
