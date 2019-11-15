@@ -59,23 +59,32 @@ function Content(props) {
   let content = props.content.map((thing, index) => {
     if (thing.type === 'Element') {
       let errorID = "errorMsg_" + thing.ID;
+      let langID = "lang_" + thing.ID;
+      let Multilingual = '';
+      if(thing.attributes.Multilingual === "true") {
+        Multilingual = <select id={langID} class="language_dd"><option value="">PLACEHOLDER TODO</option></select>
+      }
+
+
+
       if (thing.attributes.inputField === 'multiple') { //TEXTAREA no test necessary for eXistenZ field ?
         return (
           <div key={index} className="element" data-name={thing.attributes.name}>
             <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
             <div className="control">
-              <textarea id={thing.ID} className="input_element" rows={thing.attributes.height} cols={thing.attributes.width} data-reset-value="line" data-validation-profile={thing.id}></textarea>
+              <textarea id={thing.ID} className="input_element" rows={thing.attributes.height|8} cols={thing.attributes.width||50} data-reset-value="line" data-validation-profile={thing.id}></textarea>
+              {Multilingual}
               <div id={errorID} class="errorMsg"></div>
             </div>
           </div>
         )
-      }
-      else {
+      } else {
         return (
           <div key={index} className="element" data-name={thing.attributes.name}>
             <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
             <div className="control">
-              <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width} data-reset-value="line" data-validation-profile={thing.id} />
+              <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width|60} data-reset-value="line" data-validation-profile={thing.id} />
+              {Multilingual}
               <div id={errorID} class="errorMsg"></div>
             </div>
           </div>
@@ -83,9 +92,9 @@ function Content(props) {
       }
     } else if (thing.type === 'Component') {
       let showcomponent = '';
-      if(thing.attributes.CardinalityMin === "0") {
+      if (thing.attributes.CardinalityMin === "0") {
         showcomponent = <input class="optionalCompBtn" type="button" value="x" />;
-      } 
+      }
       return (
         <div key={index} id={thing.id} className="component" data-name={thing.attributes.name} data-order="undefined" >
           <div className="componentHeader">{thing.attributes.label}</div>

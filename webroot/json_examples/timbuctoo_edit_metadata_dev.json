@@ -46,7 +46,6 @@
                     "type": "Element",
                     "attributes": {
                         "CardinalityMin": "1",
-                        "width": 80,
                         "label": "URI",
                         "name": "imageUrl",
                         "ValueScheme": "string",
@@ -71,7 +70,6 @@
                             "attributes": {
                                 "CardinalityMin": "1",
                                 "label": "Name",
-                                "width": 60,
                                 "name": "name",
                                 "ValueScheme": "string",
                                 "attributeList": [

@@ -101,7 +101,7 @@ class FormBuilder {
         html.setAttribute('data-order', element.attributes.initialOrder);
         let label = document.createElement('div');
         label.setAttribute('class', 'label');
-        if (element.attributes.CardinalityMin > 0) {
+        if (element.attributes.CardinalityMin > 0) { // Required element
             label.innerHTML = element.attributes.label + ' *';
         } else {
             label.innerHTML = element.attributes.label;
