@@ -30,8 +30,7 @@ class App extends React.Component {
   }
 
   render() {
-
-    if (this.state.formdescription.hasOwnProperty('id') && this.state.localisation.hasOwnProperty('uploadButton')) {
+    if (this.state.formdescription.hasOwnProperty('id') && this.state.localisation.hasOwnProperty('uploadButton')) { // OR fetch in constructor?
       return (
         <div>
           <Title title="HuC Editor React" />
@@ -40,7 +39,7 @@ class App extends React.Component {
       )
         ;
     } else {
-      return <div>S..N...OR.RR..RRR...R...R.R.RR.R.R.R.R...........................</div>;
+      return <div>..........SS..........N...OR.RR..RRR...R...R.R.RR.R.R.R.R...........................</div>;
     }
   }
 }
@@ -60,20 +59,22 @@ function Content(props) {
     if (thing.type === 'Element') {
       let errorID = "errorMsg_" + thing.ID;
       let langID = "lang_" + thing.ID;
-      let Multilingual = '';
+      let multilingual = '';
       if(thing.attributes.Multilingual === "true") {
-        Multilingual = <select id={langID} class="language_dd"><option value="">PLACEHOLDER TODO</option></select>
+        multilingual = <select id={langID} class="language_dd"><option value="">PLACEHOLDER TODO</option></select>
       }
-
-
-
+      let duplicatebutton = '';
+      if(thing.attributes.duplicate === "True") {
+        duplicatebutton = <input type="button" className="btn" value="+" data-source={thing.ID} />;
+      } 
       if (thing.attributes.inputField === 'multiple') { //TEXTAREA no test necessary for eXistenZ field ?
         return (
           <div key={index} className="element" data-name={thing.attributes.name}>
             <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
             <div className="control">
               <textarea id={thing.ID} className="input_element" rows={thing.attributes.height|8} cols={thing.attributes.width||50} data-reset-value="line" data-validation-profile={thing.id}></textarea>
-              {Multilingual}
+              {multilingual}
+              {duplicatebutton}
               <div id={errorID} class="errorMsg"></div>
             </div>
           </div>
@@ -84,7 +85,9 @@ function Content(props) {
             <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
             <div className="control">
               <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width|60} data-reset-value="line" data-validation-profile={thing.id} />
-              {Multilingual}
+              {multilingual}
+              {duplicatebutton}
+
               <div id={errorID} class="errorMsg"></div>
             </div>
           </div>
