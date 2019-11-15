@@ -1,6 +1,6 @@
 # HuC-generic-editor
 
-Typescript editor for structured data
+React editor for structured data
 
 ### Demo with Docker & React 
 
