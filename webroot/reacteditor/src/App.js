@@ -64,7 +64,7 @@ function Content(props) {
     if (thing.type === 'Element') {
       return (
         <div key={index} className={thing.type} data-name={thing.attributes.name} data-order="undefined">
-          <div className="label">{thing.attributes.label}</div>
+        <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
           <div className="control">
             <input id={thing.ID} className="input_element" type="text" size="60" data-reset-value="line" data-validation-profile={thing.id} />
           </div>

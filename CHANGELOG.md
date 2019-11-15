@@ -1,5 +1,6 @@
 ### 15-11-2019
 
+* required indicator in JSX
 * restored standalone original for comparison 
 * adapted README
 * added launchscript
