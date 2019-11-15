@@ -98,9 +98,11 @@ function Content(props) {
       if (thing.attributes.CardinalityMin === "0") {
         showcomponent = <input class="optionalCompBtn" type="button" value="x" />;
       }
+     
       return (
         <div key={index} id={thing.id} className="component" data-name={thing.attributes.name} data-order="undefined" >
-          <div className="componentHeader">{thing.attributes.label}</div>
+          
+          <div className="componentHeader">{thing.attributes.label}<UploadForm attr={thing} /></div>
           {showcomponent}
           <Content content={thing.content} />
         </div>
@@ -108,6 +110,23 @@ function Content(props) {
     }
   });
   return <div>{content}</div>
+}
+ 
+function UploadForm(props) {
+  let fileid = 'files' + props.attr.ID;
+    const dontshow = {
+    display: 'none'    
+  };
+  if(props.attr.attributes.resource === "True") {
+    return (
+      <form method="post">
+        <input type="file" id={fileid} className="uploader" accept="True" />
+        <input type="reset" target={props.attr.ID} value="x" className="resetUploadBtn" style={dontshow} />
+      </form>
+    )
+  } else {
+    return null ;
+  }
 }
 
 
