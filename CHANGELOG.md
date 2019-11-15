@@ -1,12 +1,18 @@
 ### 15-11-2019
 
+* add TODO list
+* add Uploadcomponent
+* add Multilingual select list (not finished)
+* add Duplicate button 
+* defaults for text size, textarea cols and rows
+* optional show component button
 * div for error-messages
 * size, rows, cols respected
 * differentiate between text en textarea
-* required indicator in JSX
+* add required indicator in JSX
 * restored standalone original for comparison 
 * adapted README
-* added launchscript
+* add launchscript
 
 ### 14-11-2019
 

@@ -1,0 +1,18 @@
+# REACT VERSION of the HuC Editor
+
+## 15-11-2019
+
+definitely, in order of importance
+- map languages multilingual
+- defined attribute list on certain fileds
+- free to fill attributes on certain fields
+- interactivity: duplicate components
+- interactivity: form validation
+
+- fill in default values
+
+maybe, less priority now
+- save a form?
+- refactor Content component in smaller components
+- make it all more generic
+- styling the form exactly the same as the original
