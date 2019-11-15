@@ -82,9 +82,14 @@ function Content(props) {
         )
       }
     } else if (thing.type === 'Component') {
+      let showcomponent = '';
+      if(thing.attributes.CardinalityMin === "0") {
+        showcomponent = <input class="optionalCompBtn" type="button" value="x" />;
+      } 
       return (
         <div key={index} id={thing.id} className="component" data-name={thing.attributes.name} data-order="undefined" >
           <div className="componentHeader">{thing.attributes.label}</div>
+          {showcomponent}
           <Content content={thing.content} />
         </div>
       )
