@@ -62,21 +62,33 @@ function Content(props) {
   console.log('props', props);
   const content = props.content.map((thing, index) => {
     if (thing.type === 'Element') {
-      return (
-        <div key={index} className={thing.type} data-name={thing.attributes.name} data-order="undefined">
-        <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
-          <div className="control">
-            <input id={thing.ID} className="input_element" type="text" size="60" data-reset-value="line" data-validation-profile={thing.id} />
+      if (thing.attributes.inputField === 'multiple') { //TEXTAREA no test necessary for eXistenZ field ?
+        return (
+          <div key={index} className="element" data-name={thing.attributes.name}>
+            <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
+            <div className="control">
+              <textarea id={thing.ID} className="input_element" rows={thing.attributes.height} cols={thing.attributes.width} data-reset-value="line" data-validation-profile={thing.id}></textarea>
+            </div>
           </div>
-        </div>
-      )
+        )
+      }
+      else {
+
+
+        return (
+          <div key={index} className="element" data-name={thing.attributes.name}>
+            <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
+            <div className="control">
+              <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width} data-reset-value="line" data-validation-profile={thing.id} />
+            </div>
+          </div>
+        )
+      }
     } else if (thing.type === 'Component') {
       return (
-        <div key={index} >
-          <div id={thing.id} className="component" data-name={thing.attributes.name}>
-            <div className="componentHeader">{thing.attributes.label}</div>
-            <Content content={thing.content} />
-          </div>
+        <div key={index} id={thing.id} className="component" data-name={thing.attributes.name} data-order="undefined" >
+          <div className="componentHeader">{thing.attributes.label}</div>
+          <Content content={thing.content} />
         </div>
       )
     }
