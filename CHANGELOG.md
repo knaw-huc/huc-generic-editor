@@ -1,5 +1,8 @@
 ### 15-11-2019
 
+* div for error-messages
+* size, rows, cols respected
+* differentiate between text en textarea
 * required indicator in JSX
 * restored standalone original for comparison 
 * adapted README

@@ -46,23 +46,19 @@ class App extends React.Component {
 }
 
 function Form(props) {
-  // console.log('binnen form', props.description.content);
-  // let profileid = props.description.id;
-  // let ID = props.description.content[0].ID;
   return (
     <div id="ccform">
       <Content content={props.description.content} />
       <ButtonFrame localisation={props.localisation} />
-      {/* </div> */}
     </div>
   )
 }
 
 function Content(props) {
   console.log('props', props);
-  const content = props.content.map((thing, index) => {
+  let content = props.content.map((thing, index) => {
     if (thing.type === 'Element') {
-      const errorID = "errorMsg_" + thing.ID;
+      let errorID = "errorMsg_" + thing.ID;
       if (thing.attributes.inputField === 'multiple') { //TEXTAREA no test necessary for eXistenZ field ?
         return (
           <div key={index} className="element" data-name={thing.attributes.name}>
