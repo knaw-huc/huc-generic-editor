@@ -60,7 +60,8 @@ function Content(props) {
     if (thing.type === 'Element') {
       let errorID = "errorMsg_" + thing.ID;
       let langID = "lang_" + thing.ID;
-      // SEPERATE COMPONENTS AND logic in the components itself instead of React JSX Elements
+      // SEPERATE COMPONENTS AND  logic in the components itself instead of React JSX Elements??
+
       // MULTILINGUAL 
 
       let multilingual = '';
@@ -76,10 +77,24 @@ function Content(props) {
       let attributelist = '';
       if (thing.attributes.attributeList) {
         attributelist = thing.attributes.attributeList.map((element, index) => {
-          console.log(element.ValueScheme);
+          // console.log(element.ValueScheme);
           let attributeID = "attr_" + element.name + "_" + thing.ID;
           if (element.ValueScheme === 'string') {
             return <input key={index} id={attributeID} className="element_attribute" type="text" data-attribute_name={element.name} placeholder={element.name} />
+          } else if(element.ValueScheme === 'dropDown') {
+            let l = element.values;
+            // let selected = element.default; // TODO? Ask Rob is there a default 
+            let selected = 'frikandel';
+            const lijst = l.map((item, i) => {
+              return <option key={i} value={item}>{item}</option>
+            });
+            
+            // console.log(lijst)s
+            return (
+              <select defaultValue={selected} key={index} id={attributeID} className="element_attribute" data-attribute_name={element.name}>
+                {lijst}
+              </select>
+            )
           }
         });
       }
@@ -98,7 +113,7 @@ function Content(props) {
             </div>
           </div>
         )
-      } else {
+      } else { // INPUT TYPE TEXT
         return (
           <div key={index} className="element" data-name={thing.attributes.name}>
             <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
@@ -113,7 +128,7 @@ function Content(props) {
           </div>
         )
       }
-    } else if (thing.type === 'Component') {
+    } else if (thing.type === 'Component') { // COMPONENT
       let showcomponent = '';
       if (thing.attributes.CardinalityMin === "0") {
         showcomponent = <input className="optionalCompBtn" type="button" value="x" />;

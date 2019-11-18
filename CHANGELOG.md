@@ -1,6 +1,6 @@
 ### 18-11-2019
 
-* free to fill attributes on certain fields-
+* free to fill attributes on certain fields
 * map languages multilingual
 
 ### 15-11-2019
