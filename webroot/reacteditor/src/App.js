@@ -29,12 +29,20 @@ class App extends React.Component {
       });
   }
 
+  onSubmittie= (e) => { // no binding required nows
+    console.log('submittie',e.target.value);
+    console.log('submittie',e);
+    // collect all data, with the help from the formdescription?
+    
+
+  }
+
   render() {
     if (this.state.formdescription.hasOwnProperty('id') && this.state.localisation.hasOwnProperty('uploadButton')) { // OR fetch in constructor?
       return (
         <div>
           <Title title="HuC Editor React" />
-          <Form description={this.state.formdescription} localisation={this.state.localisation} />
+          <Form description={this.state.formdescription} localisation={this.state.localisation} send={this.onSubmittie} />
         </div>
       )
         ;
@@ -42,13 +50,16 @@ class App extends React.Component {
       return <div>..........SS..........N...OR.RR..RRR...R...R.R.RR.R.R.R.R...........................</div>;
     }
   }
+
+
+
 }
 
 function Form(props) {
   return (
     <div id="ccform">
       <Content content={props.description.content} />
-      <ButtonFrame localisation={props.localisation} />
+      <ButtonFrame localisation={props.localisation} send={props.send} />
     </div>
   )
 }
@@ -81,14 +92,14 @@ function Content(props) {
           let attributeID = "attr_" + element.name + "_" + thing.ID;
           if (element.ValueScheme === 'string') {
             return <input key={index} id={attributeID} className="element_attribute" type="text" data-attribute_name={element.name} placeholder={element.name} />
-          } else if(element.ValueScheme === 'dropDown') {
+          } else if (element.ValueScheme === 'dropDown') {
             let l = element.values;
             // let selected = element.default; // TODO? Ask Rob is there a default 
             let selected = 'frikandel';
             const lijst = l.map((item, i) => {
               return <option key={i} value={item}>{item}</option>
             });
-            
+
             // console.log(lijst)s
             return (
               <select defaultValue={selected} key={index} id={attributeID} className="element_attribute" data-attribute_name={element.name}>
@@ -189,32 +200,42 @@ function Validate() {
   return true;
 }
 
-function Submit(){
-  if(Validate()){
-  console.log('submit');
-  alert('submitted');
+// function Submit(event) {
+//   if (Validate()) {
+//     console.log('submit', event);
+
+//     // event.preventDefault();
+//     // const data = new FormData(event.target);
+//     // console.log(data);
+//     // fetch('/api/form-submit-url', {
+//     //   method: 'POST',
+//     //   body: data,
+//     // });
+//   }
+// }
+
+
+
+
+function Save() {
+  if (Validate()) {
+    console.log('save');
   }
 }
 
-function Save(){
-  if(Validate()){
-  console.log('save');
-  }
-}
-
-function Reset(){
-  if(Validate()){
-  console.log('reset');
+function Reset() {
+  if (Validate()) {
+    console.log('reset');
   }
 }
 
 function ButtonFrame(props) { // TODO Eventlisteners
-  // console.log('props  localisation', props.localisation);
+  console.log('props  localisation', props);
   return (
     <div id="btnFrame">
-      <input type="button" value={props.localisation.submitButton.label} id="OKbtn" onClick={Submit} />
-      <input type="button" value={props.localisation.saveButton.label} id="saveBtn"onClick={Save} />
-      <input type="button" value={props.localisation.resetButton.label} id="resetBtn"onClick={Reset} />
+      <input type="button" value={props.localisation.submitButton.label} id="OKbtn" onClick={props.send} />
+      <input type="button" value={props.localisation.saveButton.label} id="saveBtn" onClick={Save} />
+      <input type="button" value={props.localisation.resetButton.label} id="resetBtn" onClick={Reset} />
       <ErrorSpace />
     </div>
   )

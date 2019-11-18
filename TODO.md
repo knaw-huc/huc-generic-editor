@@ -5,7 +5,7 @@ Work through te list of 15-11-2019
 
 definitely
 - put some time in controlled vs uncontrolled components form
-
+- must convert it to a form, problem React does not permit nested forms (file upload), to discuss with RZ
 
 ## 15-11-2019
 

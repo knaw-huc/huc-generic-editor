@@ -1,5 +1,6 @@
 ### 18-11-2019
 
+* submit click to upstate
 * add scaffolding send form
 * add prepared attributes list
 * add free to fill attributes on certain fields
