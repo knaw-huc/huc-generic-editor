@@ -1,7 +1,9 @@
 ### 18-11-2019
 
-* free to fill attributes on certain fields
-* map languages multilingual
+* add scaffolding send form
+* add prepared attributes list
+* add free to fill attributes on certain fields
+* add languages multilingual
 
 ### 15-11-2019
 

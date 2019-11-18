@@ -183,14 +183,38 @@ function LanguageList(props) {
 }
 
 
+// FAKE HANDLERS SEPERATE COMPONENT?
+function Validate() {
+  console.log('validate')
+  return true;
+}
+
+function Submit(){
+  if(Validate()){
+  console.log('submit');
+  alert('submitted');
+  }
+}
+
+function Save(){
+  if(Validate()){
+  console.log('save');
+  }
+}
+
+function Reset(){
+  if(Validate()){
+  console.log('reset');
+  }
+}
 
 function ButtonFrame(props) { // TODO Eventlisteners
   // console.log('props  localisation', props.localisation);
   return (
     <div id="btnFrame">
-      <input type="button" value={props.localisation.submitButton.label} id="OKbtn" />
-      <input type="button" value={props.localisation.saveButton.label} id="saveBtn" />
-      <input type="button" value={props.localisation.resetButton.label} id="resetBtn" />
+      <input type="button" value={props.localisation.submitButton.label} id="OKbtn" onClick={Submit} />
+      <input type="button" value={props.localisation.saveButton.label} id="saveBtn"onClick={Save} />
+      <input type="button" value={props.localisation.resetButton.label} id="resetBtn"onClick={Reset} />
       <ErrorSpace />
     </div>
   )
