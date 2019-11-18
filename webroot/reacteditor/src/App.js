@@ -54,20 +54,36 @@ function Form(props) {
 }
 
 function Content(props) {
-  console.log('props', props);
+  // console.log('props', props);
 
   let content = props.content.map((thing, index) => {
     if (thing.type === 'Element') {
       let errorID = "errorMsg_" + thing.ID;
       let langID = "lang_" + thing.ID;
+      // SEPERATE COMPONENTS AND logic in the components itself instead of React JSX Elements
+      // MULTILINGUAL 
+
       let multilingual = '';
       if (thing.attributes.Multilingual === "true") {
-        multilingual = <LanguageListAlt langId={langID} selected="nl" />
+        multilingual = <LanguageList langId={langID} selected="nl" />
       }
+      // DUPLICATE KNOP
       let duplicatebutton = '';
       if (thing.attributes.duplicate === "True") {
         duplicatebutton = <input type="button" className="btn" value="+" data-source={thing.ID} />;
       }
+      // ATTRIBUTES 
+      let attributelist = '';
+      if (thing.attributes.attributeList) {
+        attributelist = thing.attributes.attributeList.map((element, index) => {
+          console.log(element.ValueScheme);
+          let attributeID = "attr_" + element.name + "_" + thing.ID;
+          if (element.ValueScheme === 'string') {
+            return <input key={index} id={attributeID} className="element_attribute" type="text" data-attribute_name={element.name} placeholder={element.name} />
+          }
+        });
+      }
+
       if (thing.attributes.inputField === 'multiple') { //TEXTAREA no test necessary for eXistenZ field ?
         return (
           <div key={index} className="element" data-name={thing.attributes.name}>
@@ -76,6 +92,8 @@ function Content(props) {
               <textarea id={thing.ID} className="input_element" rows={thing.attributes.height | 8} cols={thing.attributes.width || 50} data-reset-value="line" data-validation-profile={thing.id}></textarea>
               {multilingual}
               {duplicatebutton}
+              {attributelist}
+
               <div id={errorID} className="errorMsg"></div>
             </div>
           </div>
@@ -88,6 +106,7 @@ function Content(props) {
               <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.id} />
               {multilingual}
               {duplicatebutton}
+              {attributelist}
 
               <div id={errorID} className="errorMsg"></div>
             </div>
@@ -130,26 +149,9 @@ function UploadForm(props) {
   }
 }
 
-function LanguageList(props) {
-  let selected = props.selected;// no selected attribute
-  let languages = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
-  const list = languages.map((language, index) => {
-    if (language === selected) {
-      return <option key={index} selected value={language}>{language}</option>;
-    } else {
-      return <option key={index} value={language}>{language}</option>;
-    }
-  });
-  return (
-    <select id={props.langID} className="language_dd" >
-      <option value="none">--</option>
-      {list}
-    </select>
-  )
-  // uncontrolled form component vs controlled form component
-}
 
-function LanguageListAlt(props) {
+
+function LanguageList(props) {
   let selected = props.selected;// no selected attribute
   let languages = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
   const list = languages.map((language, index) => <option key={index} value={language}>{language}</option>);
@@ -186,7 +188,3 @@ function Title(props) {
   return <h1>{props.title}</h1>
 }
 export default App;
-
-
-
-
