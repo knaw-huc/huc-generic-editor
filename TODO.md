@@ -1,9 +1,16 @@
 # REACT VERSION of the HuC Editor
 
+## 18-11-2019
+Work through te list
+definitely
+- put time in controlled vs uncontrolled components form
+
+
+
 ## 15-11-2019
 
 definitely, in order of importance
-- map languages multilingual
+~~- map languages multilingual~~
 - defined attribute list on certain fileds
 - free to fill attributes on certain fields
 - interactivity: duplicate components

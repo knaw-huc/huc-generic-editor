@@ -55,27 +55,28 @@ function Form(props) {
 
 function Content(props) {
   console.log('props', props);
+
   let content = props.content.map((thing, index) => {
     if (thing.type === 'Element') {
       let errorID = "errorMsg_" + thing.ID;
       let langID = "lang_" + thing.ID;
       let multilingual = '';
-      if(thing.attributes.Multilingual === "true") {
-        multilingual = <select id={langID} class="language_dd"><option value="">PLACEHOLDER TODO</option></select>
+      if (thing.attributes.Multilingual === "true") {
+        multilingual = <LanguageListAlt langId={langID} selected="nl" />
       }
       let duplicatebutton = '';
-      if(thing.attributes.duplicate === "True") {
+      if (thing.attributes.duplicate === "True") {
         duplicatebutton = <input type="button" className="btn" value="+" data-source={thing.ID} />;
-      } 
+      }
       if (thing.attributes.inputField === 'multiple') { //TEXTAREA no test necessary for eXistenZ field ?
         return (
           <div key={index} className="element" data-name={thing.attributes.name}>
             <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
             <div className="control">
-              <textarea id={thing.ID} className="input_element" rows={thing.attributes.height|8} cols={thing.attributes.width||50} data-reset-value="line" data-validation-profile={thing.id}></textarea>
+              <textarea id={thing.ID} className="input_element" rows={thing.attributes.height | 8} cols={thing.attributes.width || 50} data-reset-value="line" data-validation-profile={thing.id}></textarea>
               {multilingual}
               {duplicatebutton}
-              <div id={errorID} class="errorMsg"></div>
+              <div id={errorID} className="errorMsg"></div>
             </div>
           </div>
         )
@@ -84,11 +85,11 @@ function Content(props) {
           <div key={index} className="element" data-name={thing.attributes.name}>
             <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
             <div className="control">
-              <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width|60} data-reset-value="line" data-validation-profile={thing.id} />
+              <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.id} />
               {multilingual}
               {duplicatebutton}
 
-              <div id={errorID} class="errorMsg"></div>
+              <div id={errorID} className="errorMsg"></div>
             </div>
           </div>
         )
@@ -96,12 +97,12 @@ function Content(props) {
     } else if (thing.type === 'Component') {
       let showcomponent = '';
       if (thing.attributes.CardinalityMin === "0") {
-        showcomponent = <input class="optionalCompBtn" type="button" value="x" />;
+        showcomponent = <input className="optionalCompBtn" type="button" value="x" />;
       }
-     
+
       return (
         <div key={index} id={thing.id} className="component" data-name={thing.attributes.name} data-order="undefined" >
-          
+
           <div className="componentHeader">{thing.attributes.label}<UploadForm attr={thing} /></div>
           {showcomponent}
           <Content content={thing.content} />
@@ -111,13 +112,13 @@ function Content(props) {
   });
   return <div>{content}</div>
 }
- 
+
 function UploadForm(props) {
   let fileid = 'files' + props.attr.ID;
-    const dontshow = {
-    display: 'none'    
+  const dontshow = {
+    display: 'none'
   };
-  if(props.attr.attributes.resource === "True") {
+  if (props.attr.attributes.resource === "True") {
     return (
       <form method="post">
         <input type="file" id={fileid} className="uploader" accept="True" />
@@ -125,9 +126,45 @@ function UploadForm(props) {
       </form>
     )
   } else {
-    return null ;
+    return null;
   }
 }
+
+function LanguageList(props) {
+  let selected = props.selected;// no selected attribute
+  let languages = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
+  const list = languages.map((language, index) => {
+    if (language === selected) {
+      return <option key={index} selected value={language}>{language}</option>;
+    } else {
+      return <option key={index} value={language}>{language}</option>;
+    }
+  });
+  return (
+    <select id={props.langID} className="language_dd" >
+      <option value="none">--</option>
+      {list}
+    </select>
+  )
+  // uncontrolled form component vs controlled form component
+}
+
+function LanguageListAlt(props) {
+  let selected = props.selected;// no selected attribute
+  let languages = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
+  const list = languages.map((language, index) => <option key={index} value={language}>{language}</option>);
+  return (
+    <select id={props.langID} defaultValue={selected} className="language_dd" >
+      <option value="none">--</option>
+      {list}
+    </select>
+  )
+  // controlled form component vs controlled form component, it's now uncontrolled
+
+  // value={selected} (controlled needs onChange Handler)
+  // defaultValue (uncontrolled)
+}
+
 
 
 function ButtonFrame(props) { // TODO Eventlisteners
