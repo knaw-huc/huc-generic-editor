@@ -1,5 +1,7 @@
 ### 20-11-2019
 
+* show component fix
+* bug fixing after refactoring
 * refactor JSX elements to functions
     * error message
     * toggle component

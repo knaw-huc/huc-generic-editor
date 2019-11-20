@@ -45,7 +45,7 @@ class App extends React.Component {
       )
         ;
     } else {
-      return <div>..........SS..........N...OR.RR..RRR...R...R.R.RR.R.R.R.R...........................</div>;
+      return <div>..........SS..........N...OR.RR..RRR...R...R.R.RR.R.R.R.R...................</div>;
     }
   }
 }
@@ -63,28 +63,29 @@ function Content(props) {
   let content = props.content.map((thing, index) => {
     if (thing.type === 'Element') {
       return (
-        <div key={index} className="element" data-name={thing.attributes.name}>
+        <div key={index} className="element" data-name={thing.attributes.name} data-order="undefined">
           <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
           <div className="control">
             <Textelement thing={thing} />
             <LanguageList element={thing} selected="nl" />
             <DuplicateButton attributes={thing.attributes} id={thing.ID} />
             <Attributes thing={thing} />
-            <ErrorMessage id={thing.id} />
+            <ErrorMessage id={thing.ID} />
           </div>
         </div>
       )
-    } else if (thing.type === 'Component') { // COMPONENT
+    } else if (thing.type === 'Component') { 
       return (
         <div key={index} id={thing.id} className="component" data-name={thing.attributes.name} data-order="undefined" >
-          <div className="componentHeader">{thing.attributes.label}<UploadForm attr={thing} /></div>
+          <div className="componentHeader">{thing.attributes.label}<UploadForm attr={thing} />
           <ToggleComponent thing={thing} />
+          </div>
           <Content content={thing.content} />
         </div>
       )
     } else {
       return <div>'NOTHING'</div>
-    } 
+    }
   });
   return <div>{content}</div>
 }
@@ -108,9 +109,9 @@ function ErrorMessage(props) {
 
 function Textelement(props) {
   let thing = props.thing
-  let textelement = <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.id} />;
+  let textelement = <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.ID}  />;
   if (thing.attributes.inputField === 'multiple') {
-    textelement = <textarea id={thing.ID} className="input_element" rows={thing.attributes.height | 8} cols={thing.attributes.width || 50} data-reset-value="line" data-validation-profile={thing.id}></textarea>;
+    textelement = <textarea id={thing.ID} className="input_element" rows={thing.attributes.height | 8} cols={thing.attributes.width || 50} data-reset-value="line" data-validation-profile={thing.ID}></textarea>;
   }
   return textelement;
 }
