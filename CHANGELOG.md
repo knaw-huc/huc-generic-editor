@@ -1,5 +1,7 @@
 ### 20-11-2019
 
+* fix upload form
+* fix hierarchy bug
 * show component fix
 * bug fixing after refactoring
 * refactor JSX elements to functions

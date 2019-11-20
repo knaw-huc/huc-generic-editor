@@ -76,7 +76,7 @@ function Content(props) {
       )
     } else if (thing.type === 'Component') { 
       return (
-        <div key={index} id={thing.id} className="component" data-name={thing.attributes.name} data-order="undefined" >
+        <div key={index} id={thing.ID} className="component" data-name={thing.attributes.name} data-order="undefined" >
           <div className="componentHeader">{thing.attributes.label}<UploadForm attr={thing} />
           <ToggleComponent thing={thing} />
           </div>
@@ -87,7 +87,7 @@ function Content(props) {
       return <div>'NOTHING'</div>
     }
   });
-  return <div>{content}</div>
+  return <React.Fragment>{content}</React.Fragment>
 }
 
 
@@ -164,7 +164,7 @@ function UploadForm(props) {
   };
   if (props.attr.attributes.resource === "True") {
     return (
-      <form method="post">
+      <form className="fileForm" method="post">
         <input type="file" id={fileid} className="uploader" accept="True" />
         <input type="reset" target={props.attr.ID} value="x" className="resetUploadBtn" style={dontshow} />
       </form>
