@@ -1,9 +1,11 @@
 ### 20-11-2019
 
 * refactor JSX elements to functions
+    * error message
+    * toggle component
     * multilangual popup
     * textelement
-    * attributlist
+    * attributelist
 
 
 ### 18-11-2019

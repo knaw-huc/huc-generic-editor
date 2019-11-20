@@ -62,41 +62,59 @@ function Form(props) {
 function Content(props) {
   let content = props.content.map((thing, index) => {
     if (thing.type === 'Element') {
-      let errorID = "errorMsg_" + thing.ID;
-      // SEPERATE COMPONENTS AND  logic in the components itself instead of React JSX Elements??  
-      let textelement = <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.id} />;
-      if (thing.attributes.inputField === 'multiple') {
-        textelement = <textarea id={thing.ID} className="input_element" rows={thing.attributes.height | 8} cols={thing.attributes.width || 50} data-reset-value="line" data-validation-profile={thing.id}></textarea>;
-      }
       return (
         <div key={index} className="element" data-name={thing.attributes.name}>
           <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
           <div className="control">
-            {textelement}
+            <Textelement thing={thing} />
             <LanguageList element={thing} selected="nl" />
             <DuplicateButton attributes={thing.attributes} id={thing.ID} />
             <Attributes thing={thing} />
-            <div id={errorID} className="errorMsg"></div>
+            <ErrorMessage id={thing.id} />
           </div>
         </div>
       )
-
     } else if (thing.type === 'Component') { // COMPONENT
-      let showcomponent = '';
-      if (thing.attributes.CardinalityMin === "0") {
-        showcomponent = <input className="optionalCompBtn" type="button" value="x" />;
-      }
       return (
         <div key={index} id={thing.id} className="component" data-name={thing.attributes.name} data-order="undefined" >
           <div className="componentHeader">{thing.attributes.label}<UploadForm attr={thing} /></div>
-          {showcomponent}
+          <ToggleComponent thing={thing} />
           <Content content={thing.content} />
         </div>
       )
-    }
+    } else {
+      return <div>'NOTHING'</div>
+    } 
   });
   return <div>{content}</div>
 }
+
+
+function ToggleComponent(props) {
+  let thing = props.thing;
+  let showcomponent = '';
+  if (thing.attributes.CardinalityMin === "0") {
+    return <input className="optionalCompBtn" type="button" value="x" />;
+  } else {
+    return null;
+  }
+}
+
+function ErrorMessage(props) {
+  let errorID = "errorMsg_" + props.id;
+  return <div id={errorID} className="errorMsg"></div>
+
+}
+
+function Textelement(props) {
+  let thing = props.thing
+  let textelement = <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.id} />;
+  if (thing.attributes.inputField === 'multiple') {
+    textelement = <textarea id={thing.ID} className="input_element" rows={thing.attributes.height | 8} cols={thing.attributes.width || 50} data-reset-value="line" data-validation-profile={thing.id}></textarea>;
+  }
+  return textelement;
+}
+
 
 function Attributes(props) {
   let thing = props.thing;
