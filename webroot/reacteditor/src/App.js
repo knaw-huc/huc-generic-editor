@@ -29,12 +29,10 @@ class App extends React.Component {
       });
   }
 
-  onSubmittie= (e) => { // no binding required nows
-    console.log('submittie',e.target.value);
-    console.log('submittie',e);
+  onSubmittie = (e) => { // no binding required nows
+    console.log('submittie', e.target.value);
+    console.log('submittie', e);
     // collect all data, with the help from the formdescription?
-    
-
   }
 
   render() {
@@ -50,9 +48,6 @@ class App extends React.Component {
       return <div>..........SS..........N...OR.RR..RRR...R...R.R.RR.R.R.R.R...........................</div>;
     }
   }
-
-
-
 }
 
 function Form(props) {
@@ -65,89 +60,34 @@ function Form(props) {
 }
 
 function Content(props) {
-  // console.log('props', props);
-
   let content = props.content.map((thing, index) => {
     if (thing.type === 'Element') {
       let errorID = "errorMsg_" + thing.ID;
-      let langID = "lang_" + thing.ID;
-      // SEPERATE COMPONENTS AND  logic in the components itself instead of React JSX Elements??
-
-      // MULTILINGUAL 
-
-      let multilingual = '';
-      if (thing.attributes.Multilingual === "true") {
-        multilingual = <LanguageList langId={langID} selected="nl" />
+      // SEPERATE COMPONENTS AND  logic in the components itself instead of React JSX Elements??  
+      let textelement = <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.id} />;
+      if (thing.attributes.inputField === 'multiple') {
+        textelement = <textarea id={thing.ID} className="input_element" rows={thing.attributes.height | 8} cols={thing.attributes.width || 50} data-reset-value="line" data-validation-profile={thing.id}></textarea>;
       }
-      // DUPLICATE KNOP
-      let duplicatebutton = '';
-      if (thing.attributes.duplicate === "True") {
-        duplicatebutton = <input type="button" className="btn" value="+" data-source={thing.ID} />;
-      }
-      // ATTRIBUTES 
-      let attributelist = '';
-      if (thing.attributes.attributeList) {
-        attributelist = thing.attributes.attributeList.map((element, index) => {
-          // console.log(element.ValueScheme);
-          let attributeID = "attr_" + element.name + "_" + thing.ID;
-          if (element.ValueScheme === 'string') {
-            return <input key={index} id={attributeID} className="element_attribute" type="text" data-attribute_name={element.name} placeholder={element.name} />
-          } else if (element.ValueScheme === 'dropDown') {
-            let l = element.values;
-            // let selected = element.default; // TODO? Ask Rob is there a default 
-            let selected = 'frikandel';
-            const lijst = l.map((item, i) => {
-              return <option key={i} value={item}>{item}</option>
-            });
-
-            // console.log(lijst)s
-            return (
-              <select defaultValue={selected} key={index} id={attributeID} className="element_attribute" data-attribute_name={element.name}>
-                {lijst}
-              </select>
-            )
-          }
-        });
-      }
-
-      if (thing.attributes.inputField === 'multiple') { //TEXTAREA no test necessary for eXistenZ field ?
-        return (
-          <div key={index} className="element" data-name={thing.attributes.name}>
-            <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
-            <div className="control">
-              <textarea id={thing.ID} className="input_element" rows={thing.attributes.height | 8} cols={thing.attributes.width || 50} data-reset-value="line" data-validation-profile={thing.id}></textarea>
-              {multilingual}
-              {duplicatebutton}
-              {attributelist}
-
-              <div id={errorID} className="errorMsg"></div>
-            </div>
+      return (
+        <div key={index} className="element" data-name={thing.attributes.name}>
+          <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
+          <div className="control">
+            {textelement}
+            <LanguageList element={thing} selected="nl" />
+            <DuplicateButton attributes={thing.attributes} id={thing.ID} />
+            <Attributes thing={thing} />
+            <div id={errorID} className="errorMsg"></div>
           </div>
-        )
-      } else { // INPUT TYPE TEXT
-        return (
-          <div key={index} className="element" data-name={thing.attributes.name}>
-            <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
-            <div className="control">
-              <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.id} />
-              {multilingual}
-              {duplicatebutton}
-              {attributelist}
+        </div>
+      )
 
-              <div id={errorID} className="errorMsg"></div>
-            </div>
-          </div>
-        )
-      }
     } else if (thing.type === 'Component') { // COMPONENT
       let showcomponent = '';
       if (thing.attributes.CardinalityMin === "0") {
         showcomponent = <input className="optionalCompBtn" type="button" value="x" />;
       }
-
       return (
         <div key={index} id={thing.id} className="component" data-name={thing.attributes.name} data-order="undefined" >
-
           <div className="componentHeader">{thing.attributes.label}<UploadForm attr={thing} /></div>
           {showcomponent}
           <Content content={thing.content} />
@@ -156,6 +96,46 @@ function Content(props) {
     }
   });
   return <div>{content}</div>
+}
+
+function Attributes(props) {
+  let thing = props.thing;
+  let attributelist = '';
+  if (thing.attributes.attributeList) {
+    attributelist = thing.attributes.attributeList.map((element, index) => {
+      let attributeID = "attr_" + element.name + "_" + thing.ID;
+      if (element.ValueScheme === 'string') {
+        return <input key={index} id={attributeID} className="element_attribute" type="text" data-attribute_name={element.name} placeholder={element.name} />
+      } else if (element.ValueScheme === 'dropDown') {
+        let l = element.values;
+        // let selected = element.default; // TODO? Ask Rob is there a default 
+        let selected = 'frikandel';
+        const lijst = l.map((item, i) => {
+          return <option key={i} value={item}>{item}</option>
+        });
+        return (
+          <select defaultValue={selected} key={index} id={attributeID} className="element_attribute" data-attribute_name={element.name}>
+            {lijst}
+          </select>
+        )
+      }
+    });
+    return attributelist;
+  } else {
+    return null
+  }
+}
+
+function DuplicateButton(props) {
+  // DUPLICATE KNOP
+
+  let duplicatebutton = '';
+  if (props.attributes.duplicate === "True") {
+    console.log({ props });
+    return <input type="button" className="btn" value="+" data-source={props.id} />;
+  } else {
+    return null;
+  }
 }
 
 function UploadForm(props) {
@@ -176,21 +156,25 @@ function UploadForm(props) {
 }
 
 
-
 function LanguageList(props) {
-  let selected = props.selected;// no selected attribute
-  let languages = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
-  const list = languages.map((language, index) => <option key={index} value={language}>{language}</option>);
-  return (
-    <select id={props.langID} defaultValue={selected} className="language_dd" >
-      <option value="none">--</option>
-      {list}
-    </select>
-  )
-  // controlled form component vs controlled form component, it's now uncontrolled
-
-  // value={selected} (controlled needs onChange Handler)
-  // defaultValue (uncontrolled)
+  // MULTILINGUAL 
+  let langID = "lang_" + props.element.ID;
+  if (props.element.attributes.Multilingual !== "true") {
+    return null;
+  } else {
+    let selected = props.selected;// no selected attribute
+    let languages = ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'];
+    const list = languages.map((language, index) => <option key={index} value={language}>{language}</option>);
+    return (
+      <select id={langID} defaultValue={selected} className="language_dd" >
+        <option value="none">--</option>
+        {list}
+      </select>
+    )
+    // controlled form component vs controlled form component, it's now uncontrolled
+    // value={selected} (controlled needs onChange Handler)
+    // defaultValue (uncontrolled)
+  }
 }
 
 

@@ -1,3 +1,11 @@
+### 20-11-2019
+
+* refactor JSX elements to functions
+    * multilangual popup
+    * textelement
+    * attributlist
+
+
 ### 18-11-2019
 
 * submit click to upstate
