@@ -1,3 +1,7 @@
+### 21-11-2019
+
+* css; menu placement
+
 ### 20-11-2019
 
 * fix upload form

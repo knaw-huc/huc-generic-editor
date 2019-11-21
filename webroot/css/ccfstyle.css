@@ -31,7 +31,7 @@ display: inline-block;
 width: 18%;
 margin-left: 16px;
 position: fixed;
-//position: -webkit-sticky;
+/* position: -webkit-sticky; */
 top:67px;
 border: 1px solid #000;
 border-radius: 6px;
@@ -124,6 +124,3 @@ margin-left: 10px;
 font-weight: bold;
 color:#b00;
 }
-
-
-

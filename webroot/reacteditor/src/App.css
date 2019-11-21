@@ -30,7 +30,7 @@ and open the template in the editor.
   display: inline-block;
   width: 18%;
   margin-left: 16px;
-  /* position: fixed;   */
+  position: fixed;  
   /* position: -webkit-sticky; */
   top:67px;
   border: 1px solid #000;

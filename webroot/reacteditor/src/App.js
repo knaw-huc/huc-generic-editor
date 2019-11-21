@@ -42,7 +42,7 @@ class App extends React.Component {
   onSubmittie = (e) => { // no binding required now
     console.log('submittie', e.target.value);
     console.log('submittie', e);
-    // collect all data, with the help from the formdescription?
+    // collect all data, with the help from the formdescription? Look in the TyepScript version
   }
 
   render() {
@@ -56,7 +56,7 @@ class App extends React.Component {
       )
         ;
     } else {
-      return <div>..........SS..........N...OR.RR..RRR...R...R.R.RR.R.R.R.R...................</div>;
+      return <div>...SSNORRRRRRR..R.R.RR.R.R.R.R...</div>;
     }
   }
 }
@@ -99,8 +99,8 @@ function Content(props) {
     }
   });
   return <React.Fragment>{content}</React.Fragment>
+  // Fragments do not render anything, like an empty div, avoids useless divs
 }
-
 
 function ToggleComponent(props) {
   let thing = props.thing;
