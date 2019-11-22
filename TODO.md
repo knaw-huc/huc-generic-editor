@@ -1,7 +1,7 @@
 # TODO
 
 in order of importance
-- fill in default values
+- fill in Record values
 - make it full Docker, no dependencies install
 - interactivity: duplicate components
 - interactivity: form validation

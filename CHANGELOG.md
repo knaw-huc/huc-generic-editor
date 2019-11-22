@@ -1,5 +1,6 @@
 ### 22-11-2019
 
+* started with content parsing
 * launch script failed, changed test-instructions on README.md
 
 ### 21-11-2019

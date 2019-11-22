@@ -16,7 +16,8 @@ class App extends React.Component {
     fetch(formurl)
       .then(res => res.json())
       .then((data) => {
-        this.setState({ formdescription: data })
+        this.setState({ formdescription: data });// metadata state, once
+        this.setState({record: data.record}) // content state
       });
     let localisationurl = "http://localhost:8888/localisation.php?lang=en";
     fetch(localisationurl)
@@ -28,7 +29,7 @@ class App extends React.Component {
 
   onHandleDuplicateField = (e) => {
     // e.preventDefault();
-    console.log(e.target);
+    // console.log(e.target);
     if(e.target.value === '+') {
       console.log('plus');
     } else if(e.target.value === '-') {
@@ -40,17 +41,22 @@ class App extends React.Component {
   }
 
   onSubmittie = (e) => { // no binding required now
-    console.log('submittie', e.target.value);
-    console.log('submittie', e);
+    // console.log('submittie', e.target.value);
+    // console.log('submittie', e);
     // collect all data, with the help from the formdescription? Look in the TyepScript version
   }
 
   render() {
-    if (this.state.formdescription.hasOwnProperty('id') && this.state.localisation.hasOwnProperty('uploadButton')) { // OR fetch in constructor?
+    if (this.state.formdescription.hasOwnProperty('id') && 
+    this.state.localisation.hasOwnProperty('uploadButton')  && 
+    this.state.record[2].hasOwnProperty('value')    
+    ) { // OR fetch in constructor?
+      // console.log(this.state.record);
+      // ugly 
       return (
         <div>
           <Title title="HuC Editor React" />
-          <Form description={this.state.formdescription} localisation={this.state.localisation}
+          <Form description={this.state.formdescription} localisation={this.state.localisation} record={this.state.record[2]}
             send={this.onSubmittie} duplicate={this.onHandleDuplicateField} />
         </div>
       )
@@ -64,20 +70,27 @@ class App extends React.Component {
 function Form(props) {
   return (
     <div id="ccform">
-      <Content content={props.description.content} duplicate={props.duplicate} />
+      <Content content={props.description.content} record={props.record} duplicate={props.duplicate} />
       <ButtonFrame localisation={props.localisation} send={props.send} />
     </div>
   )
 }
 
 function Content(props) {
+  // console.log(props);
+
+  let record = props.record;
+  console.log(record);
+
   let content = props.content.map((thing, index) => {
     if (thing.type === 'Element') {
+      // console.log({record});
+      let elementvalue ='';
       return (
         <div key={index} className="element" data-name={thing.attributes.name} data-order="undefined">
           <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
           <div className="control">
-            <Textelement thing={thing} />
+            <Textelement thing={thing}  />
             <LanguageList element={thing} selected="nl" />
             <DuplicateButton attributes={thing.attributes} id={thing.ID} duplicate={props.duplicate} />
             <Attributes thing={thing} />
@@ -99,7 +112,7 @@ function Content(props) {
     }
   });
   return <React.Fragment>{content}</React.Fragment>
-  // Fragments do not render anything, like an empty div, avoids useless divs
+  // Fragments do not render anything, like an empty div, avoids useless divs new syntax: <> </> works also?
 }
 
 function ToggleComponent(props) {
@@ -118,8 +131,8 @@ function ErrorMessage(props) {
 }
 
 function Textelement(props) {
-  let thing = props.thing
-  let textelement = <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.ID} />;
+  let thing = props.thing;
+  let textelement = <input id={thing.ID}  className="input_element" type="text" size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.ID} />;
   if (thing.attributes.inputField === 'multiple') {
     textelement = <textarea id={thing.ID} className="input_element" rows={thing.attributes.height | 8} cols={thing.attributes.width || 50} data-reset-value="line" data-validation-profile={thing.ID}></textarea>;
   }
@@ -137,7 +150,7 @@ function Attributes(props) {
         return <input key={index} id={attributeID} className="element_attribute" type="text" data-attribute_name={element.name} placeholder={element.name} />
       } else if (element.ValueScheme === 'dropDown') {
         let l = element.values;
-        // let selected = element.default; // TODO? Ask Rob is there a default 
+        // let selected = element.default; // TODO? Ask Rob if there a default 
         let selected = 'frikandel';
         const lijst = l.map((item, i) => {
           return <option key={i} value={item}>{item}</option>
