@@ -1,3 +1,7 @@
+### 22-11-2019
+
+* launch script failed, changed test-instructions on README.md
+
 ### 21-11-2019
 
 * css; menu placement
