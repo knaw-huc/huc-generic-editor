@@ -6,6 +6,7 @@ TypeScript / React editor for structured data
 
 * Docker is up and running
 * node.js is installed
+* a *nix based system
 
 ##  Docker & TypeScript version
 
@@ -29,7 +30,7 @@ You can edit the configuration file in:
 ## React (alpha)
 
 - Navigate to: ```webroot/reacteditor/```
-- install the node dependencies with node installl
+- install the node dependencies with ```npm install```
 
 Start the reactversion ```npm start```
 
@@ -44,6 +45,7 @@ Open  ```webroot/standalone_original/index.html``` in your favourite browser.
 The json configuration is embedded in a JS object literal.
 
 #### Experimental
+Works only after the install of the node dependencies.
 Use:
 ```./launch.sh```
 for starting the php-container for php and the react app.
