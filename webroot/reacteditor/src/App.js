@@ -6,7 +6,9 @@ class App extends React.Component {
     super(props);
     this.state = {
       localisation: {},
-      formdescription: {}
+      formdescription: {},
+      record: {}
+      
     }
   }
 
@@ -17,7 +19,7 @@ class App extends React.Component {
       .then(res => res.json())
       .then((data) => {
         this.setState({ formdescription: data });// metadata state, once
-        this.setState({record: data.record}) // content state
+        // this.setState({record: data.record}) // content state
       });
     let localisationurl = "http://localhost:8888/localisation.php?lang=en";
     fetch(localisationurl)
@@ -48,21 +50,20 @@ class App extends React.Component {
 
   render() {
     if (this.state.formdescription.hasOwnProperty('id') && 
-    this.state.localisation.hasOwnProperty('uploadButton')  && 
-    this.state.record[2].hasOwnProperty('value')    
+    this.state.localisation.hasOwnProperty('uploadButton')
     ) { // OR fetch in constructor?
       // console.log(this.state.record);
       // ugly 
       return (
         <div>
           <Title title="HuC Editor React" />
-          <Form description={this.state.formdescription} localisation={this.state.localisation} record={this.state.record[2]}
+          <Form description={this.state.formdescription} localisation={this.state.localisation}
             send={this.onSubmittie} duplicate={this.onHandleDuplicateField} />
         </div>
       )
         ;
     } else {
-      return <div>...SSNORRRRRRR..R.R.RR.R.R.R.R...</div>;
+      return <div>...SSNORRRRRRR..R.R.RR.R.R.R.RINGGGGGGGGGGGGGGG...</div>;
     }
   }
 }
@@ -70,7 +71,7 @@ class App extends React.Component {
 function Form(props) {
   return (
     <div id="ccform">
-      <Content content={props.description.content} record={props.record} duplicate={props.duplicate} />
+      <Content content={props.description.content}  duplicate={props.duplicate} />
       <ButtonFrame localisation={props.localisation} send={props.send} />
     </div>
   )
@@ -79,13 +80,11 @@ function Form(props) {
 function Content(props) {
   // console.log(props);
 
-  let record = props.record;
-  console.log(record);
 
   let content = props.content.map((thing, index) => {
     if (thing.type === 'Element') {
       // console.log({record});
-      let elementvalue ='';
+      // let elementvalue ='';
       return (
         <div key={index} className="element" data-name={thing.attributes.name} data-order="undefined">
           <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
@@ -214,7 +213,7 @@ function LanguageList(props) {
 
 // FAKE HANDLERS SEPERATE COMPONENT?
 function Validate() {
-  console.log('validate')
+  // console.log('validate');
   return true;
 }
 

@@ -1,3 +1,9 @@
+### 27-11-2019
+
+* refactor names
+* removed content parsing, rethink it
+
+
 ### 22-11-2019
 
 * started with content parsing
