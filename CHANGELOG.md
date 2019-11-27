@@ -1,5 +1,7 @@
 ### 27-11-2019
 
+* return null statement in component
+* restored css for TypeScript
 * refactor names
 * removed content parsing, rethink it
 

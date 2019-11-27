@@ -25,7 +25,8 @@ class App extends React.Component {
     fetch(localisationurl)
       .then(res => res.json())
       .then((data) => {
-        this.setState({ localisation: data })
+        this.setState({ localisation: data });
+        this.setState({ record: data.record })
       });
   }
 
@@ -47,13 +48,7 @@ class App extends React.Component {
     // console.log('submittie', e);
     // collect all data, with the help from the formdescription? Look in the TyepScript version
   }
-
   render() {
-    if (this.state.formdescription.hasOwnProperty('id') && 
-    this.state.localisation.hasOwnProperty('uploadButton')
-    ) { // OR fetch in constructor?
-      // console.log(this.state.record);
-      // ugly 
       return (
         <div>
           <Title title="HuC Editor React" />
@@ -61,20 +56,22 @@ class App extends React.Component {
             send={this.onSubmittie} duplicate={this.onHandleDuplicateField} />
         </div>
       )
-        ;
-    } else {
-      return <div>...SSNORRRRRRR..R.R.RR.R.R.R.RINGGGGGGGGGGGGGGG...</div>;
-    }
   }
 }
 
 function Form(props) {
+
+  if(props.description.hasOwnProperty('id') && 
+    props.localisation.hasOwnProperty('uploadButton')) {
   return (
     <div id="ccform">
       <Content content={props.description.content}  duplicate={props.duplicate} />
       <ButtonFrame localisation={props.localisation} send={props.send} />
     </div>
   )
+  } else {
+    return <div>LOADING...</div>
+  }
 }
 
 function Content(props) {
@@ -159,7 +156,7 @@ function Attributes(props) {
             {lijst}
           </select>
         )
-      }
+      } else return null;
     });
     return attributelist;
   } else {
