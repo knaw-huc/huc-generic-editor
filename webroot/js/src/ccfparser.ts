@@ -53,7 +53,7 @@ class FormBuilder {
     constructor(obj: json, ccfOptions: any) {
         this.profileID = obj.id;
         this.ccfOptions = ccfOptions;
-        
+
         this.parse(obj.content);
         this.createButtons();
         createAutoCompletes();
@@ -174,7 +174,7 @@ class FormBuilder {
                     // let clone = new Clone();
                     let next = Clone.clonePostfix++; // Static variable in Clone class
                     // let next = clone.nextClonePostfix();
-                    console.log('next:' , next)
+                    console.log('next:', next)
                     let that = $(this);
                     let tempID: any;
                     e.preventDefault();
@@ -354,8 +354,7 @@ class FormBuilder {
         html.appendChild(header);
         if (componentID === undefined) {
             $("#ccform").append(html);
-        }
-        else {
+        } else {
             $("#" + componentID).append(html);
         }
     }
@@ -364,8 +363,7 @@ class FormBuilder {
         let control: any;
         if (type === "object") { // DEPRECATED? MvdP
             control = this.setValueSchemeElement(element.attributes.ValueScheme[0], element.ID);
-        }
-        else {
+        } else {
             switch (element.attributes.ValueScheme) {
                 case 'boolean':
                     control = document.createElement('select');
@@ -510,7 +508,7 @@ class FormBuilder {
         control.setAttribute('type', 'button');
         control.setAttribute('value', this.ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
-        control.onclick = () => 
+        control.onclick = () =>
             this.validate();
         ;
         buttonFrame.appendChild(control);
@@ -570,7 +568,7 @@ class FormBuilder {
             $("#errorSpace").append(this.errorSpace);
         }
     }
-    validateInput(key: string) { 
+    validateInput(key: string) {
 
         // console.log(validationProfiles);
         // console.log('key:', key, typeof(key));
@@ -582,7 +580,7 @@ class FormBuilder {
         // Maybe OTHER SOLUTION let validationProfiles = this.validationProfiles; // No this.inputOK needs to be set and needs than a reference to this
 
         $("[data-validation-profile=" + key + "]").each((index, hiss) => {
-            console.log('kv',key);
+            console.log('kv', key);
             if (this.validationProfiles[key].attributes.CardinalityMin === '1' && (<HTMLInputElement>hiss).value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
                 // console.log('required')
                 this.inputOK = false;
@@ -626,17 +624,17 @@ class FormBuilder {
                             attribute_errorMsg = ' ' + attribute_errorMsg_template.replace("$attributename", this.validationProfiles[key].attributes.attributeList[att].name);
                             $("#errorMsg_" + hiss.id).append(attribute_errorMsg);
                             $(this.errorSpace).append(attribute_errorMsg);
-    
+
                         }
                     }
                 }
             }
         });
-    
+
     }
 
     validateTextArea(key: string) {
-        $("[data-validation-profile=" + key + "]").each((index, hiss) =>  {
+        $("[data-validation-profile=" + key + "]").each((index, hiss) => {
             if (this.validationProfiles[key].attributes.CardinalityMin === '1' && (<HTMLInputElement>hiss).value === "" && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
                 this.inputOK = false;
                 $("#errorMsg_" + hiss.id).html(this.ccfOptions.alert.mandatory_field);
@@ -659,9 +657,9 @@ class FormBuilder {
             }
         });
     }
-    
+
     validateSelect(key: string) {
-        $("[data-validation-profile=" + key + "]").each((index, hiss)=>  {
+        $("[data-validation-profile=" + key + "]").each((index, hiss) => {
             if (this.validationProfiles[key].attributes.CardinalityMin === '1' && (hiss as HTMLSelectElement).selectedIndex === 0 && $(this).parent().parent().attr("class") !== 'disabledElement' && $(this).parent().parent().parent().attr("class") !== 'disabledComponent') {
                 this.inputOK = false;
                 $("#errorMsg_" + hiss.id).html(this.ccfOptions.alert.mandatory_field);
@@ -709,7 +707,7 @@ class FormBuilder {
         let form = document.createElement('form');
         $(form).attr('id', 'ccSendForm');
         $(form).attr('method', 'post');
-        $(form).attr('action',ccfOptions.saveButton.actionURI);
+        $(form).attr('action', ccfOptions.saveButton.actionURI);
         let inputField = document.createElement('input');
         $(inputField).attr('type', 'hidden');
         $(inputField).attr('name', 'ccData');
@@ -791,7 +789,7 @@ function hideComponentFields(this: any) {
     $(this).on("click", showComponentFields);
 }
 
-function createAutoCompletes() { 
+function createAutoCompletes() {
     $("input[data-auto='yes']").each(function () {
         $(this).devbridgeAutocomplete({
             serviceUrl: server + 'proxy.php',

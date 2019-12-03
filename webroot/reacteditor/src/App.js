@@ -6,30 +6,16 @@ class App extends React.Component {
         super(props);
         this.state = {
             localisation: {},
-            formdescription: {},
+            formdescription: {}, 
             record: {}
         }
     }
-    async fetchit() {
-        try { 
-            let [fd, lc] = await Promise.all([
-                fetch("http://localhost:8888/server.php?data=formdescription"),
-                fetch("http://localhost:8888/localisation.php?lang=en")
-              ]);  
-              this.setState({ formdescription: fd });// metadata state, once
-              this.setState({ localisation: lc });
-    
-    
-            }
-            catch(err) {
-              console.log(err);
-            };
-    }
+   
     componentDidMount() {
-      
+
         // this.fetchit();
-        
-        
+
+
         // get JSON FormDescription 
 
 
@@ -39,28 +25,43 @@ class App extends React.Component {
         fetch(formurl)
             .then(res => res.json())
             .then((data) => {
+                console.log(data); // excellents
                 this.setState({ formdescription: data });// metadata state, once
-                this.setState({record: data.record[2].value}) // content state
+                this.setState({ record: data.record[2].value }) // content state
             });
-            // fetch('json_examples/devdata.json')
-            // .then(res => res.json())
-            // .then((data) => {
-            //         this.setState({formdescription: data});
-            // });
-        
+        // localfile system fetch does not work I need a server for 'pure' json
+        // fetch('json_examples/devdata.json')
+        // .then(res => res.json())
+        // .then((data) => {
+        //         this.setState({formdescription: data});
+        // });
+
         let localisationurl = "http://localhost:8888/localisation.php?lang=en";
         fetch(localisationurl)
             .then(res => res.json())
             .then((data) => {
                 this.setState({ localisation: data })
             });
-   
 
-    }  
-    filldata() {
-        // console.log(this.state.record);
 
     }
+    showRecordData() {
+        console.log('staterecord', this.state.record);
+
+    }
+    onToggleComponent = (e) => {
+        // e.preventDefault();
+        // console.log(e.target);
+        if (e.target.value === 'v') {
+            console.log('plus');
+        } else if (e.target.value === 'x') {
+            console.log('minus');
+        }
+        // let clone = <input id="fake" class="input_element" type="text" size="50" value="TODO" />;
+        // console.log({ clone});
+        console.log('now change the form_description state, set counter');
+    }
+
 
     onHandleDuplicateField = (e) => {
         // e.preventDefault();
@@ -85,13 +86,14 @@ class App extends React.Component {
         if (this.state.formdescription.hasOwnProperty('id') &&
             this.state.localisation.hasOwnProperty('uploadButton') &&
             this.state.record.hasOwnProperty('name')
-        ) { 
-            this.filldata();
+        ) {
+
+            this.showRecordData();
             return (
                 <div>
                     <Title title="HuC Editor React" />
                     <Form description={this.state.formdescription} localisation={this.state.localisation} record={this.state.record}
-                        send={this.onSubmittie} duplicate={this.onHandleDuplicateField} />
+                        send={this.onSubmittie} duplicate={this.onHandleDuplicateField} togglecomponent={this.onToggleComponent} />
                 </div>
             )
                 ;
@@ -103,10 +105,13 @@ class App extends React.Component {
 // COMPONENTS FOR NOW IN THE SAME FILE
 
 function Form(props) {
+    // console.log('propsinForm', props.record.value[2].value); // can reach it no errors
+    // console.log('propsfunction', props.togglecomponent); // can reach it no errors
+
     return (
         <div id="ccform">
             <Content content={props.description.content} duplicate={props.duplicate} record={props.record} />
-            <ButtonFrame localisation={props.localisation} send={props.send} />
+            <ButtonFrame localisation={props.localisation} send={props.send} togglecomponent={props.togglecomponent}/>
         </div>
     )
 }
@@ -116,44 +121,55 @@ function Content(props) {
     // console.log(Object.keys(props.record));
     // }
 
+        // console.log('propsfunction', props.togglecomponent); // can not reach it no errors WTF
+
     // let record = props.record;
-    let content = props.content.map((thing, index) => {
-        if (thing.type === 'Element') {
-            console.log(props);
-            // let elementvalue ='';
-            return (
-                <div key={index} className="element" data-name={thing.attributes.name} data-order="undefined">
-                    <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
-                    <div className="control">
-                        <Textelement thing={thing} />
-                        <LanguageList element={thing} selected="nl" />
-                        <DuplicateButton attributes={thing.attributes} id={thing.ID} duplicate={props.duplicate} />
-                        <Attributes thing={thing} />
-                        <ErrorMessage id={thing.ID} />
+    // console.log('props in Content', props);
+    // if (props.hasOwnProperty('record') && props.record.hasOwnProperty('value') && props.record.value[0].hasOwnProperty('name')) {
+        // console.log('propsinContent', props.record.value[2].value); // can reach it but errors WTF, can mitigate it with if clause but no rendering then
+
+        let content = props.content.map((thing, index) => {
+            if (thing.type === 'Element') {
+                // console.log(props);
+                // let elementvalue ='';
+                return (
+                    <div key={index} className="element" data-name={thing.attributes.name} data-order="undefined">
+                        <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
+                        <div className="control">
+                            <Textelement thing={thing} />
+                            <LanguageList element={thing} selected="nl" />
+                            <DuplicateButton attributes={thing.attributes} id={thing.ID} duplicate={props.duplicate} />
+                            <Attributes thing={thing} />
+                            <ErrorMessage id={thing.ID} />
+                        </div>
                     </div>
-                </div>
-            )
-        } else if (thing.type === 'Component') {
-            return (
-                <div key={index} id={thing.ID} className="component" data-name={thing.attributes.name} data-order="undefined" >
-                    <div className="componentHeader">{thing.attributes.label}<UploadForm attr={thing} />
-                        <ToggleComponent thing={thing} />
+                )
+            } else if (thing.type === 'Component') {
+                return (
+                    <div key={index} id={thing.ID} className="component" data-name={thing.attributes.name} data-order="undefined" >
+                        <div className="componentHeader">{thing.attributes.label}
+                        <UploadForm attr={thing} />
+                        <ToggleComponent thing={thing} togglecomponent={props.togglecomponent} />
+                        </div>
+                        <Content content={thing.content} duplicate={props.duplicate} />
                     </div>
-                    <Content content={thing.content} duplicate={props.duplicate} />
-                </div>
-            )
-        } else {
-            return <div>'NOTHING'</div>
-        }
-    });
-    return <React.Fragment>{content}</React.Fragment>
+                )
+            } else {
+                return <div>'NOTHING'</div>
+            }
+        });
+        return <React.Fragment>{content}</React.Fragment>
+    // } else {
+    //     return null;
+    // }
     // Fragments do not render anything, like an empty div, avoids useless divs new syntax: <> </> works also?
 }
 
 function ToggleComponent(props) {
+    // console.log(props); // no function... 
     let thing = props.thing;
     if (thing.attributes.CardinalityMin === "0") {
-        return <input className="optionalCompBtn" type="button" value="x" />;
+        return <input className="optionalCompBtn" type="button" value="x" onClick={props.togglecomponent} />;
     } else {
         return null;
     }
