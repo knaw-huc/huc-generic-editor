@@ -44,7 +44,6 @@ class FormBuilder {
     inputOK: boolean = true;
     isUploading: boolean = false;
     errorSpace: any;
-
     cloneBuffer: any;
     panelError: any;
     recordEdit: boolean = false;
@@ -843,10 +842,6 @@ function addUploadTrigger(obj: any) {
                 that.parent().parent().find(".headerMsg").html('ERROR!');
             }
         });
-
-
-
-
     }
 }
 
@@ -943,7 +938,6 @@ function parseRecord(obj: any, set: JQuery<any> | null) { // don't get the JQuer
     // console.log(obj);
     let nameStack = <any>{};
     for (let key in obj) {
-        // console.log(obj.value.key.va);
 
         if (obj[key] !== null) {
             if (nameStack[obj[key].name] === undefined) {

@@ -1,0 +1,275 @@
+{
+    "id": "metadata/u33707283d426f900d4d33707283d426f900d4d0d__hpp6demo",
+    "content": [
+        {
+            "type": "Component",
+            "ID": "5da6d8c6c5bce",
+            "level": 1,
+            "attributes": {
+                "label": "Dataset metadata",
+                "CardinalityMin": "1",
+                "CardinalityMax": "1",
+                "name": "DataSetMetadata"
+            },
+            "content": [
+                {
+                    "ID": "5da6d8c6c5d1e",
+                    "level": 2,
+                    "type": "Element",
+                    "attributes": {
+                        "CardinalityMin": "1",
+                        "width": 60,
+                        "label": "Title",
+                        "name": "title",
+                        "ValueScheme": "string"
+
+                    }
+                },
+                {
+                    "ID": "5da6d8c6c5d72",
+                    "level": 2,
+                    "type": "Element",
+                    "attributes": {
+                        "CardinalityMin": "1",
+                        "width": 60,
+                        "height": 8,
+                        "label": "Description",
+                        "name": "description",
+                        "ValueScheme": "string"
+                    }
+                },
+                {
+                    "ID": "5da6d8c6c5d9e",
+                    "level": 2,
+                    "type": "Element",
+                    "attributes": {
+                        "CardinalityMin": "1",
+                        "width": 80,
+                        "label": "URI",
+                        "name": "imageUrl",
+                        "ValueScheme": "string"
+                    }
+                },
+                {
+                    "ID": "5da6d8c6c5db3",
+                    "level": 2,
+                    "type": "Component",
+                    "attributes": {
+                        "CardinalityMin": "1",
+                        "CardinalityMax": "1",
+                        "label": "Owner",
+                        "name": "owner"
+                    },
+                    "content": [
+                        {
+                            "ID": "5da6d8c6c5dc8",
+                            "level": 3,
+                            "type": "Element",
+                            "attributes": {
+                                "CardinalityMin": "1",
+                                "label": "Name",
+                                "width": 60,
+                                "name": "name",
+                                "ValueScheme": "string"
+                            }
+                        },
+                        {
+                            "ID": "5da6d8c6c5dd5",
+                            "level": 3,
+                            "type": "Element",
+                            "attributes": {
+                                "CardinalityMin": "1",
+                                "label": "Email",
+                                "width": 60,
+                                "name": "email",
+                                "ValueScheme": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ID": "5da6d8c6c5e0a",
+                    "level": 2,
+                    "type": "Component",
+                    "attributes": {
+                        "CardinalityMin": "1",
+                        "CardinalityMax": "1",
+                        "label": "Contact",
+                        "name": "contact"
+                    },
+                    "content": [
+                        {
+                            "ID": "5da6d8c6c5e24",
+                            "level": 3,
+                            "type": "Element",
+                            "attributes": {
+                                "CardinalityMin": "1",
+                                "label": "Name",
+                                "width": 60,
+                                "name": "name",
+                                "ValueScheme": "string"
+                            }
+                        },
+                        {
+                            "ID": "5da6d8c6c5e34",
+                            "level": 3,
+                            "type": "Element",
+                            "attributes": {
+                                "CardinalityMin": "1",
+                                "label": "Email",
+                                "width": 60,
+                                "name": "email",
+                                "ValueScheme": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ID": "5da6d8c6c5e3e",
+                    "level": 2,
+                    "type": "Component",
+                    "attributes": {
+                        "CardinalityMin": "1",
+                        "CardinalityMax": "1",
+                        "label": "Provenance info",
+                        "name": "provenanceInfo"
+                    },
+                    "content": [
+                        {
+                            "ID": "5da6d8c6c5e48",
+                            "level": 3,
+                            "type": "Element",
+                            "attributes": {
+                                "CardinalityMin": "1",
+                                "label": "Title",
+                                "width": 50,
+                                "name": "title",
+                                "ValueScheme": "string"
+                            }
+                        },
+                        {
+                            "ID": "5da6d8c6c5e8b",
+                            "level": 3,
+                            "type": "Element",
+                            "attributes": {
+                                "CardinalityMin": "1",
+                                "label": "Body",
+                                "width": 90,
+                                "height": 8,
+                                "inputField": "multiple",
+                                "name": "body",
+                                "ValueScheme": "string"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ID": "5da6d8c6c5eff",
+                    "level": 2,
+                    "type": "Component",
+                    "attributes": {
+                        "CardinalityMin": "1",
+                        "CardinalityMax": "1",
+                        "label": "License",
+                        "name": "license"
+                    },
+                    "content": [
+                        {
+                            "ID": "5da6d8c6c5f24",
+                            "level": 3,
+                            "type": "Element",
+                            "attributes": {
+                                "CardinalityMin": "1",
+                                "label": "URI",
+                                "width": 100,
+                                "valueType": "string",
+                                "name": "uri",
+                                "ValueScheme": "string"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "record": [
+        [],
+        [],
+        {
+            "value": {
+                "name": "DataSetMetadata",
+                "type": "component",
+                "value": [
+                    {
+                        "name": "title",
+                        "type": "element",
+                        "value": "DWC Data"
+                    },
+                    {
+                        "name": "description",
+                        "type": "element",
+                        "value": "Biographical data of the Digital Web Centre for the History of Science (DWC)"
+                    },
+                    {
+                        "name": "imageUrl",
+                        "type": "element",
+                        "value": "http://www.dwc.knaw.nl/wp-content/bestanden/2012/02/1.nadepromotie.jpg"
+                    },
+                    {
+                        "name": "owner",
+                        "type": "component",
+                        "value": [
+                            {
+                                "name": "name",
+                                "type": "element",
+                                "value": "Huygens ING"
+                            },
+                            {
+                                "name": "email",
+                                "type": "element",
+                                "value": "owner@email.com"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "contact",
+                        "type": "component",
+                        "value": [
+                            {
+                                "name": "name",
+                                "type": "element",
+                                "value": "Huygens ING"
+                            },
+                            {
+                                "name": "email",
+                                "type": "element",
+                                "value": "dwc@huygens.knaw.nl"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "provenanceInfo",
+                        "type": "component",
+                        "value": [
+                            {
+                                "name": "title",
+                                "type": "element",
+                                "value": "Example Provenance Title"
+                            },
+                            {
+                                "name": "body",
+                                "type": "element",
+                                "value": "This is an example description for the example provenance."
+                            }
+                        ]
+                    },
+                    {
+                        "name": "license",
+                        "type": "element",
+                        "value": "https://creativecommons.org/publicdomain/zero/1.0/"
+                    }
+                ]
+            }
+        }
+    ]
+}

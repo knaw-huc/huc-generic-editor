@@ -1,3 +1,7 @@
+### 3-12-2019
+
+* experiments with different async/promises methods
+
 ### 27-11-2019
 
 * return null statement in component

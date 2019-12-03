@@ -60,7 +60,7 @@ var FormBuilder = /** @class */ (function () {
         html.setAttribute('data-order', element.attributes.initialOrder);
         var label = document.createElement('div');
         label.setAttribute('class', 'label');
-        if (element.attributes.CardinalityMin > 0) {
+        if (element.attributes.CardinalityMin > 0) { // Required element
             label.innerHTML = element.attributes.label + ' *';
         }
         else {
@@ -874,7 +874,6 @@ function parseRecord(obj, set) {
     // console.log(obj);
     var nameStack = {};
     for (var key in obj) {
-        // console.log(obj.value.key.va);
         if (obj[key] !== null) {
             if (nameStack[obj[key].name] === undefined) {
                 nameStack[obj[key].name] = 1;
