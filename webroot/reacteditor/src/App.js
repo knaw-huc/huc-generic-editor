@@ -105,13 +105,14 @@ class App extends React.Component {
 // COMPONENTS FOR NOW IN THE SAME FILE
 
 function Form(props) {
+    // console.log('Props in Form', props);
     // console.log('propsinForm', props.record.value[2].value); // can reach it no errors
     // console.log('propsfunction', props.togglecomponent); // can reach it no errors
 
     return (
         <div id="ccform">
-            <Content content={props.description.content} duplicate={props.duplicate} record={props.record} />
-            <ButtonFrame localisation={props.localisation} send={props.send} togglecomponent={props.togglecomponent}/>
+            <Content content={props.description.content} duplicate={props.duplicate} record={props.record} togglecomponent={props.togglecomponent} />
+            <ButtonFrame localisation={props.localisation} send={props.send} />
         </div>
     )
 }
@@ -120,11 +121,11 @@ function Content(props) {
     // if(props.record.hasOwnProperty("name")) {
     // console.log(Object.keys(props.record));
     // }
-
+    // console.log('props in Content', props);
         // console.log('propsfunction', props.togglecomponent); // can not reach it no errors WTF
 
-    // let record = props.record;
-    // console.log('props in Content', props);
+    let record = props.record; // the values of the fields
+    console.log('Record', record);
     // if (props.hasOwnProperty('record') && props.record.hasOwnProperty('value') && props.record.value[0].hasOwnProperty('name')) {
         // console.log('propsinContent', props.record.value[2].value); // can reach it but errors WTF, can mitigate it with if clause but no rendering then
 
