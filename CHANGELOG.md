@@ -1,5 +1,11 @@
+### 4-12-2019
+
+* handler in principle
+* test content
+
 ### 3-12-2019
 
+* solved propagating properties
 * experiments with different async/promises methods
 
 ### 27-11-2019

@@ -267,7 +267,8 @@
                                 "type": "element",
                                 "value": "owner@email.com"
                             }
-                        ]
+                        ],
+                        "visible": "yes"
                     },
                     {
                         "name": "contact",

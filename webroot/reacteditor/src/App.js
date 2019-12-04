@@ -10,16 +10,24 @@ class App extends React.Component {
             record: {}
         }
     }
-   
+    clickOp = (e) => {
+        console.log('klikkie op', e.target);
+        console.log('klikkie op', e.target.value);
+        if(e.target.value === 'x') {
+            console.log('v');
+            e.target.style.visibility = 'hidden';
+        } else if(e.target.value === 'y') {
+            console.log('x')
+        } else {
+            console.log('iets anders')
+        }
+    }
     componentDidMount() {
 
         // this.fetchit();
 
 
-        // get JSON FormDescription 
-
-
-
+        // get JSON FormDescription
 
         let formurl = "http://localhost:8888/server.php?data=formdescription";
         fetch(formurl)
@@ -27,40 +35,23 @@ class App extends React.Component {
             .then((data) => {
                 console.log(data); // excellents
                 this.setState({ formdescription: data });// metadata state, once
-                this.setState({ record: data.record[2].value }) // content state
+                this.setState({ record: data.record[2].value }) // record = value of the fields state
             });
-        // localfile system fetch does not work I need a server for 'pure' json
-        // fetch('json_examples/devdata.json')
-        // .then(res => res.json())
-        // .then((data) => {
-        //         this.setState({formdescription: data});
-        // });
-
+  
         let localisationurl = "http://localhost:8888/localisation.php?lang=en";
         fetch(localisationurl)
             .then(res => res.json())
             .then((data) => {
                 this.setState({ localisation: data })
             });
-
+        console.log('MOUNT');    
 
     }
     showRecordData() {
-        console.log('staterecord', this.state.record);
+        // console.log('staterecord', this.state.record);
 
     }
-    onToggleComponent = (e) => {
-        // e.preventDefault();
-        // console.log(e.target);
-        if (e.target.value === 'v') {
-            console.log('plus');
-        } else if (e.target.value === 'x') {
-            console.log('minus');
-        }
-        // let clone = <input id="fake" class="input_element" type="text" size="50" value="TODO" />;
-        // console.log({ clone});
-        console.log('now change the form_description state, set counter');
-    }
+  
 
 
     onHandleDuplicateField = (e) => {
@@ -93,12 +84,12 @@ class App extends React.Component {
                 <div>
                     <Title title="HuC Editor React" />
                     <Form description={this.state.formdescription} localisation={this.state.localisation} record={this.state.record}
-                        send={this.onSubmittie} duplicate={this.onHandleDuplicateField} togglecomponent={this.onToggleComponent} />
+                        send={this.onSubmittie} duplicate={this.onHandleDuplicateField} klikkie={this.clickOp} />
                 </div>
             )
                 ;
         } else {
-            return <div>...SSNORRRRRRR..R.R.RR.R.R.R.R...</div>;
+            return <div>LOADING...</div>;
         }
     }
 }
@@ -108,10 +99,10 @@ function Form(props) {
     // console.log('Props in Form', props);
     // console.log('propsinForm', props.record.value[2].value); // can reach it no errors
     // console.log('propsfunction', props.togglecomponent); // can reach it no errors
-
+    // debugger; //
     return (
-        <div id="ccform">
-            <Content content={props.description.content} duplicate={props.duplicate} record={props.record} togglecomponent={props.togglecomponent} />
+        <div id="ccform" onClick={props.klikkie}>
+            <Content content={props.description.content} duplicate={props.duplicate} record={props.record} klikkie={props.klikkie}/>
             <ButtonFrame localisation={props.localisation} send={props.send} />
         </div>
     )
@@ -124,8 +115,8 @@ function Content(props) {
     // console.log('props in Content', props);
         // console.log('propsfunction', props.togglecomponent); // can not reach it no errors WTF
 
-    let record = props.record; // the values of the fields
-    console.log('Record', record);
+    // let record = props.record; // the values of the fields
+    // console.log(record);
     // if (props.hasOwnProperty('record') && props.record.hasOwnProperty('value') && props.record.value[0].hasOwnProperty('name')) {
         // console.log('propsinContent', props.record.value[2].value); // can reach it but errors WTF, can mitigate it with if clause but no rendering then
 
@@ -135,7 +126,7 @@ function Content(props) {
                 // let elementvalue ='';
                 return (
                     <div key={index} className="element" data-name={thing.attributes.name} data-order="undefined">
-                        <div className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
+                        <div  className="label">{thing.attributes.label}{thing.attributes.CardinalityMin > 0 && ' *'}</div>
                         <div className="control">
                             <Textelement thing={thing} />
                             <LanguageList element={thing} selected="nl" />
@@ -146,11 +137,12 @@ function Content(props) {
                     </div>
                 )
             } else if (thing.type === 'Component') {
+                // let name = thing.attributes.name;
                 return (
                     <div key={index} id={thing.ID} className="component" data-name={thing.attributes.name} data-order="undefined" >
-                        <div className="componentHeader">{thing.attributes.label}
+                        <div onClick={props.klikkie} className="componentHeader">{thing.attributes.label}
                         <UploadForm attr={thing} />
-                        <ToggleComponent thing={thing} togglecomponent={props.togglecomponent} />
+                        <ToggleComponent thing={thing}  klikkie={props.klikkie} />
                         </div>
                         <Content content={thing.content} duplicate={props.duplicate} />
                     </div>
@@ -167,10 +159,11 @@ function Content(props) {
 }
 
 function ToggleComponent(props) {
-    // console.log(props); // no function... 
     let thing = props.thing;
+    // debugger;
     if (thing.attributes.CardinalityMin === "0") {
-        return <input className="optionalCompBtn" type="button" value="x" onClick={props.togglecomponent} />;
+        return <input className="optionalCompBtn" type="button" value="x" onClick={props.klikkie}/>;
+
     } else {
         return null;
     }
@@ -179,18 +172,19 @@ function ToggleComponent(props) {
 function ErrorMessage(props) {
     let errorID = "errorMsg_" + props.id;
     return <div id={errorID} className="errorMsg"></div>
-
 }
 
 function Textelement(props) {
     let thing = props.thing;
-    let textelement = <input id={thing.ID} className="input_element" type="text" size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.ID} />;
+    console.log(thing.attributes.name);
+    // determine value with lookup table
+    let value = "test"
+    let textelement = <input id={thing.ID} className="input_element" type="text" defaultValue={value} size={thing.attributes.width | 60} data-reset-value="line" data-validation-profile={thing.ID} />;
     if (thing.attributes.inputField === 'multiple') {
-        textelement = <textarea id={thing.ID} className="input_element" rows={thing.attributes.height | 8} cols={thing.attributes.width || 50} data-reset-value="line" data-validation-profile={thing.ID}></textarea>;
+        textelement = <textarea id={thing.ID} className="input_element" defaultValue={value} rows={thing.attributes.height | 8} cols={thing.attributes.width || 50} data-reset-value="line" data-validation-profile={thing.ID}></textarea>;
     }
     return textelement;
 }
-
 
 function Attributes(props) {
     let thing = props.thing;
