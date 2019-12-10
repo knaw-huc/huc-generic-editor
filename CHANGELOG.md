@@ -1,3 +1,9 @@
+### 10-12-2019
+
+* solved problem with cmdi-forms https://github.com/knaw-huc/clariah-cmdi-forms
+* clariah-cmdi-forms is dependent of the old structure and old code of the huc-generic-editor
+* restored structure and code from the last commit of RZ
+
 ### 4-12-2019
 
 * handler in principle
