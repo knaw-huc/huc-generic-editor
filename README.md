@@ -49,3 +49,12 @@ Works only after the install of the node dependencies.
 Use:
 ```./launch.sh```
 for starting the php-container for php and the react app.
+
+## Legacy
+
+In the main directory there are two directories, js and css with old but important versions of the HuC editor.
+Both directories and  are strictly used for the application:
+
+[Tweak Your CMDI Forms to the Max] (https://github.com/knaw-huc/clariah-cmdi-forms)
+
+In a later stage, this will be refactored or solved in another way.
