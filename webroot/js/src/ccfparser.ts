@@ -33,7 +33,6 @@ interface JQuery {
     })
         : any;
 }
-console.log('test');
 class FormBuilder {
     profileID: string = '';
     ccfOptions: any;
@@ -1137,8 +1136,3 @@ function getInputType(element: JQuery<HTMLElement>) {
         }
     }
 }
-
-
-
-
-

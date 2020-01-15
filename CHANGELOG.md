@@ -1,6 +1,6 @@
 ### 15-1-2020
 
-* added instructions for TypeScript developmebnt
+* added instructions for TypeScript development
 
 ### 10-12-2019
 

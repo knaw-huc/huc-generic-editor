@@ -61,12 +61,10 @@ In a later stage, this will be refactored or solved in another way.
 
 ## TS Development with Visual Studio Code
 
-Only once:
-- Install Extension: Live Server
-
+- install Extension: Live Server (only once)
 - From the Menu: Terminal => Run Task...  select tsc: Watch
-- Select webroot/index.html in editor
-- start LiveServer (click on GoLive)
+- select webroot/index.html in editor
+- start LiveServer (click on GoLive), you'll be redirected to: http://127.0.0.1:5500/webroot/index.html
 - Every save in webroot/src/ccfparser.ts will be compiled to ccfparser.js in the same directory
 - AND the LiveServer will refresh the page
 
