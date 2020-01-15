@@ -33,7 +33,7 @@ interface JQuery {
     })
         : any;
 }
-
+console.log('test');
 class FormBuilder {
     profileID: string = '';
     ccfOptions: any;

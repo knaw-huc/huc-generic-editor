@@ -58,3 +58,17 @@ Both directories and  are strictly used for the application:
 [Tweak Your CMDI Forms to the Max] (https://github.com/knaw-huc/clariah-cmdi-forms)
 
 In a later stage, this will be refactored or solved in another way.
+
+## TS Development with Visual Studio Code
+
+Only once:
+- Install Extension: Live Server
+
+- From the Menu: Terminal => Run Task...  select tsc: Watch
+- Select webroot/index.html in editor
+- start LiveServer (click on GoLive)
+- Every save in webroot/src/ccfparser.ts will be compiled to ccfparser.js in the same directory
+- AND the LiveServer will refresh the page
+
+
+

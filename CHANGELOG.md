@@ -1,3 +1,7 @@
+### 15-1-2020
+
+* added instructions for TypeScript developmebnt
+
 ### 10-12-2019
 
 * solved problem with cmdi-forms https://github.com/knaw-huc/clariah-cmdi-forms

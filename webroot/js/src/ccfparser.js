@@ -1,4 +1,5 @@
 "use strict";
+console.log('test');
 var FormBuilder = /** @class */ (function () {
     function FormBuilder(obj, ccfOptions) {
         this.profileID = '';
