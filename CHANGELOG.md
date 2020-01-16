@@ -1,3 +1,7 @@
+### 16-1-2020
+
+* bugfix instructions
+
 ### 15-1-2020
 
 * added instructions for TypeScript development

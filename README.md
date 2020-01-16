@@ -62,11 +62,9 @@ In a later stage, this will be refactored or solved in another way.
 ## TS Development with Visual Studio Code
 
 - install Extension: Live Server (only once)
-- From the Menu: Terminal => Run Task...  select tsc: Watch
+- From HuC editor: docker-compose up, you'll need the php server to load/server the configuration files
+- From the Menu: Terminal => Run Build Task...  select tsc: Watch
 - select webroot/index.html in editor
 - start LiveServer (click on GoLive), you'll be redirected to: http://127.0.0.1:5500/webroot/index.html
 - Every save in webroot/src/ccfparser.ts will be compiled to ccfparser.js in the same directory
 - AND the LiveServer will refresh the page
-
-
-
