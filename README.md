@@ -62,7 +62,7 @@ In a later stage, this will be refactored or solved in another way.
 ## TS Development with Visual Studio Code
 
 - install Extension: Live Server (only once)
-- From HuC editor: docker-compose up, you'll need the php server to load/server the configuration files
+- From HuC editor: docker-compose up, you'll need the php server to load/serve the configuration files
 - From the Menu: Terminal => Run Build Task...  select tsc: Watch
 - select webroot/index.html in editor
 - start LiveServer (click on GoLive), you'll be redirected to: http://127.0.0.1:5500/webroot/index.html
