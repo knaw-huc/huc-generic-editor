@@ -95,6 +95,9 @@ var formBuilder = {
                         attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
                         attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name);
                         attr_field.setAttribute("class", "element_attribute");
+                        if (element.attributes.readonly !== undefined && element.attributes.readonly === "yes") {
+                            attr_field.setAttribute('readonly', true);
+                        }
                 }
                 input.appendChild(attr_field);
             }
