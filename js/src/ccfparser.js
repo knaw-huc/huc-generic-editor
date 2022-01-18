@@ -391,6 +391,9 @@ var formBuilder = {
                 }
                 break;
         }
+        if (element.attributes.readonly !== undefined && element.attributes.readonly === "yes") {
+            control.setAttribute("readonly", true);
+        }
 
         return control;
     },
