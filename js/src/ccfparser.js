@@ -10,6 +10,7 @@ var recordEdit = false;
 
 var formBuilder = {
     profileID: null,
+    recordFile: null,
     start: function (obj) {
         this.profileID = obj.id;
         this.parse(obj.content);
@@ -98,6 +99,8 @@ var formBuilder = {
                         if (element.attributes.readonly !== undefined && element.attributes.readonly === "yes") {
                             attr_field.setAttribute('readonly', true);
                         }
+
+
                 }
                 input.appendChild(attr_field);
             }
@@ -162,6 +165,7 @@ var formBuilder = {
         html.appendChild(input);
         if (element.attributes.hide === 'yes') {
             $(html).addClass("hidden_element");
+            console.log('hide');
         }
         $("#" + componentID).append(html);
         validationProfiles[element.ID] = element;
@@ -398,6 +402,11 @@ var formBuilder = {
             control.setAttribute("readonly", true);
         }
 
+        //TODO: weghalen als tweak klaar is
+        if (element.attributes.name.indexOf('mmdc_') >= 0) {
+            control.setAttribute("readonly", true);
+        }
+
         return control;
     },
     setInputFieldWidth: function (value) {
@@ -583,7 +592,7 @@ function addUploadTrigger(obj) {
                 that.hide();
             },
             error: function (result) {
-                console.log(result);
+                //console.log(result);
                 that.parent().parent().find(".headerMsg").html('ERROR!');
             }
         });
@@ -653,6 +662,11 @@ function sendForm() {
     $(inputField).attr('type', 'hidden');
     $(inputField).attr('name', 'ccProfileID');
     $(inputField).val(formBuilder.profileID);
+    $(form).append(inputField);
+    var inputField = document.createElement('input');
+    $(inputField).attr('type', 'hidden');
+    $(inputField).attr('name', 'ccRecordFile');
+    $(inputField).val(formBuilder.recordFile);
     $(form).append(inputField);
     $("#ccform").append(form);
     $("#OKbtn").remove();
@@ -845,7 +859,7 @@ function duplicateField(obj, set) {
                 $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
                 $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
                 //$(this).val("");
-                console.log(obj);
+                //console.log(obj);
             });
    
     clonedElement.insertAfter(btn.parent());
@@ -980,7 +994,7 @@ function validateTextArea(key) {
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
                 for (var att in validationProfiles[key].attributes.attributeList) {
-                    console.log(validationProfiles[key].attributes.attributeList[att].Required);
+                    //console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {
                         inputOK = false;
                         $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
@@ -1005,7 +1019,7 @@ function validateSelect(key) {
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
                 for (var att in validationProfiles[key].attributes.attributeList) {
-                    console.log(validationProfiles[key].attributes.attributeList[att].Required);
+                    //console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {
                         inputOK = false;
                         $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
