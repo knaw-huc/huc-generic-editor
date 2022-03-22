@@ -9,7 +9,7 @@ and open the template in the editor.
 */
 
 .component{
-border:1px solid #000;
+border:1px solid #ddf;
 padding: 8px;
 }
 
@@ -20,6 +20,14 @@ float:left;
 
 input[type="file"]{
 margin-left: 20px;
+}
+
+input[readonly] {
+    background-color: #dddddd;
+}
+
+input[type="text"]{
+    margin-bottom: 8px;
 }
 
 #ccform{
@@ -35,12 +43,12 @@ position: fixed;
 top:67px;
 border: 1px solid #000;
 border-radius: 6px;
-background-color: #ddd;
+background-color: #dde;
 }
 
 .componentHeader{
 color:#fff;
-background-color: #777;
+background-color: #779;
 font-weight: bold;
 padding: 4px 6px;
 }
@@ -65,7 +73,7 @@ margin-left: 10px;
 
 .btn, .compBtn, .optionalCompBtn, .resetUploadBtn{
 color:#fff;
-background-color: #777;
+background-color: #779;
 font-weight: bold;
 height:20px;
 margin: 0 6px;
@@ -83,7 +91,7 @@ border: 1px solid #ccc;
 
 #OKbtn, #saveBtn, #resetBtn{
 color:#fff;
-background-color: #777;
+background-color: #082045;
 font-weight: bold;
 border: 1px solid #666;
 margin: 10px;
@@ -114,8 +122,8 @@ color:#deb9ac;
 display: inline-block;
 }
 
-.hidden_element{
-display:none;
+.hidden_element, .blocked_element{
+display:none !important;
 }
 
 
