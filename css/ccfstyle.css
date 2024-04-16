@@ -8,89 +8,89 @@ and open the template in the editor.
     Author     : robzeeman
 */
 
-.component{
-border:1px solid #ddf;
+.component {
+border: 1px solid #ddf;
 padding: 8px;
 }
 
-.component:first-child{
+.component:first-child {
 width: 80%;
-float:left;
+float: left;
 }
 
-input[type="file"]{
+input[type="file"] {
 margin-left: 20px;
 }
 
 input[readonly] {
-    background-color: #dddddd;
+background-color: #dddddd;
 }
 
-input[type="text"]{
-    margin-bottom: 8px;
+input[type="text"] {
+margin-bottom: 8px;
 }
 
-#ccform{
+#ccform {
 display: block;
 }
 
-#btnFrame{
+#btnFrame {
 display: inline-block;
 width: 18%;
 margin-left: 16px;
 position: fixed;
-//position: -webkit-sticky;
-top:67px;
+/ / position: -webkit-sticky;
+top: 67px;
 border: 1px solid #000;
 border-radius: 6px;
 background-color: #dde;
 }
 
-.componentHeader{
-color:#fff;
+.componentHeader {
+color: #fff;
 background-color: #779;
 font-weight: bold;
 padding: 4px 6px;
 }
 
-.label{
-margin-top:6px;
+.label {
+margin-top: 6px;
 }
 
-.resourceFileList{
-display:inline-block;
+.resourceFileList {
+display: inline-block;
 border: 1px solid #bbb;
 min-height: 20px;
 min-width: 200px;
 }
 
-.errorMsg{
+.errorMsg {
 color: #b00;
 font-weight: bold;
 display: inline;
 margin-left: 10px;
 }
 
-.btn, .compBtn, .optionalCompBtn, .resetUploadBtn{
-color:#fff;
+.btn, .compBtn, .optionalCompBtn, .resetUploadBtn {
+color: #fff;
 background-color: #779;
 font-weight: bold;
-height:20px;
+height: 20px;
 margin: 0 6px;
 width: 30px;
 border-radius: 4px;
 }
 
-.btn{
+.btn {
 border: 1px solid #666;
 }
 
-.compBtn, .optionalCompBtn, .resetUploadBtn{
+.compBtn, .optionalCompBtn, .resetUploadBtn {
 border: 1px solid #ccc;
 }
 
-#OKbtn, #saveBtn, #resetBtn{
-color:#fff;
+#OKbtn, #saveBtn, #resetBtn {
+color: #fff;
 background-color: #082045;
 font-weight: bold;
 border: 1px solid #666;
@@ -101,36 +101,59 @@ border-radius: 4px;
 width: 54px;
 }
 
-.disabledComponent, .disabledElement{
+.disabledComponent, .disabledElement, .isCollapsed {
 display: none;
 }
 
-.filename{
+.expander, .collapser {
+cursor: pointer;
+}
+
+.filename {
 display: block;
 margin: 4px 0 0 0;
 }
 
-.headerMsg{
+.headerMsg {
 display: inline-block;
 font-size: 10px;
 margin-left: 10px;
 font-weight: normal;
-color:#deb9ac;
+color: #deb9ac;
 }
 
-.fileForm{
+.fileForm {
 display: inline-block;
 }
 
-.hidden_element, .blocked_element{
-display:none !important;
+.hidden_element, .blocked_element {
+display: none !important;
+}
+
+.viewSpace {
+margin: 10px;
+display: block;
+}
+
+.expandAction{
+font-weight: bold;
+color: #082045;
+display: inline-block;
+padding-right: 10px;
+cursor: pointer;
 }
 
 
-#errorSpace p{
+#errorSpace p {
 margin-left: 10px;
 font-weight: bold;
-color:#b00;
+color: #b00;
+}
+
+.formExplanation{
+display: block;
+max-width: 600px;
+font-size: smaller;
 }
 
 

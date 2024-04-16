@@ -6,7 +6,7 @@ var isUploading = false;
 var cloneBuffer;
 var panelError;
 var recordEdit = false;
-
+var datePickerFormat = "yy-mm-dd";
 
 var formBuilder = {
     profileID: null,
@@ -64,6 +64,9 @@ var formBuilder = {
         }
         if (element.attributes.ValueScheme === 'date') {
             label.innerHTML = label.innerHTML + ' (' + ccfOptions.alert.date_string + ')';
+        }
+        if (element.attributes.ValueScheme === 'anyURI') {
+            label.innerHTML = label.innerHTML + ' (' + ccfOptions.alert.anyURI_string + ')';
         }
         input = document.createElement('div');
         input.setAttribute('class', 'control');
@@ -158,6 +161,13 @@ var formBuilder = {
             input.appendChild(btn);
         }
         html.appendChild(label);
+        // Add explanation
+        if (element.attributes.explanation !== undefined) {
+            explanation = document.createElement('div');
+            explanation.innerHTML = element.attributes.explanation;
+            explanation.setAttribute("class", "formExplanation");
+            html.appendChild(explanation);
+        }
         var Msg = document.createElement('div');
         Msg.setAttribute("id", "errorMsg_" + element.ID);
         Msg.setAttribute('class', 'errorMsg');
@@ -165,11 +175,16 @@ var formBuilder = {
         html.appendChild(input);
         if (element.attributes.hide === 'yes') {
             $(html).addClass("blocked_element");
-            console.log(element.attributes.name);
-            console.log($(html).attr("class"));
         }
         $("#" + componentID).append(html);
         validationProfiles[element.ID] = element;
+        if (element.attributes.ValueScheme === 'date') {
+            $("#" + element.ID).datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: datePickerFormat
+            });
+        }
     },
     handleComponent: function (component, componentID) {
         html = document.createElement('div');
@@ -181,9 +196,21 @@ var formBuilder = {
         html.setAttribute('id', component.ID);
         html.setAttribute('data-name', component.attributes.name);
         html.setAttribute('data-order', component.attributes.initialOrder);
+        if (component.attributes.class !== undefined) {
+            html.setAttribute('data-class', component.attributes.class);
+        }
         header = document.createElement('div');
         header.setAttribute('class', 'componentHeader');
-        header.innerHTML = component.attributes.label;
+        //header.innerHTML = component.attributes.label;
+        var span = document.createElement("span");
+        span.innerHTML = "▼ ";
+        span.setAttribute("class", "collapser");
+        $(span).on("click", showHideComponent);
+        header.appendChild(span);
+        var span = document.createElement("span");
+        span.innerHTML = component.attributes.label;
+        header.appendChild(span);
+
         if (component.attributes.CardinalityMin === '0')
         {
             var btn = document.createElement('input');
@@ -344,6 +371,9 @@ var formBuilder = {
 
             }
         }
+        if (element.attributes.class !== undefined) {
+            control.setAttribute('data-class', element.attributes.class);
+        }
         control.setAttribute('data-validation-profile', element.ID);
         //control.setAttribute('data-order', element.attributes.initialOrder);
         $(control).addClass("input_element");
@@ -405,10 +435,6 @@ var formBuilder = {
             control.setAttribute("readonly", true);
         }
 
-        //TODO: weghalen als tweak klaar is
-        if (element.attributes.name.indexOf('mmdc_') >= 0) {
-            control.setAttribute("readonly", true);
-        }
 
         return control;
     },
@@ -457,14 +483,14 @@ var formBuilder = {
         var buttonFrame = document.createElement('div');
         buttonFrame.setAttribute('id', 'btnFrame');
 
-        var control = document.createElement('input');
+        /*var control = document.createElement('input');
         control.setAttribute('type', 'button');
         control.setAttribute('value', ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
         control.onclick = function () {
             validate();
         };
-        buttonFrame.appendChild(control);
+        buttonFrame.appendChild(control);*/
 
         var control = document.createElement('input');
         control.setAttribute('type', 'button');
@@ -473,7 +499,7 @@ var formBuilder = {
         control.onclick = function () {
             sendForm();
         };
-        buttonFrame.appendChild(control);
+        //buttonFrame.appendChild(control);
 
         if (ccfOptions.resetButton !== null && ccfOptions.resetButton !== undefined) {
             var control = document.createElement('input');
@@ -483,14 +509,33 @@ var formBuilder = {
             control.onclick = function () {
                 history.back();
             };
-            buttonFrame.appendChild(control);
+            //buttonFrame.appendChild(control);
         }
+
+        var viewSpace = document.createElement('div');
+        $(viewSpace).addClass("viewSpace");
+        var action = document.createElement('span');
+        $(action).addClass("expandAction");
+        $(action).html("Collapse all");
+        action.onclick = function () {
+            collapseAll();
+        }
+        viewSpace.appendChild(action);
+        var action = document.createElement('span');
+        $(action).addClass("expandAction");
+        $(action).html("Expand all");
+        action.onclick = function () {
+            expandAll();
+        }
+        viewSpace.appendChild(action);
+        buttonFrame.appendChild(viewSpace);
         var errorSpace = document.createElement('div');
         errorSpace.setAttribute("id", "errorSpace");
         buttonFrame.appendChild(errorSpace);
         $("#ccform").append(buttonFrame);
     },
     languages: ['aa', 'ab', 'ae', 'af', 'ak', 'am', 'an', 'ar', 'as', 'av', 'ay', 'az', 'ba', 'be', 'bg', 'bh', 'bi', 'bm', 'bn', 'bo', 'br', 'bs', 'ca', 'ce', 'ch', 'co', 'cr', 'cs', 'cu', 'cv', 'cy', 'da', 'de', 'dv', 'dz', 'ee', 'el', 'en', 'eo', 'es', 'et', 'eu', 'fa', 'ff', 'fi', 'fj', 'fo', 'fr', 'fy', 'ga', 'gd', 'gl', 'gn', 'gu', 'gv', 'ha', 'he', 'hi', 'ho', 'hr', 'ht', 'hu', 'hy', 'hz', 'ia', 'id', 'ie', 'ig', 'ii', 'ik', 'io', 'is', 'it', 'iu', 'ja', 'jv', 'ka', 'kg', 'ki', 'kj', 'kk', 'kl', 'km', 'kn', 'ko', 'kr', 'ks', 'ku', 'kv', 'kw', 'ky', 'la', 'lb', 'lg', 'li', 'ln', 'lo', 'lt', 'lu', 'lv', 'mg', 'mh', 'mi', 'mk', 'ml', 'mn', 'mr', 'ms', 'mt', 'my', 'na', 'nb', 'nd', 'ne', 'ng', 'nl', 'nn', 'no', 'nr', 'nv', 'ny', 'oc', 'oj', 'om', 'or', 'os', 'pa', 'pi', 'pl', 'ps', 'pt', 'qu', 'rm', 'rn', 'ro', 'ru', 'rw', 'sa', 'sc', 'sd', 'se', 'sg', 'si', 'sk', 'sl', 'sm', 'sn', 'so', 'sq', 'sr', 'ss', 'st', 'su', 'sv', 'sw', 'ta', 'te', 'tg', 'th', 'ti', 'tk', 'tl', 'tn', 'to', 'tr', 'ts', 'tt', 'tw', 'ty', 'ug', 'uk', 'ur', 'uz', 've', 'vi', 'vo', 'wa', 'wo', 'xh', 'yi', 'yo', 'za', 'zh', 'zu'],
+    //languages: ['ara', 'eng', 'fra', 'fry', 'gla', 'deu', 'grc', 'heb', 'isl', 'gle', 'ita', 'lat', 'yid', 'gml', 'mis', 'nld', 'oci', 'pro', 'spa', 'und'],
     controlHash: []
 };
 
@@ -502,6 +547,27 @@ var clone = {
     }
 };
 
+
+function collapseAll() {
+    $(".collapser").click();
+}
+
+function expandAll() {
+    $(".expander").click();
+}
+
+function showHideComponent() {
+    var that = $(this);
+    if ($(that).hasClass("expander")) {
+        $(that).addClass('collapser').removeClass('expander');
+        $(that).html("▼ ");
+        expandComponent(that);
+    } else {
+        $(that).addClass('expander').removeClass('collapser');
+        $(that).html("▶ ");
+        collapseComponent(that);
+    }
+}
 
 function showComponentFields() {
     var that = $(this);
@@ -552,6 +618,24 @@ function hideComponentFields() {
     $(this).on("click", showComponentFields);
 }
 
+function collapseComponent(obj) {
+    var comp = obj.parent().parent();
+    $(comp).children().each(function () {
+        if ($(this).hasClass('element') || $(this).hasClass('component')) {
+            $(this).addClass('isCollapsed');
+        }
+    });
+}
+
+function expandComponent(obj) {
+    var comp = obj.parent().parent();
+    $(comp).children().each(function () {
+        if ($(this).hasClass('isCollapsed')) {
+            $(this).removeClass('isCollapsed');
+        }
+    });
+}
+
 function createAutoCompletes() {
     $("input[data-auto='yes']").each(function () {
         $(this).devbridgeAutocomplete({
@@ -579,7 +663,6 @@ function addUploadTrigger(obj) {
     msg.setAttribute("id", "msg" + that.attr("id"));
     msg.setAttribute("class", "headerMsg");
     msg.innerHTML = 'Uploading...';
-    //console.log(ccfOptions.uploadButton.actionURI);
     that.parent().parent().append(msg);
     var formdata = new FormData();
     if ($(obj).prop('files').length > 0) {
@@ -598,7 +681,6 @@ function addUploadTrigger(obj) {
                 that.hide();
             },
             error: function (result) {
-                //console.log(result);
                 that.parent().parent().find(".headerMsg").html('ERROR!');
             }
         });
@@ -846,7 +928,6 @@ function duplicateField(obj, set) {
                 var id = $(this).attr('data-validation-profile');
                 $(this).val(obj.value);
                 tempID = id + '_' + next;
-                console.log(tempID);
                 $(this).attr('id', tempID);
             });
     clonedElement.find(".errorMsg").each(
@@ -900,6 +981,20 @@ function duplicateComponent(obj, set) {
         var id = $(this).attr("id");
         $(this).attr('id', id + '_' + next);
         $(this).val("");
+        if (validationProfiles[$(this).attr("data-validation-profile")].attributes.ValueScheme === 'date') {
+            $(this).removeClass('hasDatepicker').removeData('datepicker').unbind()
+                .datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    dateFormat: datePickerFormat
+                });
+        }
+    });
+    clonedComponent.find(".expander").each(function () {
+        $(this).on("click", showHideComponent);
+    });
+    clonedComponent.find(".collapser").each(function () {
+        $(this).on("click", showHideComponent);
     });
     clonedComponent.find(".uploader").each(function () {
         var id = $(this).attr("id");
