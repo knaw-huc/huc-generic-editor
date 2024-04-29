@@ -2,9 +2,7 @@ version: '2'
 
 services:
   cmdicdn:
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    image: registry.diginfra.net/tsd/cmdi-form_checker:1.0
     container_name: cmdicdn
     restart: unless-stopped
     labels:

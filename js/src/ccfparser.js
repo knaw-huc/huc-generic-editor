@@ -639,7 +639,7 @@ function expandComponent(obj) {
 function createAutoCompletes() {
     $("input[data-auto='yes']").each(function () {
         $(this).devbridgeAutocomplete({
-            serviceUrl: server + 'proxy.php',
+            serviceUrl: $(this).attr("data-uri"),
             dataType: 'text',
             paramName: 'q'
         });
@@ -649,7 +649,7 @@ function createAutoCompletes() {
 function addAutoComplete(clonedComponent) {
     clonedComponent.find("input[data-auto='yes']").each(function () {
         $(this).devbridgeAutocomplete({
-            serviceUrl: server + 'proxy.php',
+            serviceUrl: $(this).attr("data-uri"),
             dataType: 'text',
             paramName: 'q'
         });
