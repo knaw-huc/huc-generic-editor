@@ -723,6 +723,7 @@ function addUploadTrigger(obj) {
 }
 
 function validate() {
+    expandAll();
     $("#errorSpace").html("");
     panelError = document.createElement("div");
     inputOK = true;
@@ -754,6 +755,7 @@ function validate() {
 ;
 
 function sendForm() {
+    expandAll();
     var formValues = [];
     $(".clonedComponent").each(function () {
         $(this).attr("class", "component");
