@@ -490,7 +490,7 @@ var formBuilder = {
         control.onclick = function () {
             validate();
         };
-        buttonFrame.appendChild(control);*/
+        buttonFrame.appendChild(control);
 
         var control = document.createElement('input');
         control.setAttribute('type', 'button');
