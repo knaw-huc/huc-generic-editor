@@ -8,6 +8,7 @@ var panelError;
 var recordEdit = false;
 var datePickerFormat = "yy-mm-dd";
 
+
 var formBuilder = {
     profileID: null,
     recordFile: null,
@@ -65,9 +66,6 @@ var formBuilder = {
         if (element.attributes.ValueScheme === 'date') {
             label.innerHTML = label.innerHTML + ' (' + ccfOptions.alert.date_string + ')';
         }
-        if (element.attributes.ValueScheme === 'anyURI') {
-            label.innerHTML = label.innerHTML + ' (' + ccfOptions.alert.anyURI_string + ')';
-        }
         input = document.createElement('div');
         input.setAttribute('class', 'control');
         control = this.createControl(element);
@@ -86,7 +84,7 @@ var formBuilder = {
                 option.innerHTML = this.languages[key];
                 dropdown.appendChild(option);
             }
-            $(dropdown).val(ccfOptions.language);
+
             input.appendChild(dropdown);
         }
         if (element.attributes.attributeList !== undefined) {
@@ -102,72 +100,22 @@ var formBuilder = {
                         if (element.attributes.readonly !== undefined && element.attributes.readonly === "yes") {
                             attr_field.setAttribute('readonly', true);
                         }
-
-
                 }
                 input.appendChild(attr_field);
             }
         }
-        if (element.attributes.duplicate !== undefined)
-        {
+        if (element.attributes.duplicate !== undefined) {
             var btn = document.createElement('input');
             btn.setAttribute('type', 'button');
             btn.setAttribute('value', '+');
             btn.setAttribute('class', 'btn');
             btn.setAttribute('data-source', element.ID);
-            btn.onclick =
-                    function (e) {
-                        var next = clone.nextClonePostfix();
-                        var that = $(this);
-                        var tempID;
-                        e.preventDefault();
-                        clonedElement = that.parent().clone();
-                        clonedElement.attr('class', 'clone');
-                        clonedElement.find(".btn").each(
-                                function () {
-                                    $(this).attr('value', '-');
-                                    $(this).on("click", function (e) {
-                                        e.preventDefault();
-                                        var that = $(this);
-                                        that.parent().remove();
-                                    });
-                                });
-                        clonedElement.find("#" + that.attr('data-source')).each(
-                                function () {
-                                    var id = $(this).attr('id');
-                                    $(this).val("");
-                                    tempID = id + '_' + next;
-                                    $(this).attr('id', tempID);
-                                });
-                        clonedElement.find(".errorMsg").each(
-                                function () {
-                                    var id = $(this).attr('id');
-                                    $(this).attr('id', id + '_' + next);
-                                    $(this).html("");
-                                });
-                        clonedElement.find(".language_dd").each(
-                                function () {
-                                    $(this).attr('id', 'lang_' + tempID);
-                                    $(this).val(ccfOptions.language);
-                                });
-                        clonedElement.find(".element_attribute").each(
-                                function () {
-                                    $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
-                                    $(this).val("");
-                                });
-                        clonedElement.insertAfter(that.parent());
-                        createAutoCompletes();
-                    };
+            $(btn).on("click", function () {
+                cloneElement(btn)
+            });
             input.appendChild(btn);
         }
         html.appendChild(label);
-        // Add explanation
-        if (element.attributes.explanation !== undefined) {
-            explanation = document.createElement('div');
-            explanation.innerHTML = element.attributes.explanation;
-            explanation.setAttribute("class", "formExplanation");
-            html.appendChild(explanation);
-        }
         var Msg = document.createElement('div');
         Msg.setAttribute("id", "errorMsg_" + element.ID);
         Msg.setAttribute('class', 'errorMsg');
@@ -196,23 +144,19 @@ var formBuilder = {
         html.setAttribute('id', component.ID);
         html.setAttribute('data-name', component.attributes.name);
         html.setAttribute('data-order', component.attributes.initialOrder);
-        if (component.attributes.class !== undefined) {
-            html.setAttribute('data-class', component.attributes.class);
-        }
         header = document.createElement('div');
         header.setAttribute('class', 'componentHeader');
         //header.innerHTML = component.attributes.label;
         var span = document.createElement("span");
         span.innerHTML = "▼ ";
         span.setAttribute("class", "collapser");
-        $(span).on("click", showHideComponent);
+        $(span).on("click", thisShowHideComponent);
         header.appendChild(span);
         var span = document.createElement("span");
         span.innerHTML = component.attributes.label;
         header.appendChild(span);
 
-        if (component.attributes.CardinalityMin === '0')
-        {
+        if (component.attributes.CardinalityMin === '0') {
             var btn = document.createElement('input');
             btn.setAttribute('type', 'button');
             btn.setAttribute('value', "✓");
@@ -228,8 +172,7 @@ var formBuilder = {
             objectDisplay = true;
         }
 
-        if (component.attributes.CardinalityMax !== '1')
-        {
+        if (component.attributes.CardinalityMax !== '1') {
             //header.innerHTML = component.attributes.label;
             var btn = document.createElement('input');
             btn.setAttribute('type', 'button');
@@ -239,53 +182,8 @@ var formBuilder = {
             if (component.attributes.resource !== undefined || component.attributes.CardinalityMin === '0') {
                 $(btn).hide();
             }
-            btn.onclick = function (e) {
-                var next = clone.nextClonePostfix();
-                var that = $(this);
-                e.preventDefault();
-                clonedComponent = that.parent().parent().clone();
-                clonedComponent.addClass("clonedComponent");
-                clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
-                clonedComponent.find(".compBtn").each(
-                        function () {
-                            $(this).attr('value', '-');
-                            $(this).on("click", function (e) {
-                                e.preventDefault();
-                                var that = $(this);
-                                that.parent().parent().remove();
-                            });
-                        });
-                clonedComponent.find(".clone").each(
-                        function () {
-                            $(this).remove();
-                        });
-                clonedComponent.find(".errorMsg").each(
-                        function () {
-                            $(this).html('');
-                            var id = $(this).attr('id');
-                            $(this).attr('id', id + '_' + next);
-                        });
-                clonedComponent.find(".input_element").each(function () {
-                    var id = $(this).attr("id");
-                    $(this).attr('id', id + '_' + next);
-                    $(this).val("");
-                });
-                clonedComponent.find(".uploader").each(function () {
-                    var id = $(this).attr("id");
-                    $(this).attr('id', id + '_' + next);
-                    $(this).val("");
-                    $(this).show();
-                    $(this).on("change", function () {
-                        addUploadTrigger(this);
-                    });
-                });
-                clonedComponent.find(".headerMsg").remove();
-                clonedComponent.find(".optionalCompBtn").remove();
-                clonedComponent.attr("data-filename", null);
-                //that.parent().parent().parent().append(clonedComponent);
-                clonedComponent.insertAfter(that.parent().parent());
-                addAutoComplete(clonedComponent);
-            };
+            btn.onclick = cloneComponent;
+
             header.appendChild(btn);
         }
         if (component.attributes.resource !== undefined) {
@@ -321,11 +219,9 @@ var formBuilder = {
             header.appendChild(form);
         }
         html.appendChild(header);
-        if (componentID === undefined)
-        {
+        if (componentID === undefined) {
             $("#ccform").append(html);
-        }
-        else {
+        } else {
             $("#" + componentID).append(html);
         }
     },
@@ -428,6 +324,7 @@ var formBuilder = {
                 control.setAttribute('id', element.ID);
                 if (element.attributes.autoCompleteURI !== undefined) {
                     control.setAttribute("data-auto", "yes");
+                    control.setAttribute("data-uri", element.attributes.autoCompleteURI);
                 }
                 break;
         }
@@ -490,7 +387,7 @@ var formBuilder = {
         control.onclick = function () {
             validate();
         };
-        buttonFrame.appendChild(control);*/
+        buttonFrame.appendChild(control);
 
         var control = document.createElement('input');
         control.setAttribute('type', 'button');
@@ -547,6 +444,139 @@ var clone = {
     }
 };
 
+function cloneElement(obj) {
+    //console.log('ja');
+    var next = clone.nextClonePostfix();
+    var that = $(obj);
+    var tempID;
+    clonedElement = that.parent().clone();
+    clonedElement.attr('class', 'clone');
+    clonedElement.find(".btn").each(
+        function () {
+            $(this).attr('value', '-');
+            $(this).on("click", function (e) {
+                e.preventDefault();
+                var that = $(this);
+                that.parent().remove();
+            });
+        });
+    clonedElement.find("#" + that.attr('data-source')).each(
+        function () {
+            var id = $(this).attr('id');
+            $(this).val("");
+            tempID = id + '_' + next;
+            $(this).attr('id', tempID);
+        });
+    clonedElement.find(".input_element").each(
+        function () {
+            $(this).attr("id", $(this).attr("data-validation-profile") + "_" + next);
+            $(this).val("");
+        });
+    clonedElement.find(".errorMsg").each(
+        function () {
+            var id = $(this).attr('id');
+            $(this).attr('id', "errorMsg_" + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
+            $(this).html("");
+        });
+    clonedElement.find(".language_dd").each(
+        function () {
+            $(this).attr('id', 'lang_' + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
+            //console.log(language);
+            $(this).val(language);
+        });
+    clonedElement.find(".element_attribute").each(
+        function () {
+            $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + $(this).parent().children(':nth-child(1)').attr("data-validation-profile"));
+            $(this).val("");
+        });
+    clonedElement.insertAfter(that.parent());
+    createAutoCompletes();
+};
+
+function cloneComponent(e) {
+    var next = clone.nextClonePostfix();
+    var that = $(this);
+    var tmpID;
+    e.preventDefault();
+    clonedComponent = that.parent().parent().clone();
+    tmpID = clonedComponent.attr("id");
+    clonedComponent.addClass("clonedComponent");
+    clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
+    clonedComponent.find(".compBtn").each(
+        function () {
+            if ($(this).attr("data-source") === tmpID) {
+                $(this).attr('value', '-');
+                $(this).on("click", function (e) {
+                    e.preventDefault();
+                    var that = $(this);
+                    that.parent().parent().remove();
+                });
+            } else {
+                this.onclick = cloneComponent;
+            }});
+    clonedComponent.find(".clone").each(
+        function () {
+            $(this).remove();
+        });
+    clonedComponent.find(".clonedComponent").each(
+        function () {
+            $(this).remove();
+        });
+    clonedComponent.find(".input_element").each(function () {
+        var new_id = $(this).attr("data-validation-profile") + '_' + next.toString();
+        $(this).attr('id', new_id);
+        $(this).val("");
+        if (validationProfiles[$(this).attr("data-validation-profile")].attributes.ValueScheme === 'date') {
+            $(this).removeClass('hasDatepicker').removeData('datepicker').unbind()
+                .datepicker({
+                    changeMonth: true,
+                    changeYear: true,
+                    dateFormat: datePickerFormat
+                });
+        }
+    });
+    clonedComponent.find(".errorMsg").each(
+        function () {
+            $(this).html('');
+            $(this).attr('id', "errorMsg_" + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
+        });
+    clonedComponent.find(".btn").each(function () {
+        $(this).on("click", function () {
+            cloneElement(this)
+        });
+    });
+
+    clonedComponent.find(".collapser").each(function () {
+        $(this).on("click", function () {
+            showHideComponent(this)
+        });
+    });
+    clonedComponent.find(".expander").each(function () {
+        $(this).on("click", function () {
+            showHideComponent(this)
+        });
+    });
+
+
+    clonedComponent.find(".language_dd").each(function () {
+        $(this).attr('id', 'lang_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
+        $(this).val(language);
+    });
+    clonedComponent.find(".uploader").each(function () {
+        $(this).attr('id', 'upload_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
+        $(this).val("");
+        $(this).show();
+        $(this).on("change", function () {
+            addUploadTrigger(this);
+        });
+    });
+    clonedComponent.find(".headerMsg").remove();
+    clonedComponent.find(".optionalCompBtn").remove();
+    clonedComponent.attr("data-filename", null);
+    clonedComponent.insertAfter(that.parent().parent());
+    addAutoComplete(clonedComponent);
+};
+
 
 function collapseAll() {
     $(".collapser").click();
@@ -556,8 +586,8 @@ function expandAll() {
     $(".expander").click();
 }
 
-function showHideComponent() {
-    var that = $(this);
+function showHideComponent(obj) {
+    var that = $(obj);
     if ($(that).hasClass("expander")) {
         $(that).addClass('collapser').removeClass('expander');
         $(that).html("▼ ");
@@ -567,6 +597,11 @@ function showHideComponent() {
         $(that).html("▶ ");
         collapseComponent(that);
     }
+}
+
+function thisShowHideComponent() {
+    var that = $(this);
+    showHideComponent(that);
 }
 
 function showComponentFields() {
@@ -990,11 +1025,15 @@ function duplicateComponent(obj, set) {
                 });
         }
     });
-    clonedComponent.find(".expander").each(function () {
-        $(this).on("click", showHideComponent);
-    });
     clonedComponent.find(".collapser").each(function () {
-        $(this).on("click", showHideComponent);
+        $(this).on("click", function () {
+            showHideComponent(this)
+        });
+    });
+    clonedComponent.find(".expander").each(function () {
+        $(this).on("click", function () {
+            showHideComponent(this)
+        });
     });
     clonedComponent.find(".uploader").each(function () {
         var id = $(this).attr("id");
@@ -1004,6 +1043,7 @@ function duplicateComponent(obj, set) {
             addUploadTrigger(this);
         });
     });
+
 
 //    clonedComponent.find("input[type='reset']").each(function () {
 //       var target = $(this).attr('target');
@@ -1017,6 +1057,7 @@ function duplicateComponent(obj, set) {
     clonedComponent.attr("data-filename", null);
     $(set).append(clonedComponent);
     addAutoComplete(clonedComponent);
+
 }
 
 
