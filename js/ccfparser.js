@@ -483,7 +483,7 @@ var formBuilder = {
         var buttonFrame = document.createElement('div');
         buttonFrame.setAttribute('id', 'btnFrame');
 
-        /*var control = document.createElement('input');
+        var control = document.createElement('input');
         control.setAttribute('type', 'button');
         control.setAttribute('value', ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
@@ -499,7 +499,7 @@ var formBuilder = {
         control.onclick = function () {
             sendForm();
         };
-        //buttonFrame.appendChild(control);
+        buttonFrame.appendChild(control);
 
         if (ccfOptions.resetButton !== null && ccfOptions.resetButton !== undefined) {
             var control = document.createElement('input');
@@ -509,7 +509,7 @@ var formBuilder = {
             control.onclick = function () {
                 history.back();
             };
-            //buttonFrame.appendChild(control);
+            buttonFrame.appendChild(control);
         }
 
         var viewSpace = document.createElement('div');
