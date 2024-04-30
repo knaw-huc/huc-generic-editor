@@ -428,6 +428,7 @@ var formBuilder = {
                 control.setAttribute('id', element.ID);
                 if (element.attributes.autoCompleteURI !== undefined) {
                     control.setAttribute("data-auto", "yes");
+                    control.setAttribute("data-uri", element.attributes.autoCompleteURI);
                 }
                 break;
         }
