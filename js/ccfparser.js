@@ -116,6 +116,13 @@ var formBuilder = {
             input.appendChild(btn);
         }
         html.appendChild(label);
+        // Add explanation
+        if (element.attributes.explanation !== undefined) {
+            explanation = document.createElement('div');
+            explanation.innerHTML = element.attributes.explanation;
+            explanation.setAttribute("class", "formExplanation");
+            html.appendChild(explanation);
+        }
         var Msg = document.createElement('div');
         Msg.setAttribute("id", "errorMsg_" + element.ID);
         Msg.setAttribute('class', 'errorMsg');
