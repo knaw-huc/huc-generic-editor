@@ -153,6 +153,7 @@ var formBuilder = {
         html.setAttribute('data-order', component.attributes.initialOrder);
         header = document.createElement('div');
         header.setAttribute('class', 'componentHeader');
+        $(header).addClass('compLevel' + component.level);
         //header.innerHTML = component.attributes.label;
         var span = document.createElement("span");
         span.innerHTML = "▼ ";
@@ -580,7 +581,13 @@ function cloneComponent(e) {
     clonedComponent.find(".headerMsg").remove();
     clonedComponent.find(".optionalCompBtn").remove();
     clonedComponent.attr("data-filename", null);
-    clonedComponent.insertAfter(that.parent().parent());
+    list = $('[id^=' + tmpID + '_]');
+    if (list.length) {
+        clonedComponent.insertAfter(list.last());
+    } else {
+        clonedComponent.insertAfter(that.parent().parent());
+    }
+    //that.parent().parent().parent().append(clonedComponent);
     addAutoComplete(clonedComponent);
 };
 
