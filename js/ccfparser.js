@@ -490,7 +490,7 @@ function cloneElement(obj) {
         function () {
             $(this).attr('id', 'lang_' + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
             //console.log(language);
-            $(this).val(language);
+            //$(this).val(language);
         });
     clonedElement.find(".element_attribute").each(
         function () {
