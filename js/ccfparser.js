@@ -7,6 +7,7 @@ var cloneBuffer;
 var panelError;
 var recordEdit = false;
 var datePickerFormat = "yy-mm-dd";
+var yearRange = '1900:2040'
 
 
 var formBuilder = {
@@ -137,6 +138,7 @@ var formBuilder = {
             $("#" + element.ID).datepicker({
                 changeMonth: true,
                 changeYear: true,
+                yearRange: yearRange,
                 dateFormat: datePickerFormat
             });
         }
@@ -539,6 +541,7 @@ function cloneComponent(e) {
                 .datepicker({
                     changeMonth: true,
                     changeYear: true,
+                    yearRange: yearRange,
                     dateFormat: datePickerFormat
                 });
         }
@@ -1037,6 +1040,7 @@ function duplicateComponent(obj, set) {
                 .datepicker({
                     changeMonth: true,
                     changeYear: true,
+                    yearRange: yearRange,
                     dateFormat: datePickerFormat
                 });
         }
