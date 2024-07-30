@@ -34,6 +34,7 @@ var formBuilder = {
                 case 'Component':
                     this.handleComponent(o, componentID);
                     this.parse(o.content, o.ID);
+                    objectDisplay = true;
                     break;
                 default:
                     Alert('Error: property type not defined');
@@ -234,6 +235,7 @@ var formBuilder = {
         } else {
             $("#" + componentID).append(html);
         }
+        //objectDisplay = true;
     },
     createControl: function (element) {
         var type = typeof element.attributes.ValueScheme;
