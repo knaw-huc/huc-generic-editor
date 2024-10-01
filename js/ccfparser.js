@@ -8,6 +8,16 @@ var panelError;
 var recordEdit = false;
 var datePickerFormat = "yy-mm-dd";
 var yearRange = '1900:2040'
+var ccfTrackedFunctions = [];
+
+
+function validateTracker() {
+    if (ccfTrackedFunctions.length > 0) {
+        for (var key in ccfTrackedFunctions) {
+            ccfTrackedFunctions[key]();
+        }
+    }
+}
 
 
 var formBuilder = {
@@ -241,6 +251,9 @@ var formBuilder = {
         var type = typeof element.attributes.ValueScheme;
         if (type === "object") {
             control = this.setValueSchemeElement(element.attributes.ValueScheme[0], element.ID);
+            if (element.attributes !== undefined && element.attributes.readonly !== undefined && element.attributes.readonly === "yes") {
+                control.setAttribute("disabled", true);
+            }
         }
         else {
             switch (element.attributes.ValueScheme) {
@@ -305,6 +318,7 @@ var formBuilder = {
 
             control.appendChild(option);
         }
+
         return control;
     },
     createTextInputField: function (element) {
@@ -340,7 +354,7 @@ var formBuilder = {
                 }
                 break;
         }
-        if (element.attributes.readonly !== undefined && element.attributes.readonly === "yes") {
+        if (element.attributes !== undefined && element.attributes.readonly !== undefined && element.attributes.readonly === "yes") {
             control.setAttribute("readonly", true);
         }
 
@@ -396,9 +410,18 @@ var formBuilder = {
         control.setAttribute('type', 'button');
         control.setAttribute('value', ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
-        control.onclick = function () {
-            validate();
-        };
+        if (ccfOptions.submitButton.actionURI === ccfOptions.saveButton.actionURI)
+        {
+            control.onclick = function () {
+                validate();
+            };
+        } else {
+            control.onclick = function () {
+                window.location.assign(ccfOptions.submitButton.actionURI);
+            };
+
+        }
+
         buttonFrame.appendChild(control);
 
         var control = document.createElement('input');
@@ -416,7 +439,7 @@ var formBuilder = {
             control.setAttribute('value', ccfOptions.resetButton.label);
             control.setAttribute('id', 'resetBtn');
             control.onclick = function () {
-                history.back();
+                window.location.assign(ccfOptions.resetButton.actionURI);
             };
             buttonFrame.appendChild(control);
         }
@@ -454,6 +477,12 @@ var clone = {
         this.clonePostfix++;
         return this.clonePostfix;
     }
+};
+
+function create_id() {
+    const dateString = Date.now().toString(36);
+    const randomness = Math.random().toString(36).substr(2);
+    return dateString + randomness;
 };
 
 function cloneElement(obj) {
@@ -503,6 +532,7 @@ function cloneElement(obj) {
         });
     clonedElement.insertAfter(that.parent());
     createAutoCompletes();
+    validateTracker();
 };
 
 function cloneComponent(e) {
@@ -594,6 +624,7 @@ function cloneComponent(e) {
     }
     //that.parent().parent().parent().append(clonedComponent);
     addAutoComplete(clonedComponent);
+    validateTracker()
 };
 
 
