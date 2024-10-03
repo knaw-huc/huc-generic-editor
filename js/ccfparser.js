@@ -24,6 +24,7 @@ var formBuilder = {
     profileID: null,
     recordFile: null,
     start: function (obj) {
+        console.log(create_local_id());
         this.profileID = obj.id;
         this.parse(obj.content);
         this.createButtons();
@@ -479,10 +480,11 @@ var clone = {
     }
 };
 
-function create_id() {
-    const dateString = Date.now().toString(36);
+//TODO Use this id's instead of the clone object id's after cloning
+function create_local_id() {
     const randomness = Math.random().toString(36).substr(2);
-    return dateString + randomness;
+    const dateString = Date.now().toString(36);
+    return dateString + '-' + randomness;
 };
 
 function cloneElement(obj) {
@@ -947,7 +949,7 @@ function parseRecord(obj, set) {
                 if (set === null) {
                     var newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 } else {
-                    var newSet = $(set).find("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
+                    var newSet = $(set).children("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 }
 
 //                if (obj[key].attributes !== undefined) {
