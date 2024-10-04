@@ -39,7 +39,7 @@ function bind_skos_lists() {
 }
 
 function fill_skos_list(letter) {
-    var host = window.location.protocol + '//' + window.location.host + skosListRegistry.skosURI + '&?q=^' + letter;
+    var host = window.location.protocol + '//' + window.location.host + skosListRegistry.skosURI + '?q=^' + letter;
 
     $.ajax({
         type: "GET",
