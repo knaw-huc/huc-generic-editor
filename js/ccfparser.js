@@ -567,6 +567,9 @@ function cloneComponent(e) {
         function () {
             $(this).remove();
         });
+    clonedComponent.find(".component").each(function () {
+        $(this).attr("id", $(this).attr("id") + '_' + next.toString());
+    })
     clonedComponent.find(".input_element").each(function () {
         var new_id = $(this).attr("data-validation-profile") + '_' + next.toString();
         $(this).attr('id', new_id);
@@ -606,7 +609,7 @@ function cloneComponent(e) {
 
     clonedComponent.find(".language_dd").each(function () {
         $(this).attr('id', 'lang_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
-        $(this).val(language);
+        $(this).val(this.def_language);
     });
     clonedComponent.find(".uploader").each(function () {
         $(this).attr('id', 'upload_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
@@ -847,7 +850,7 @@ function sendForm() {
     $(inputField).val(formBuilder.recordFile);
     $(form).append(inputField);
     $("#ccform").append(form);
-    $("#OKbtn").remove();
+    //$("#OKbtn").remove();
     $("#ccSendForm").submit();
 }
 
@@ -1046,6 +1049,7 @@ function duplicateField(obj, set) {
 function duplicateComponent(obj, set) {
     var next = clone.nextClonePostfix();
     clonedComponent = $(set).find("div[data-name='" + obj.name + "']").first().clone();
+    var cloned_id = clonedComponent.attr('id');
     clonedComponent.addClass("clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
     clonedComponent.find(".compBtn").each(
@@ -1111,7 +1115,16 @@ function duplicateComponent(obj, set) {
         $(this).on("click", showComponentFields);
     });
     clonedComponent.attr("data-filename", null);
-    $(set).append(clonedComponent);
+    var tmpID = clonedComponent.attr('id');
+    var list = $('[id^=' + cloned_id + ']');
+    console.log(list.length);
+    if (list.length) {
+        clonedComponent.insertAfter(list.last());
+    } else {
+        //clonedComponent.insertAfter(that.parent().parent());
+        $(set).append(clonedComponent);
+    }
+
     addAutoComplete(clonedComponent);
 
 }
