@@ -131,7 +131,7 @@ function create_skos_link() {
     var obj = document.createElement('div');
     $(obj).addClass('skos_list_letterBtn');
     $(obj).on("click", function () {
-        window.open("https://skosmos.sd.di.huc.knaw.nl/" + skosListRegistry.skosURI.split('=')[] + "/en/");
+        window.open("https://skosmos.sd.di.huc.knaw.nl/" + skosListRegistry.skosURI.split('=')[0] + "/en/");
     })
     $(obj).html('Skosmos');
     return obj;
