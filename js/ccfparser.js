@@ -100,6 +100,13 @@ var formBuilder = {
             $(dropdown).val(this.def_language);
             input.appendChild(dropdown);
         }
+        if (element.attributes.autoCompleteURI !== undefined) {
+            var uri = document.createElement('input');
+            uri.setAttribute('class', 'uri_dd');
+            uri.setAttribute('id', 'uri_' + element.ID);
+            $(uri).val('none');
+            input.appendChild(uri);
+        }
         if (element.attributes.attributeList !== undefined) {
             for (var key in element.attributes.attributeList) {
                 switch (element.attributes.attributeList[key].ValueScheme) {
@@ -611,6 +618,10 @@ function cloneComponent(e) {
         $(this).attr('id', 'lang_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
         $(this).val(this.def_language);
     });
+    clonedComponent.find(".uri_dd").each(function () {
+        $(this).attr('id', 'uri_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
+        $(this).val('none');
+    });
     clonedComponent.find(".uploader").each(function () {
         $(this).attr('id', 'upload_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
         $(this).val("");
@@ -732,7 +743,13 @@ function createAutoCompletes() {
         $(this).devbridgeAutocomplete({
             serviceUrl: $(this).attr("data-uri"),
             dataType: 'text',
-            paramName: 'q'
+            paramName: 'q',
+            onSelect: function (suggestion) {
+                var comp = $(this).parent().parent();
+                var id = "uri_"+$(this).attr("id");
+                var uri = comp.find("[id="+id+"]");
+                $(uri).val(suggestion.data.uri);
+            }
         });
     });
 }
@@ -742,7 +759,13 @@ function addAutoComplete(clonedComponent) {
         $(this).devbridgeAutocomplete({
             serviceUrl: $(this).attr("data-uri"),
             dataType: 'text',
-            paramName: 'q'
+            paramName: 'q',
+            onSelect: function (suggestion) {
+                var comp = $(this).parent().parent();
+                var id = "uri_"+$(this).attr("id");
+                var uri = comp.find("[id="+id+"]");
+                $(uri).val(suggestion.data.uri);
+            }
         });
     });
 }
@@ -921,6 +944,9 @@ function parseElement(element) {
                 unit.attributes = {};
                 var id = $(this).attr("id");
                 unit.attributes.lang = $("#lang_" + id).val();
+                var uri = $("#uri_" + id).val();
+                if (uri!=="none")
+                    unit.attributes.uri = $("#uri_" + id).val();
                 $(this).parent().find("input[id^='attr_']").each(function () {
                     unit.attributes[$(this).attr("data-attribute_name")] = $(this).val();
                 });
