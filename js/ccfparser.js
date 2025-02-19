@@ -19,21 +19,21 @@ function validateTracker() {
     }
 }
 
-
 var formBuilder = {
     profileID: null,
     recordFile: null,
     start: function (obj) {
-        console.log(create_local_id());
+        //console.log(create_local_id());
         this.profileID = obj.id;
         this.parse(obj.content);
         this.createButtons();
         createAutoCompletes();
         if (obj.record !== undefined) {
             fillValues(obj.record);
-            $(".disabledElement").addClass("element").removeClass("disabledElement");
-            $(".disabledComponent").addClass("component").removeClass("disabledComponent");
+            //$(".disabledElement").addClass("element").removeClass("disabledElement");
+            //$(".disabledComponent").addClass("component").removeClass("disabledComponent");
             $(".optionalCompBtn").click();
+            //openFilledOptionalComponents();
         }
     },
     parse: function (o, componentID) {
@@ -176,14 +176,18 @@ var formBuilder = {
         header.setAttribute('class', 'componentHeader');
         $(header).addClass('compLevel' + component.level);
         //header.innerHTML = component.attributes.label;
-        var span = document.createElement("span");
-        span.innerHTML = "▼ ";
-        span.setAttribute("class", "collapser");
-        $(span).on("click", thisShowHideComponent);
-        header.appendChild(span);
-        var span = document.createElement("span");
-        span.innerHTML = component.attributes.label;
-        header.appendChild(span);
+
+        if (Number(component.level) > 1) {
+            var span = document.createElement("span");
+            span.innerHTML = "▼ ";
+            span.setAttribute("class", "collapser");
+            $(span).on("click", thisShowHideComponent);
+            header.appendChild(span);
+        }
+            var span = document.createElement("span");
+            span.innerHTML = component.attributes.label;
+            header.appendChild(span);
+
 
         if (component.attributes.CardinalityMin === '0') {
             var btn = document.createElement('input');
@@ -915,7 +919,11 @@ function parseComponent(component) {
                 element.file = $(this).attr("data-filename");
             }
             element.content = parseComponent(this);
-            retStruct.push(element);
+
+            if (element.content.length > 0) {
+                retStruct.push(element);
+            }
+
         } else {
             if ($(this).attr("class") === "element") {
                 var element = {};
@@ -931,6 +939,7 @@ function parseComponent(component) {
             }
         }
     });
+    console.log(retStruct);
     return retStruct;
 }
 
@@ -1143,7 +1152,7 @@ function duplicateComponent(obj, set) {
     clonedComponent.attr("data-filename", null);
     var tmpID = clonedComponent.attr('id');
     var list = $('[id^=' + cloned_id + ']');
-    console.log(list.length);
+    //console.log(list.length);
     if (list.length) {
         clonedComponent.insertAfter(list.last());
     } else {
@@ -1155,6 +1164,11 @@ function duplicateComponent(obj, set) {
 
 }
 
+/*function openFilledOptionalComponents() {
+    $(".optionalCompBtn").each(function () {
+
+    })
+}*/
 
 function validateInput(key) {
     $("[data-validation-profile=" + key + "]").each(function () {
