@@ -32,7 +32,7 @@ var formBuilder = {
             fillValues(obj.record);
             //$(".disabledElement").addClass("element").removeClass("disabledElement");
             //$(".disabledComponent").addClass("component").removeClass("disabledComponent");
-            $(".optionalCompBtn").click();
+            //$(".optionalCompBtn").click();
             //openFilledOptionalComponents();
         }
     },
