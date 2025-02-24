@@ -30,10 +30,8 @@ var formBuilder = {
         createAutoCompletes();
         if (obj.record !== undefined) {
             fillValues(obj.record);
-            //$(".disabledElement").addClass("element").removeClass("disabledElement");
-            //$(".disabledComponent").addClass("component").removeClass("disabledComponent");
-            //$(".optionalCompBtn").click();
-            //openFilledOptionalComponents();
+            $(".tempOptionalCompBtn").click();
+            $(".tempOptionalCompBtn").removeClass('tempOptionalCompBtn');
         }
     },
     parse: function (o, componentID) {
@@ -884,7 +882,6 @@ function sendForm() {
 function fillValues(record) {
     obj = record[2].value;
     parseRecord(obj, null);
-
     if (record[3] !== undefined) {
         setfiles(record[3]);
     }
@@ -1004,7 +1001,14 @@ function parseRecord(obj, set) {
                     duplicateField(obj[key], set);
                 } else {
                     var name = obj[key].name;
-                    $(set).find("div[data-name='" + name + "']").find(".input_element").first().val(obj[key].value);
+                    //$(set).find("div[data-name='" + name + "']").find(".input_element").first().val(obj[key].value);
+                    var el = $(set).find("div[data-name='" + name + "']").find(".input_element").first();
+                    $(el).val(obj[key].value);
+                    $(el).parent().parent().parent().first().children().first().children().each( function () {
+                        if ($(this).hasClass("optionalCompBtn")) {
+                            $(this).addClass("tempOptionalCompBtn");
+                        }
+                    });
                     var language = getLanguage(obj[key]);
                     if (language !== 0) {
                         $(set).find("div[data-name='" + name + "']").find(".language_dd").first().val(language);
