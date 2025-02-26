@@ -936,7 +936,7 @@ function parseComponent(component) {
             }
         }
     });
-    console.log(retStruct);
+    //retStruct);
     return retStruct;
 }
 
@@ -986,6 +986,14 @@ function parseRecord(obj, set) {
                     var newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 } else {
                     var newSet = $(set).children("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
+                    var comp = $(set).first().children().find(".optionalCompBtn");
+                    if ($(comp).length > 0) {
+                        if ($(comp).hasClass("optionalCompBtn")) {
+                            if (!$(comp).hasClass("tempOptionalCompBtn")) {
+                                $(comp).addClass("tempOptionalCompBtn");
+                            }
+                        }
+                    }
                 }
 
 //                if (obj[key].attributes !== undefined) {
@@ -1006,7 +1014,9 @@ function parseRecord(obj, set) {
                     $(el).val(obj[key].value);
                     $(el).parent().parent().parent().first().children().first().children().each( function () {
                         if ($(this).hasClass("optionalCompBtn")) {
-                            $(this).addClass("tempOptionalCompBtn");
+                            if (!$(this).hasClass("tempOptionalCompBtn")) {
+                                $(this).addClass("tempOptionalCompBtn");
+                            }
                         }
                     });
                     var language = getLanguage(obj[key]);
