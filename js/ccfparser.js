@@ -535,13 +535,14 @@ function cloneElement(obj) {
         function () {
             $(this).attr('id', 'lang_' + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
             //console.log(language);
-            //$(this).val(language);
+            $(this).val(formBuilder.def_language);
         });
     clonedElement.find(".uri_dd").each(
         function () {
             console.log("uri.pre["+$(this).attr("id")+"]");
             $(this).attr('id', 'uri_' + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
             console.log("uri.post["+$(this).attr("id")+"]");
+            $(this).val("none");
         });
     clonedElement.find(".element_attribute").each(
         function () {
@@ -1107,12 +1108,12 @@ function duplicateField(obj, set) {
                 $(this).attr('id', 'lang_' + tempID);
                 $(this).val(language);
             });
-        clonedElement.find(".uri_dd").each(
+    clonedElement.find(".uri_dd").each(
             function () {
                 $(this).attr('id', 'uri_' + tempID);
                 $(this).val(uri);
             });
-        clonedElement.find(".element_attribute").each(
+    clonedElement.find(".element_attribute").each(
             function () {
                 $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
                 $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
