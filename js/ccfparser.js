@@ -537,6 +537,12 @@ function cloneElement(obj) {
             //console.log(language);
             //$(this).val(language);
         });
+    clonedElement.find(".uri_dd").each(
+        function () {
+            console.log("uri.pre["+$(this).attr("id")+"]");
+            $(this).attr('id', 'uri_' + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
+            console.log("uri.post["+$(this).attr("id")+"]");
+        });
     clonedElement.find(".element_attribute").each(
         function () {
             $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + $(this).parent().children(':nth-child(1)').attr("data-validation-profile"));
@@ -749,6 +755,7 @@ function createAutoCompletes() {
             onSelect: function (suggestion) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
+                console.log("update uri["+id+"]");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val(suggestion.data.uri);
             }
@@ -765,6 +772,7 @@ function addAutoComplete(clonedComponent) {
             onSelect: function (suggestion) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
+                console.log("update uri["+id+"]");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val(suggestion.data.uri);
             }
@@ -1023,9 +1031,13 @@ function parseRecord(obj, set) {
                     if (language !== 0) {
                         $(set).find("div[data-name='" + name + "']").find(".language_dd").first().val(language);
                     }
+                    var uri = getUri(obj[key]);
+                    if (uri !== 'none') {
+                        $(set).find("div[data-name='" + name + "']").find(".uri_dd").first().val(uri);
+                    }
                     if (obj[key].attributes !== undefined) {
                         for (var attr_key in obj[key].attributes) {
-                            if (attr_key !== 'xml:lang') {
+                            if((attr_key !== 'xml:lang') && (attr_key !== 'uri')) {
                                 $(set).find("div[data-name='" + name + "']").find("input[data-attribute_name='" + attr_key + "']").first().val(obj[key].attributes[attr_key]);
                             }
                         }
@@ -1048,9 +1060,21 @@ function getLanguage(obj) {
     return 0;
 }
 
+function getUri(obj) {
+    if (obj.attributes !== undefined) {
+        for (var key in obj.attributes) {
+            if (key === 'uri') {
+                return obj.attributes[key];
+            }
+        }
+    }
+    return "none";
+}
+
 function duplicateField(obj, set) {
     var next = clone.nextClonePostfix();
     var language = getLanguage(obj);
+    var uri = getUri(obj);
     var tempID;
     var name = obj.name;
     var btn = $(set).find("div[data-name='" + name + "']").find(".btn").first();
@@ -1083,7 +1107,12 @@ function duplicateField(obj, set) {
                 $(this).attr('id', 'lang_' + tempID);
                 $(this).val(language);
             });
-    clonedElement.find(".element_attribute").each(
+        clonedElement.find(".uri_dd").each(
+            function () {
+                $(this).attr('id', 'uri_' + tempID);
+                $(this).val(uri);
+            });
+        clonedElement.find(".element_attribute").each(
             function () {
                 $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
                 $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
