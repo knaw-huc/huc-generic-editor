@@ -753,6 +753,13 @@ function createAutoCompletes() {
             serviceUrl: $(this).attr("data-uri"),
             dataType: 'text',
             paramName: 'q',
+            onSearchStart: function(params) {
+                var comp = $(this).parent().parent();
+                var id = "uri_"+$(this).attr("id");
+                console.log("update uri["+id+"]");
+                var uri = comp.find("[id="+id+"]");
+                $(uri).val("none");
+            },
             onSelect: function (suggestion) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
@@ -770,6 +777,13 @@ function addAutoComplete(clonedComponent) {
             serviceUrl: $(this).attr("data-uri"),
             dataType: 'text',
             paramName: 'q',
+            onSearchStart: function(params) {
+                var comp = $(this).parent().parent();
+                var id = "uri_"+$(this).attr("id");
+                console.log("update uri["+id+"]");
+                var uri = comp.find("[id="+id+"]");
+                $(uri).val("none");
+            },
             onSelect: function (suggestion) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
