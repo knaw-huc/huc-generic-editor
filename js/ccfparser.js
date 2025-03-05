@@ -25,24 +25,23 @@ var formBuilder = {
     start: function (obj) {
         //console.log(create_local_id());
         this.profileID = obj.id;
-        this.parse(obj.content);
+        this.parse(obj.content, obj.ID, false);
         this.createButtons();
         createAutoCompletes();
         if (obj.record !== undefined) {
             fillValues(obj.record);
-            $(".tempOptionalCompBtn").click();
-            $(".tempOptionalCompBtn").removeClass('tempOptionalCompBtn');
+            $(".tempOptionalCompBtn").click().removeClass('tempOptionalCompBtn');
         }
     },
-    parse: function (o, componentID) {
+    parse: function (o, componentID, isOptional) {
         if (o.hasOwnProperty('type')) {
             switch (o.type) {
                 case 'Element':
-                    this.handleElement(o, componentID);
+                    this.handleElement(o, componentID, isOptional);
                     break;
                 case 'Component':
-                    this.handleComponent(o, componentID);
-                    this.parse(o.content, o.ID);
+                    var parentIsOptional = this.handleComponent(o, componentID, isOptional);
+                    this.parse(o.content, o.ID, parentIsOptional);
                     objectDisplay = true;
                     break;
                 default:
@@ -53,14 +52,14 @@ var formBuilder = {
             for (var key in o) {
                 var type = typeof o[key];
                 if (type === 'object') {
-                    this.parse(o[key], componentID);
+                    this.parse(o[key], componentID, isOptional);
                 }
             }
         }
     },
-    handleElement: function (element, componentID) {
+    handleElement: function (element, componentID, parentIsOptional) {
         html = document.createElement('div');
-        if (objectDisplay) {
+        if (!parentIsOptional) {
             html.setAttribute('class', 'element');
         } else {
             html.setAttribute('class', 'disabledElement');
@@ -160,9 +159,11 @@ var formBuilder = {
             });
         }
     },
-    handleComponent: function (component, componentID) {
+    handleComponent: function (component, componentID, parentIsOptional) {
+        var optionalParent = false;
         html = document.createElement('div');
-        if (objectDisplay || Number(component.level) <= Number(objectLevel)) {
+        //if (objectDisplay || (Number(component.level) <= Number(objectLevel))) {
+        if (!parentIsOptional) {
             html.setAttribute('class', 'component');
         } else {
             html.setAttribute('class', 'disabledComponent');
@@ -182,9 +183,9 @@ var formBuilder = {
             $(span).on("click", thisShowHideComponent);
             header.appendChild(span);
         }
-            var span = document.createElement("span");
-            span.innerHTML = component.attributes.label;
-            header.appendChild(span);
+        var span = document.createElement("span");
+        span.innerHTML = component.attributes.label;
+        header.appendChild(span);
 
 
         if (component.attributes.CardinalityMin === '0') {
@@ -198,10 +199,12 @@ var formBuilder = {
                 objectDisplay = false;
                 objectLevel = component.level;
             }
-
+            optionalParent = true;
         } else {
             objectDisplay = true;
+            optionalParent = false;
         }
+
 
         if (component.attributes.CardinalityMax !== '1') {
             //header.innerHTML = component.attributes.label;
@@ -255,7 +258,8 @@ var formBuilder = {
         } else {
             $("#" + componentID).append(html);
         }
-        //objectDisplay = true;
+        //console.log(optionalParent)
+        return optionalParent;
     },
     createControl: function (element) {
         var type = typeof element.attributes.ValueScheme;
@@ -264,8 +268,7 @@ var formBuilder = {
             if (element.attributes !== undefined && element.attributes.readonly !== undefined && element.attributes.readonly === "yes") {
                 control.setAttribute("disabled", true);
             }
-        }
-        else {
+        } else {
             switch (element.attributes.ValueScheme) {
                 case 'boolean':
                     var control = document.createElement('select');
@@ -420,8 +423,7 @@ var formBuilder = {
         control.setAttribute('type', 'button');
         control.setAttribute('value', ccfOptions.submitButton.label);
         control.setAttribute('id', 'OKbtn');
-        if (ccfOptions.submitButton.actionURI === ccfOptions.saveButton.actionURI)
-        {
+        if (ccfOptions.submitButton.actionURI === ccfOptions.saveButton.actionURI) {
             control.onclick = function () {
                 validate();
             };
@@ -539,9 +541,9 @@ function cloneElement(obj) {
         });
     clonedElement.find(".uri_dd").each(
         function () {
-            console.log("uri.pre["+$(this).attr("id")+"]");
+            //console.log("uri.pre["+$(this).attr("id")+"]");
             $(this).attr('id', 'uri_' + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
-            console.log("uri.post["+$(this).attr("id")+"]");
+            //console.log("uri.post["+$(this).attr("id")+"]");
             $(this).val("none");
         });
     clonedElement.find(".element_attribute").each(
@@ -574,7 +576,8 @@ function cloneComponent(e) {
                 });
             } else {
                 this.onclick = cloneComponent;
-            }});
+            }
+        });
     clonedComponent.find(".clone").each(
         function () {
             $(this).remove();
@@ -756,14 +759,15 @@ function createAutoCompletes() {
             onSearchStart: function(params) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
-                console.log("update uri["+id+"]");
+                //console.log("update uri["+id+"]");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val("none");
             },
             onSelect: function (suggestion) {
                 var comp = $(this).parent().parent();
+
                 var id = "uri_"+$(this).attr("id");
-                console.log("update uri["+id+"]");
+                //console.log("update uri["+id+"]");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val(suggestion.data.uri);
             }
@@ -780,15 +784,14 @@ function addAutoComplete(clonedComponent) {
             onSearchStart: function(params) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
-                console.log("update uri["+id+"]");
+                //console.log("update uri["+id+"]");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val("none");
             },
             onSelect: function (suggestion) {
                 var comp = $(this).parent().parent();
-                var id = "uri_"+$(this).attr("id");
-                console.log("update uri["+id+"]");
-                var uri = comp.find("[id="+id+"]");
+                var id = "uri_" + $(this).attr("id");
+                var uri = comp.find("[id=" + id + "]");
                 $(uri).val(suggestion.data.uri);
             }
         });
@@ -908,22 +911,30 @@ function fillValues(record) {
     if (record[3] !== undefined) {
         setfiles(record[3]);
     }
+}
 
+function isParentComponentOptional(comp) {
+    $(comp).parent().children(0).children().each(function () {
+        if ($(this).hasClass("optionalCompBtn")) {
+            return true;
+        }
+    })
+    return false;
 }
 
 function setfiles(files) {
     for (var key in files) {
         $(".fileForm").eq(key).each(
-                function () {
-                    $(this).parent().parent().attr("data-filename", files[key].file);
-                    var msg = document.createElement('div');
-                    msg.setAttribute("id", "msg" + $(this).attr("id"));
-                    msg.setAttribute("class", "headerMsg");
-                    msg.innerHTML = files[key].file;
-                    $(this).parent().append(msg);
-                    $(this).find(".resetUploadBtn").show();
-                    $(this).find("[id^=files_]").hide();
-                })
+            function () {
+                $(this).parent().parent().attr("data-filename", files[key].file);
+                var msg = document.createElement('div');
+                msg.setAttribute("id", "msg" + $(this).attr("id"));
+                msg.setAttribute("class", "headerMsg");
+                msg.innerHTML = files[key].file;
+                $(this).parent().append(msg);
+                $(this).find(".resetUploadBtn").show();
+                $(this).find("[id^=files_]").hide();
+            })
     }
 }
 
@@ -951,8 +962,7 @@ function parseComponent(component) {
                 element.type = 'element';
                 element.sortOrder = $(this).attr("data-order");
                 element.content = parseElement(this);
-                if (element.content !== "")
-                {
+                if (element.content !== "") {
                     retStruct.push(element);
                 }
 
@@ -974,7 +984,7 @@ function parseElement(element) {
                 var id = $(this).attr("id");
                 unit.attributes.lang = $("#lang_" + id).val();
                 var uri = $("#uri_" + id).val();
-                if (uri!=="none")
+                if (uri !== "none")
                     unit.attributes.uri = $("#uri_" + id).val();
                 $(this).parent().find("input[id^='attr_']").each(function () {
                     unit.attributes[$(this).attr("data-attribute_name")] = $(this).val();
@@ -983,11 +993,9 @@ function parseElement(element) {
             }
         }
     });
-    if (Object.keys(retVal).length > 0)
-    {
+    if (Object.keys(retVal).length > 0) {
         return retVal;
-    }
-    else {
+    } else {
         return "";
     }
 }
@@ -1009,23 +1017,14 @@ function parseRecord(obj, set) {
                     var newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 } else {
                     var newSet = $(set).children("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
-                    var comp = $(set).first().children().find(".optionalCompBtn");
-                    if ($(comp).length > 0) {
-                        if ($(comp).hasClass("optionalCompBtn")) {
-                            if (!$(comp).hasClass("tempOptionalCompBtn")) {
-                                $(comp).addClass("tempOptionalCompBtn");
+                    $(set).parent().parent().parent().first().children().first().children().each(function () {
+                        if ($(this).hasClass("optionalCompBtn")) {
+                            if (!$(this).hasClass("tempOptionalCompBtn")) {
+                                $(this).addClass("tempOptionalCompBtn");
                             }
                         }
-                    }
+                    });
                 }
-
-//                if (obj[key].attributes !== undefined) {
-//                    if (obj[key].attributes.ref !== undefined) {
-//                        var ref = obj[key].attributes.ref;
-//                        $("div[data-name='" + obj[key].name + "']").
-//                    }
-//                    console.log(uploads[ref]);
-//            }
                 parseRecord(obj[key].value, newSet);
             } else {
                 if (nameStack[obj[key].name] > 1) {
@@ -1035,7 +1034,7 @@ function parseRecord(obj, set) {
                     //$(set).find("div[data-name='" + name + "']").find(".input_element").first().val(obj[key].value);
                     var el = $(set).find("div[data-name='" + name + "']").find(".input_element").first();
                     $(el).val(obj[key].value);
-                    $(el).parent().parent().parent().first().children().first().children().each( function () {
+                    $(el).parent().parent().parent().first().children().first().children().each(function () {
                         if ($(this).hasClass("optionalCompBtn")) {
                             if (!$(this).hasClass("tempOptionalCompBtn")) {
                                 $(this).addClass("tempOptionalCompBtn");
@@ -1096,28 +1095,29 @@ function duplicateField(obj, set) {
     clonedElement = $(set).find("div[data-name='" + name + "']").find(".control").first().clone();
     clonedElement.attr('class', 'clone');
     clonedElement.find(".btn").each(
-            function () {
-                $(this).attr('value', '-');
-                $(this).on("click", function (e) {
-                    e.preventDefault();
-                    var that = $(this);
-                    that.parent().remove();
-                });
+        function () {
+            $(this).attr('value', '-');
+            $(this).on("click", function (e) {
+                e.preventDefault();
+                var that = $(this);
+                that.parent().remove();
             });
+        });
     clonedElement.find("[id^=" + btn.attr('data-source') + "]").each(
-            function () {
-                var id = $(this).attr('data-validation-profile');
-                $(this).val(obj.value);
-                tempID = id + '_' + next;
-                $(this).attr('id', tempID);
-            });
+        function () {
+            var id = $(this).attr('data-validation-profile');
+            $(this).val(obj.value);
+            tempID = id + '_' + next;
+            $(this).attr('id', tempID);
+        });
     clonedElement.find(".errorMsg").each(
-            function () {
-                var id = $(this).attr('id');
-                $(this).attr('id', id + '_' + next);
-                $(this).html("");
-            });
+        function () {
+            var id = $(this).attr('id');
+            $(this).attr('id', id + '_' + next);
+            $(this).html("");
+        });
     clonedElement.find(".language_dd").each(
+
             function () {
                 $(this).attr('id', 'lang_' + tempID);
                 $(this).val(language);
@@ -1128,42 +1128,43 @@ function duplicateField(obj, set) {
                 $(this).val(uri);
             });
     clonedElement.find(".element_attribute").each(
-            function () {
-                $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
-                $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
-                //$(this).val("");
-                //console.log(obj);
-            });
-   
+        function () {
+            $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
+            $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
+            //$(this).val("");
+            //console.log(obj);
+        });
+
     clonedElement.insertAfter(btn.parent());
     createAutoCompletes();
 }
 
 function duplicateComponent(obj, set) {
     var next = clone.nextClonePostfix();
+    $(set).find("div[data-name='" + obj.name + "']").first().className = "component";
     clonedComponent = $(set).find("div[data-name='" + obj.name + "']").first().clone();
     var cloned_id = clonedComponent.attr('id');
-    clonedComponent.addClass("clonedComponent");
+    clonedComponent.className = "clonedComponent";
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
     clonedComponent.find(".compBtn").each(
-            function () {
-                $(this).attr('value', '-');
-                $(this).on("click", function (e) {
-                    e.preventDefault();
-                    var that = $(this);
-                    that.parent().parent().remove();
-                });
+        function () {
+            $(this).attr('value', '-');
+            $(this).on("click", function (e) {
+                e.preventDefault();
+                var that = $(this);
+                that.parent().parent().remove();
             });
+        });
     clonedComponent.find(".clone").each(
-            function () {
-                $(this).remove();
-            });
+        function () {
+            $(this).remove();
+        });
     clonedComponent.find(".errorMsg").each(
-            function () {
-                $(this).html('');
-                var id = $(this).attr('id');
-                $(this).attr('id', id + '_' + next);
-            });
+        function () {
+            $(this).html('');
+            var id = $(this).attr('id');
+            $(this).attr('id', id + '_' + next);
+        });
     clonedComponent.find(".input_element").each(function () {
         var id = $(this).attr("id");
         $(this).attr('id', id + '_' + next);
@@ -1178,6 +1179,13 @@ function duplicateComponent(obj, set) {
                 });
         }
     });
+    clonedComponent.find(".btn").each(function () {
+        if ($(this).attr("value") === "+") {
+            $(this).on("click", function () {
+                cloneElement(this);
+            })
+        }
+    })
     clonedComponent.find(".collapser").each(function () {
         $(this).on("click", function () {
             showHideComponent(this)
@@ -1211,12 +1219,12 @@ function duplicateComponent(obj, set) {
     var tmpID = clonedComponent.attr('id');
     var list = $('[id^=' + cloned_id + ']');
     //console.log(list.length);
-    if (list.length) {
-        clonedComponent.insertAfter(list.last());
-    } else {
+    //if (list.length) {
+    //    clonedComponent.insertAfter(list.last());
+    //} else {
         //clonedComponent.insertAfter(that.parent().parent());
         $(set).append(clonedComponent);
-    }
+    //}
 
     addAutoComplete(clonedComponent);
 
@@ -1272,7 +1280,6 @@ function validateInput(key) {
     });
 
 }
-
 
 
 function isInteger(x) {
@@ -1345,12 +1352,10 @@ function getInputType(element) {
     } else {
         if (element.is('textarea')) {
             return "textarea";
-        }
-        else {
+        } else {
             if (element.is("select")) {
                 return "select";
-            }
-            else {
+            } else {
                 return "onbekend";
             }
         }
