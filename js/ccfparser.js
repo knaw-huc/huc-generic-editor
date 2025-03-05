@@ -1134,6 +1134,13 @@ function duplicateComponent(obj, set) {
                 });
         }
     });
+    clonedComponent.find(".btn").each(function () {
+        if ($(this).attr("value") === "+") {
+            $(this).on("click", function () {
+                cloneElement(this);
+            })
+        }
+    })
     clonedComponent.find(".collapser").each(function () {
         $(this).on("click", function () {
             showHideComponent(this)
