@@ -258,7 +258,7 @@ var formBuilder = {
         } else {
             $("#" + componentID).append(html);
         }
-        console.log(optionalParent)
+        //console.log(optionalParent)
         return optionalParent;
     },
     createControl: function (element) {
@@ -541,9 +541,9 @@ function cloneElement(obj) {
         });
     clonedElement.find(".uri_dd").each(
         function () {
-            console.log("uri.pre["+$(this).attr("id")+"]");
+            //console.log("uri.pre["+$(this).attr("id")+"]");
             $(this).attr('id', 'uri_' + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
-            console.log("uri.post["+$(this).attr("id")+"]");
+            //console.log("uri.post["+$(this).attr("id")+"]");
             $(this).val("none");
         });
     clonedElement.find(".element_attribute").each(
@@ -759,7 +759,7 @@ function createAutoCompletes() {
             onSearchStart: function(params) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
-                console.log("update uri["+id+"]");
+                //console.log("update uri["+id+"]");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val("none");
             },
@@ -767,7 +767,7 @@ function createAutoCompletes() {
                 var comp = $(this).parent().parent();
 
                 var id = "uri_"+$(this).attr("id");
-                console.log("update uri["+id+"]");
+                //console.log("update uri["+id+"]");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val(suggestion.data.uri);
             }
@@ -784,7 +784,7 @@ function addAutoComplete(clonedComponent) {
             onSearchStart: function(params) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
-                console.log("update uri["+id+"]");
+                //console.log("update uri["+id+"]");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val("none");
             },
@@ -1219,12 +1219,12 @@ function duplicateComponent(obj, set) {
     var tmpID = clonedComponent.attr('id');
     var list = $('[id^=' + cloned_id + ']');
     //console.log(list.length);
-    if (list.length) {
-        clonedComponent.insertAfter(list.last());
-    } else {
+    //if (list.length) {
+    //    clonedComponent.insertAfter(list.last());
+    //} else {
         //clonedComponent.insertAfter(that.parent().parent());
         $(set).append(clonedComponent);
-    }
+    //}
 
     addAutoComplete(clonedComponent);
 
