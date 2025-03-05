@@ -66,13 +66,17 @@ function showLetterList(obj) {
 }
 
 function createListElement(value) {
+    //console.log(value);
     var el = document.createElement('div');
     $(el).addClass("skos-list-value");
     $(el).on("click", function () {
-        $("#" + skosListRegistry.currentID).val(value);
+        $("#" + skosListRegistry.currentID).val(value.value);
+        //console.log(value.data.uri);
+        //console.log("#uri_" + skosListRegistry.currentID);
+        $("#uri_" + skosListRegistry.currentID).val(value.data.uri);
         document.getElementById("myModal").style.display = "none";
     });
-    $(el).html(value);
+    $(el).html(value.value);
     $("#skos_list_picker").append(el);
 }
 
