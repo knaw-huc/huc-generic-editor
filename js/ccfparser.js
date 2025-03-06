@@ -1219,12 +1219,12 @@ function duplicateComponent(obj, set) {
     var tmpID = clonedComponent.attr('id');
     var list = $('[id^=' + cloned_id + ']');
     //console.log(list.length);
-    //if (list.length) {
-    //    clonedComponent.insertAfter(list.last());
-    //} else {
-        //clonedComponent.insertAfter(that.parent().parent());
+    if (list.length) {
+        clonedComponent.insertAfter(list.last());
+    } else {
+        clonedComponent.insertAfter(that.parent().parent());
         $(set).append(clonedComponent);
-    //}
+    }
 
     addAutoComplete(clonedComponent);
 
