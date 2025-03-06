@@ -1222,7 +1222,7 @@ function duplicateComponent(obj, set) {
     if (list.length) {
         clonedComponent.insertAfter(list.last());
     } else {
-        clonedComponent.insertAfter(that.parent().parent());
+        //clonedComponent.insertAfter(that.parent().parent());
         $(set).append(clonedComponent);
     }
 
