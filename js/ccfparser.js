@@ -582,6 +582,7 @@ function cloneComponent(e) {
         function () {
             $(this).remove();
         });
+    
     clonedComponent.find(".clonedComponent").each(
         function () {
             $(this).remove();
@@ -1139,7 +1140,7 @@ function duplicateComponent(obj, set) {
     $(set).find("div[data-name='" + obj.name + "']").first().className = "component";
     clonedComponent = $(set).find("div[data-name='" + obj.name + "']").first().clone();
     var cloned_id = clonedComponent.attr('id');
-    clonedComponent.className = "clonedComponent";
+    clonedComponent.attr("class", "component clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
     clonedComponent.find(".compBtn").each(
         function () {
