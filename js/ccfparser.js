@@ -1208,11 +1208,11 @@ function duplicateComponent(obj, set) {
     });
     clonedComponent.attr("data-filename", null);
     var tmpID = clonedComponent.attr('id');
-    var list = $('[id^=' + cloned_id + ']');
+    var list = $('[id^=' + cloned_id + '_' + ']');
     if (list.length) {
         clonedComponent.insertAfter(list.last());
     } else {
-        $(set).append(clonedComponent);
+        clonedComponent.insertAfter($("#" + cloned_id));
     }
 
     addAutoComplete(clonedComponent);
