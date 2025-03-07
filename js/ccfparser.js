@@ -23,7 +23,6 @@ var formBuilder = {
     profileID: null,
     recordFile: null,
     start: function (obj) {
-        //console.log(create_local_id());
         this.profileID = obj.id;
         this.parse(obj.content, obj.ID, false);
         this.createButtons();
@@ -125,6 +124,7 @@ var formBuilder = {
             var btn = document.createElement('input');
             btn.setAttribute('type', 'button');
             btn.setAttribute('value', '+');
+            btn.setAttribute('title', 'Add element');
             btn.setAttribute('class', 'btn');
             btn.setAttribute('data-source', element.ID);
             $(btn).on("click", function () {
@@ -179,6 +179,7 @@ var formBuilder = {
         if (Number(component.level) > 1) {
             var span = document.createElement("span");
             span.innerHTML = "▼ ";
+            span.setAttribute("title", "Hide block content")
             span.setAttribute("class", "collapser");
             $(span).on("click", thisShowHideComponent);
             header.appendChild(span);
@@ -192,6 +193,7 @@ var formBuilder = {
             var btn = document.createElement('input');
             btn.setAttribute('type', 'button');
             btn.setAttribute('value', "✓");
+            btn.setAttribute('title', 'Enable block');
             btn.setAttribute('class', 'optionalCompBtn');
             $(btn).on("click", showComponentFields);
             header.appendChild(btn);
@@ -211,6 +213,7 @@ var formBuilder = {
             var btn = document.createElement('input');
             btn.setAttribute('type', 'button');
             btn.setAttribute('value', '+');
+            btn.setAttribute('title', 'Add block');
             btn.setAttribute('class', 'compBtn');
             btn.setAttribute('data-source', component.ID);
             if (component.attributes.resource !== undefined || component.attributes.CardinalityMin === '0') {
@@ -258,7 +261,6 @@ var formBuilder = {
         } else {
             $("#" + componentID).append(html);
         }
-        //console.log(optionalParent)
         return optionalParent;
     },
     createControl: function (element) {
@@ -500,7 +502,6 @@ function create_local_id() {
 };
 
 function cloneElement(obj) {
-    //console.log('ja');
     var next = clone.nextClonePostfix();
     var that = $(obj);
     var tempID;
@@ -509,6 +510,7 @@ function cloneElement(obj) {
     clonedElement.find(".btn").each(
         function () {
             $(this).attr('value', '-');
+            $(this).attr('title', 'Remove element');
             $(this).on("click", function (e) {
                 e.preventDefault();
                 var that = $(this);
@@ -536,14 +538,11 @@ function cloneElement(obj) {
     clonedElement.find(".language_dd").each(
         function () {
             $(this).attr('id', 'lang_' + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
-            //console.log(language);
             $(this).val(formBuilder.def_language);
         });
     clonedElement.find(".uri_dd").each(
         function () {
-            //console.log("uri.pre["+$(this).attr("id")+"]");
             $(this).attr('id', 'uri_' + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
-            //console.log("uri.post["+$(this).attr("id")+"]");
             $(this).val("none");
         });
     clonedElement.find(".element_attribute").each(
@@ -569,6 +568,7 @@ function cloneComponent(e) {
         function () {
             if ($(this).attr("data-source") === tmpID) {
                 $(this).attr('value', '-');
+                $(this).attr('title', 'Delete block');
                 $(this).on("click", function (e) {
                     e.preventDefault();
                     var that = $(this);
@@ -688,6 +688,7 @@ function showComponentFields() {
     var comp = that.parent().parent();
     var header = that.parent();
     that.attr('value', "✗");
+    that.attr('title', 'Disable block')
     $(comp).children().each(function () {
         switch ($(this).attr("class")) {
             case 'disabledComponent':
@@ -734,6 +735,7 @@ function hideComponentFields() {
 
 function collapseComponent(obj) {
     var comp = obj.parent().parent();
+    $(obj).attr("title", "Show block contents");
     $(comp).children().each(function () {
         if ($(this).hasClass('element') || $(this).hasClass('component')) {
             $(this).addClass('isCollapsed');
@@ -743,6 +745,7 @@ function collapseComponent(obj) {
 
 function expandComponent(obj) {
     var comp = obj.parent().parent();
+    $(obj).attr("title", "Hide block contents");
     $(comp).children().each(function () {
         if ($(this).hasClass('isCollapsed')) {
             $(this).removeClass('isCollapsed');
@@ -759,7 +762,6 @@ function createAutoCompletes() {
             onSearchStart: function(params) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
-                //console.log("update uri["+id+"]");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val("none");
             },
@@ -767,7 +769,6 @@ function createAutoCompletes() {
                 var comp = $(this).parent().parent();
 
                 var id = "uri_"+$(this).attr("id");
-                //console.log("update uri["+id+"]");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val(suggestion.data.uri);
             }
@@ -784,7 +785,6 @@ function addAutoComplete(clonedComponent) {
             onSearchStart: function(params) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
-                //console.log("update uri["+id+"]");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val("none");
             },
@@ -853,7 +853,6 @@ function validate() {
         //validateAttributes(key);
     }
     if (inputOK) {
-        //console.log(validationProfiles);
         sendForm();
     } else {
         $("#errorSpace").append(errorSpace);
@@ -1017,13 +1016,6 @@ function parseRecord(obj, set) {
                     var newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
                 } else {
                     var newSet = $(set).children("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
-                    $(set).parent().parent().parent().first().children().first().children().each(function () {
-                        if ($(this).hasClass("optionalCompBtn")) {
-                            if (!$(this).hasClass("tempOptionalCompBtn")) {
-                                $(this).addClass("tempOptionalCompBtn");
-                            }
-                        }
-                    });
                 }
                 parseRecord(obj[key].value, newSet);
             } else {
@@ -1034,13 +1026,18 @@ function parseRecord(obj, set) {
                     //$(set).find("div[data-name='" + name + "']").find(".input_element").first().val(obj[key].value);
                     var el = $(set).find("div[data-name='" + name + "']").find(".input_element").first();
                     $(el).val(obj[key].value);
-                    $(el).parent().parent().parent().first().children().first().children().each(function () {
-                        if ($(this).hasClass("optionalCompBtn")) {
-                            if (!$(this).hasClass("tempOptionalCompBtn")) {
-                                $(this).addClass("tempOptionalCompBtn");
+                    while ($(el).length > 0)  {
+                        $(el).parent().parent().parent().children().first().children().each(function () {
+                            if ($(this).hasClass("optionalCompBtn")) {
+                                if (!$(this).hasClass("tempOptionalCompBtn")) {
+                                    $(this).addClass("tempOptionalCompBtn");
+                                }
                             }
-                        }
-                    });
+                        })
+                        el = el.parent();
+                    }
+
+
                     var language = getLanguage(obj[key]);
                     if (language !== 0) {
                         $(set).find("div[data-name='" + name + "']").find(".language_dd").first().val(language);
@@ -1131,8 +1128,6 @@ function duplicateField(obj, set) {
         function () {
             $(this).attr('id', "attr_" + $(this).attr("data-attribute_name") + "_" + tempID);
             $(this).val(obj.attributes[$(this).attr("data-attribute_name")]);
-            //$(this).val("");
-            //console.log(obj);
         });
 
     clonedElement.insertAfter(btn.parent());
@@ -1206,23 +1201,17 @@ function duplicateComponent(obj, set) {
     });
 
 
-//    clonedComponent.find("input[type='reset']").each(function () {
-//       var target = $(this).attr('target');
-//       console.log(target);
-//       $(this).attr('target', target + '_' + next);
-//    });
+
     clonedComponent.find(".optionalCompBtn").each(function () {
-        $(this).attr('value', "✗");
+        $(this).attr('value', "✓");
         $(this).on("click", showComponentFields);
     });
     clonedComponent.attr("data-filename", null);
     var tmpID = clonedComponent.attr('id');
     var list = $('[id^=' + cloned_id + ']');
-    //console.log(list.length);
     if (list.length) {
         clonedComponent.insertAfter(list.last());
     } else {
-        //clonedComponent.insertAfter(that.parent().parent());
         $(set).append(clonedComponent);
     }
 
@@ -1230,11 +1219,7 @@ function duplicateComponent(obj, set) {
 
 }
 
-/*function openFilledOptionalComponents() {
-    $(".optionalCompBtn").each(function () {
 
-    })
-}*/
 
 function validateInput(key) {
     $("[data-validation-profile=" + key + "]").each(function () {
@@ -1310,7 +1295,6 @@ function validateTextArea(key) {
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
                 for (var att in validationProfiles[key].attributes.attributeList) {
-                    //console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {
                         inputOK = false;
                         $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
@@ -1335,7 +1319,6 @@ function validateSelect(key) {
         if (validationProfiles[key].attributes.attributeList !== undefined) {
             if (this.value !== "") {
                 for (var att in validationProfiles[key].attributes.attributeList) {
-                    //console.log(validationProfiles[key].attributes.attributeList[att].Required);
                     if (validationProfiles[key].attributes.attributeList[att].Required) {
                         inputOK = false;
                         $("#errorMsg_" + this.id).html(ccfOptions.alert.attr_not_empty_field);
