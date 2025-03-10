@@ -1144,7 +1144,16 @@ function duplicateComponent(obj, set) {
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
     clonedComponent.find(".compBtn").each(
         function () {
-            $(this).attr('value', '-');
+
+            if ($(this).is($(this).parent().parent().parent().children().find(".compBtn").eq(1)))
+            {
+                console.log('yes');
+                $(this).attr('value', '+');
+            } else {
+                console.log('no');
+                $(this).attr('value', '-');
+            }
+
             $(this).on("click", function (e) {
                 e.preventDefault();
                 var that = $(this);
@@ -1155,6 +1164,17 @@ function duplicateComponent(obj, set) {
         function () {
             $(this).remove();
         });
+
+    clonedComponent.find(".clonedComponent").each(
+        function () {
+            $(this).remove();
+        });
+
+    clonedComponent.find(".component").each(function () {
+        var id = $(this).attr("id");
+        $(this).attr('id', id + '_' + next);
+    })
+
     clonedComponent.find(".errorMsg").each(
         function () {
             $(this).html('');
