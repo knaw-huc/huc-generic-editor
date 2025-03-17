@@ -564,9 +564,20 @@ function cloneComponent(e) {
     tmpID = clonedComponent.attr("id");
     clonedComponent.addClass("clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
+    clonedComponent.find(".clone").each(
+        function () {
+            $(this).remove();
+        });
+
+    clonedComponent.find(".clonedComponent").each(
+        function () {
+            $(this).remove();
+        });
     clonedComponent.find(".compBtn").each(
         function () {
-            if ($(this).attr("data-source") === tmpID) {
+            if ($(this).is($(this).parent().parent().parent().children().find(".compBtn").eq(1))) {
+                this.onclick = cloneComponent;
+            } else {
                 $(this).attr('value', '-');
                 $(this).attr('title', 'Delete block');
                 $(this).on("click", function (e) {
@@ -574,19 +585,9 @@ function cloneComponent(e) {
                     var that = $(this);
                     that.parent().parent().remove();
                 });
-            } else {
-                this.onclick = cloneComponent;
             }
         });
-    clonedComponent.find(".clone").each(
-        function () {
-            $(this).remove();
-        });
-    
-    clonedComponent.find(".clonedComponent").each(
-        function () {
-            $(this).remove();
-        });
+
     clonedComponent.find(".component").each(function () {
         $(this).attr("id", $(this).attr("id") + '_' + next.toString());
     })
@@ -646,12 +647,14 @@ function cloneComponent(e) {
     clonedComponent.find(".headerMsg").remove();
     clonedComponent.find(".optionalCompBtn").remove();
     clonedComponent.attr("data-filename", null);
-    list = $('[id^=' + tmpID + '_]');
+    //list = $('[id^=' + tmpID + '_]');
+    list = that.parent().parent().parent().find('[id^=' + tmpID + '_]');
     if (list.length) {
         clonedComponent.insertAfter(list.last());
     } else {
         clonedComponent.insertAfter(that.parent().parent());
     }
+    console.log(list);
     //that.parent().parent().parent().append(clonedComponent);
     addAutoComplete(clonedComponent);
     validateTracker()
@@ -1147,18 +1150,22 @@ function duplicateComponent(obj, set) {
 
             if ($(this).is($(this).parent().parent().parent().children().find(".compBtn").eq(1)))
             {
-                console.log('yes');
                 $(this).attr('value', '+');
+                //$(this).on("click", function (e) {
+                    //e.preventDefault();
+                    //var that = $(this);
+                    //that.parent().parent().on("click", cloneComponent) ;
+                    this.onclick = cloneComponent;
+                //});
             } else {
-                console.log('no');
                 $(this).attr('value', '-');
+                $(this).on("click", function (e) {
+                    e.preventDefault();
+                    var that = $(this);
+                    that.parent().parent().remove();
+                });
             }
 
-            $(this).on("click", function (e) {
-                e.preventDefault();
-                var that = $(this);
-                that.parent().parent().remove();
-            });
         });
     clonedComponent.find(".clone").each(
         function () {
@@ -1229,7 +1236,7 @@ function duplicateComponent(obj, set) {
     });
     clonedComponent.attr("data-filename", null);
     var tmpID = clonedComponent.attr('id');
-    var list = $('[id^=' + cloned_id + '_' + ']');
+    var list = $(set).find('[id^=' + cloned_id + '_' + ']');
     if (list.length) {
         clonedComponent.insertAfter(list.last());
     } else {
