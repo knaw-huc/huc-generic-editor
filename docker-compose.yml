@@ -2,7 +2,7 @@ version: '2'
 
 services:
   cmdicdn:
-    image: registry.diginfra.net/tsd/huc-generic-editor:1.3-RC1
+    image: registry.diginfra.net/tsd/huc-generic-editor:1.3-RC3
     container_name: cmdicdn
     restart: unless-stopped
     labels:
@@ -10,9 +10,10 @@ services:
       - "traefik.http.routers.cmdicdn.entrypoints=http"
       - "traefik.http.routers.cmdicdn.rule=Host(`cmdicdn.sd.di.huc.knaw.nl`)"
     networks:
-      - traefik-public
+      - cmdicdn
 
 
-networks:
-  traefik-public:
-    external: true
+nnetworks:
+  cmdicdn:
+    external:
+      name: traefik-public
