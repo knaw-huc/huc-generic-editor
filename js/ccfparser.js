@@ -113,9 +113,13 @@ var formBuilder = {
                         attr_field.setAttribute('data-attribute_name', element.attributes.attributeList[key].name)
                         attr_field.setAttribute('placeholder', element.attributes.attributeList[key].name);
                         attr_field.setAttribute("class", "element_attribute");
-                        if (element.attributes.readonly !== undefined && element.attributes.readonly === "yes") {
+                        if ((element.attributes.readonly !== undefined && element.attributes.readonly === "yes")) {
                             attr_field.setAttribute('readonly', true);
                         }
+                        //if ((element.attributes.once !== undefined && element.attributes.once === "yes")) {
+                            //MENZO:  on change, when !='' make it readonly
+                        //    attr_field.setAttribute('readonly', true);
+                        //}
                 }
                 input.appendChild(attr_field);
             }
@@ -763,6 +767,7 @@ function createAutoCompletes() {
             serviceUrl: $(this).attr("data-uri"),
             dataType: 'text',
             paramName: 'q',
+            noCache: true, 
             onSearchStart: function(params) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
@@ -786,6 +791,7 @@ function addAutoComplete(clonedComponent) {
             serviceUrl: $(this).attr("data-uri"),
             dataType: 'text',
             paramName: 'q',
+            noCache: true, 
             onSearchStart: function(params) {
                 var comp = $(this).parent().parent();
                 var id = "uri_"+$(this).attr("id");
