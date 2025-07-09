@@ -538,6 +538,7 @@ function cloneElement(obj) {
             var id = $(this).attr('id');
             $(this).attr('id', "errorMsg_" + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
             $(this).html("");
+            // console.log("MENZO@ce["+$(this).attr('id')+"]");
         });
     clonedElement.find(".language_dd").each(
         function () {
@@ -548,6 +549,7 @@ function cloneElement(obj) {
         function () {
             $(this).attr('id', 'uri_' + $(this).parent().children(':nth-child(1)').attr("data-validation-profile") + '_' + next);
             $(this).val("none");
+            // console.log("MENZO@ce["+$(this).attr('id')+"]");
         });
     clonedElement.find(".element_attribute").each(
         function () {
@@ -613,6 +615,7 @@ function cloneComponent(e) {
         function () {
             $(this).html('');
             $(this).attr('id', "errorMsg_" + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
+            // console.log("MENZO@cc["+$(this).attr('id')+"]");
         });
     clonedComponent.find(".btn").each(function () {
         $(this).on("click", function () {
@@ -639,6 +642,7 @@ function cloneComponent(e) {
     clonedComponent.find(".uri_dd").each(function () {
         $(this).attr('id', 'uri_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
         $(this).val('none');
+        // console.log("MENZO@cc["+$(this).attr('id')+"]");
     });
     clonedComponent.find(".uploader").each(function () {
         $(this).attr('id', 'upload_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
@@ -1093,6 +1097,7 @@ function getUri(obj) {
 }
 
 function duplicateField(obj, set) {
+    // console.log("MENZO@df["+obj.name+"]");
     var next = clone.nextClonePostfix();
     var language = getLanguage(obj);
     var uri = getUri(obj);
@@ -1122,9 +1127,9 @@ function duplicateField(obj, set) {
             var id = $(this).attr('id');
             $(this).attr('id', id + '_' + next);
             $(this).html("");
+            //console.log("MENZO@df["+$(this).attr('id')+"]");
         });
     clonedElement.find(".language_dd").each(
-
             function () {
                 $(this).attr('id', 'lang_' + tempID);
                 $(this).val(language);
@@ -1133,6 +1138,7 @@ function duplicateField(obj, set) {
             function () {
                 $(this).attr('id', 'uri_' + tempID);
                 $(this).val(uri);
+                // console.log("MENZO@df["+$(this).attr('id')+"]");
             });
     clonedElement.find(".element_attribute").each(
         function () {
@@ -1151,6 +1157,7 @@ function duplicateComponent(obj, set) {
     var cloned_id = clonedComponent.attr('id');
     clonedComponent.attr("class", "component clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
+    // console.log("MENZO@dc["+obj.name+"]["+clonedComponent.attr('id')+"]");
     clonedComponent.find(".compBtn").each(
         function () {
 
@@ -1193,7 +1200,25 @@ function duplicateComponent(obj, set) {
             $(this).html('');
             var id = $(this).attr('id');
             $(this).attr('id', id + '_' + next);
+            // console.log("MENZO@dc["+$(this).attr('id')+"]");
         });
+
+    clonedComponent.find(".lang_dd").each(
+        function () {
+            $(this).val(formBuilder.def_language);
+            var id = $(this).attr('id');
+            $(this).attr('id', id + '_' + next);
+            // console.log("MENZO@dc["+$(this).attr('id')+"]");
+        });
+
+    clonedComponent.find(".uri_dd").each(
+        function () {
+            $(this).val('none');
+            var id = $(this).attr('id');
+            $(this).attr('id', id + '_' + next);
+            // console.log("MENZO@dc["+$(this).attr('id')+"]");
+        });
+
     clonedComponent.find(".input_element").each(function () {
         var id = $(this).attr("id");
         $(this).attr('id', id + '_' + next);
