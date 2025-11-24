@@ -618,9 +618,7 @@ function cloneComponent(e) {
             // console.log("MENZO@cc["+$(this).attr('id')+"]");
         });
     clonedComponent.find(".btn").each(function () {
-        $(this).on("click", function () {
-            cloneElement(this)
-        });
+        $(this).on("click",cloneElement);
     });
 
     clonedComponent.find(".collapser").each(function () {
@@ -633,7 +631,6 @@ function cloneComponent(e) {
             showHideComponent(this)
         });
     });
-
 
     clonedComponent.find(".language_dd").each(function () {
         $(this).attr('id', 'lang_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
@@ -648,12 +645,12 @@ function cloneComponent(e) {
         $(this).attr('id', 'upload_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
         $(this).val("");
         $(this).show();
-        $(this).on("change", function () {
-            addUploadTrigger(this);
-        });
+        $(this).on("change",addUploadTrigger);
+    });
+    clonedComponent.find(".optionalCompBtn").each(function () {
+        $(this).on("click", showComponentFields);
     });
     clonedComponent.find(".headerMsg").remove();
-    clonedComponent.find(".optionalCompBtn").remove();
     clonedComponent.attr("data-filename", null);
     //list = $('[id^=' + tmpID + '_]');
     list = that.parent().parent().parent().find('[id^=' + tmpID + '_]');
@@ -666,6 +663,7 @@ function cloneComponent(e) {
     //that.parent().parent().parent().append(clonedComponent);
     addAutoComplete(clonedComponent);
     validateTracker()
+    //console.log("MENZO@cc["+tmpID+ '_' + next.toString()+"]") 
 };
 
 
@@ -698,6 +696,7 @@ function thisShowHideComponent() {
 function showComponentFields() {
     var that = $(this);
     var comp = that.parent().parent();
+    //console.log("MENZO: show component["+comp.attr('id')+"]")
     var header = that.parent();
     that.attr('value', "✗");
     that.attr('title', 'Disable block')
