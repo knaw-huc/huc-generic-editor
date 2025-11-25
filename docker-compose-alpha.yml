@@ -10,10 +10,8 @@ services:
       - "traefik.http.routers.alpha-cmdicdn.entrypoints=http"
       - "traefik.http.routers.alpha-cmdicdn.rule=Host(`alpha-cmdicdn.sd.di.huc.knaw.nl`)"
     networks:
-      - cmdicdn
-
+      - traefik-public
 
 networks:
-  cmdicdn:
-    external:
-      name: traefik-public
+  traefik-public:
+    external: true
