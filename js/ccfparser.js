@@ -570,6 +570,8 @@ function cloneComponent(e) {
     tmpID = clonedComponent.attr("id");
     clonedComponent.addClass("clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
+    console.log("MENZO@cc["+clonedComponent.attr("id")+"]");
+
     clonedComponent.find(".clone").each(
         function () {
             $(this).remove();
@@ -579,9 +581,16 @@ function cloneComponent(e) {
         function () {
             $(this).remove();
         });
+
+        clonedComponent.find(".component").each(function () {
+        $(this).attr("id", $(this).attr("id") + '_' + next.toString());
+    })
+
     clonedComponent.find(".compBtn").each(
         function () {
-            if ($(this).is($(this).parent().parent().parent().children().find(".compBtn").eq(1))) {
+            name=$(this).parent().parent().attr("data-name");
+            console.log("MENZO@compBtn["+$(this).parent().parent().attr("id")+"]["+$(this).parent().parent().attr("data-name")+"]["+$(this).parent().parent().parent().children("[data-name='"+name+"']").find(".compBtn")+"]["+$(this).parent().parent().parent().children("[data-name='"+name+"']").find(".compBtn").eq(0).parent().parent().attr("id")+"]["+$(this).is($(this).parent().parent().parent().children("[data-name='"+name+"']").find(".compBtn").eq(0))+"]");
+            if ($(this).is($(this).parent().parent().parent().children("[data-name='"+name+"']").find(".compBtn").eq(0))) {
                 this.onclick = cloneComponent;
             } else {
                 $(this).attr('value', '-');
@@ -594,9 +603,6 @@ function cloneComponent(e) {
             }
         });
 
-    clonedComponent.find(".component").each(function () {
-        $(this).attr("id", $(this).attr("id") + '_' + next.toString());
-    })
     clonedComponent.find(".input_element").each(function () {
         var new_id = $(this).attr("data-validation-profile") + '_' + next.toString();
         $(this).attr('id', new_id);
