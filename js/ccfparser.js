@@ -1021,20 +1021,26 @@ function parseElement(element) {
 function parseRecord(obj, set) {
     var nameStack = {};
     for (var key in obj) {
+        //console.log("MENZO: key["+key+"]")
         if (obj[key] !== null) {
             if (nameStack[obj[key].name] === undefined) {
                 nameStack[obj[key].name] = 1;
             } else {
                 nameStack[obj[key].name]++;
             }
+            if (obj[key].type) 
+                console.log("MENZO: "+obj[key].type+"("+obj[key].name+")stack["+nameStack[obj[key].name]+"]");
             if (obj[key].type === 'component') {
                 if (nameStack[obj[key].name] > 1) {
+                    console.log("MENZO: create new component("+obj[key].name+")set["+(set?set.length:"null")+"]["+(set?set.attr("data-name")+"("+set.attr("id")+")":"null")+"]");
                     duplicateComponent(obj[key], set);
                 }
                 if (set === null) {
                     var newSet = $("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
+                    console.log("MENZO:new set["+obj[key].name+"["+newSet.attr("id")+"]]index["+(nameStack[obj[key].name] - 1)+"@"+$("div[data-name='" + obj[key].name + "']").length+"]");
                 } else {
                     var newSet = $(set).children("div[data-name='" + obj[key].name + "']").eq(nameStack[obj[key].name] - 1);
+                    console.log("MENZO: old set ["+set.attr("data-name")+"["+set.attr("id")+"]] new set["+obj[key].name+"["+newSet.attr("id")+"]]index["+(nameStack[obj[key].name] - 1)+"@"+$(set).children("div[data-name='" + obj[key].name + "']").length+"]");
                 }
                 parseRecord(obj[key].value, newSet);
             } else {
@@ -1162,7 +1168,7 @@ function duplicateComponent(obj, set) {
     var cloned_id = clonedComponent.attr('id');
     clonedComponent.attr("class", "component clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
-    // console.log("MENZO@dc["+obj.name+"]["+clonedComponent.attr('id')+"]");
+    console.log("MENZO@dc["+obj.name+"]["+clonedComponent.attr('id')+"]");
     clonedComponent.find(".compBtn").each(
         function () {
 
@@ -1185,6 +1191,7 @@ function duplicateComponent(obj, set) {
             }
 
         });
+
     clonedComponent.find(".clone").each(
         function () {
             $(this).remove();
@@ -1264,19 +1271,27 @@ function duplicateComponent(obj, set) {
         });
     });
 
-
-
     clonedComponent.find(".optionalCompBtn").each(function () {
         $(this).attr('value', "✓");
         $(this).on("click", showComponentFields);
     });
+
     clonedComponent.attr("data-filename", null);
+
     var tmpID = clonedComponent.attr('id');
     var list = $(set).find('[id^=' + cloned_id + '_' + ']');
+    console.log("MENZO: set["+set.attr("data-name")+"("+set.attr("id")+")]list[[id^='"+cloned_id+'_'+"']]=["+list.length+"]");
+    if (list.length == 0) {
+        list = $(set).find('[id=' + cloned_id + ']');
+        console.log("MENZO: set["+set.attr("data-name")+"("+set.attr("id")+")]overwrite list[[id='"+cloned_id+"']]=["+list.length+"]");
+    }
+    //var list = $(set).find('[id^=' + cloned_id + ']');
     if (list.length) {
         clonedComponent.insertAfter(list.last());
+        console.log("MENZO: insert ["+clonedComponent.attr("data-name")+"("+clonedComponent.attr("id")+")] after["+list.last().attr("data-name")+"("+list.last().attr("id")+")]")
     } else {
         clonedComponent.insertAfter($("#" + cloned_id));
+        console.log("MENZO: insert(no list) ["+clonedComponent.attr("data-name")+"("+clonedComponent.attr("id")+")] after["+$("#" + cloned_id).attr("data-name")+"("+$("#" + cloned_id).attr("id")+")]")
     }
 
     addAutoComplete(clonedComponent);
