@@ -1169,6 +1169,8 @@ function duplicateComponent(obj, set) {
     clonedComponent.attr("class", "component clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
     console.log("MENZO@dc["+obj.name+"]["+clonedComponent.attr('id')+"]");
+
+    console.log("MENZO: nested compBtn["+clonedComponent.find(".compBtn").length+"]");
     clonedComponent.find(".compBtn").each(
         function () {
 
@@ -1192,20 +1194,37 @@ function duplicateComponent(obj, set) {
 
         });
 
+    console.log("MENZO: nested clones["+clonedComponent.find(".clone").length+"]");
     clonedComponent.find(".clone").each(
         function () {
             $(this).remove();
         });
 
+    console.log("MENZO: nested cloned components["+clonedComponent.find(".clonedComponent").length+"]");
     clonedComponent.find(".clonedComponent").each(
         function () {
             $(this).remove();
         });
 
+    console.log("MENZO: nested components["+clonedComponent.find(".component").length+"]");
     clonedComponent.find(".component").each(function () {
         var id = $(this).attr("id");
         $(this).attr('id', id + '_' + next);
+        console.log("MENZO: cloned "+$(this).attr("data-name")+"("+id+") to "+$(this).attr("data-name")+"("+$(this).attr("id")+")");
     })
+
+    console.log("MENZO: nested disabled components["+clonedComponent.find(".disabledComponent").length+"]");
+    clonedComponent.find(".disabledComponent").each(function () {
+        var id = $(this).attr("id");
+        $(this).attr('id', id + '_' + next);
+        console.log("MENZO: cloned disabled "+$(this).attr("data-name")+"("+id+") to "+$(this).attr("data-name")+"("+$(this).attr("id")+")");
+    })
+
+    console.log("MENZO: children["+clonedComponent.children().length+"]");
+    for (var i = 0; i < clonedComponent.children().length; i++) {
+        var item = clonedComponent.children().eq(i);
+        console.log("MENZO: child: "+item.attr("data-name")+"("+item.attr("id")+")["+item.attr("class")+"]");
+    }
 
     clonedComponent.find(".errorMsg").each(
         function () {
@@ -1285,6 +1304,8 @@ function duplicateComponent(obj, set) {
         list = $(set).find('[id=' + cloned_id + ']');
         console.log("MENZO: set["+set.attr("data-name")+"("+set.attr("id")+")]overwrite list[[id='"+cloned_id+"']]=["+list.length+"]");
     }
+    if (list.length == 0)
+        alert("FATAL[1308]: please contact structured-data@di.huc.knaw.nl and share your record!")
     //var list = $(set).find('[id^=' + cloned_id + ']');
     if (list.length) {
         clonedComponent.insertAfter(list.last());
