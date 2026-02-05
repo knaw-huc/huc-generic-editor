@@ -42,6 +42,10 @@ var formBuilder = {
                     var parentIsOptional = this.handleComponent(o, componentID, isOptional);
                     this.parse(o.content, o.ID, parentIsOptional);
                     objectDisplay = true;
+                    if (o.attributes.collapse === 'yes') {
+                        // the first collapser is the one for this component level
+                        $('#'+o.ID).find('.collapser').first().click();
+                    }
                     break;
                 default:
                     Alert('Error: property type not defined');
