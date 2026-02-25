@@ -977,7 +977,7 @@ function setfiles(files) {
 function parseComponent(component) {
     var retStruct = [];
     $(component).children().each(function () {
-        console.log("?MENZO: "+$(this).attr("class")+"("+$(this).attr("data-name")+")")
+        //console.log("?MENZO: "+$(this).attr("class")+"("+$(this).attr("data-name")+")")
         if ($(this).attr("class") === "component" || $(this).attr("class") === "clonedComponent" || $(this).attr("class") === "component isCollapsed") {
             var element = {};
             element.name = $(this).attr("data-name");
