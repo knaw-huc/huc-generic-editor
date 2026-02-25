@@ -977,7 +977,8 @@ function setfiles(files) {
 function parseComponent(component) {
     var retStruct = [];
     $(component).children().each(function () {
-        if ($(this).attr("class") === "component") {
+        console.log("?MENZO: "+$(this).attr("class")+"("+$(this).attr("data-name")+")")
+        if ($(this).attr("class") === "component" || $(this).attr("class") === "clonedComponent" || $(this).attr("class") === "component isCollapsed") {
             var element = {};
             element.name = $(this).attr("data-name");
             element.type = 'component';
@@ -992,7 +993,7 @@ function parseComponent(component) {
             }
 
         } else {
-            if ($(this).attr("class") === "element") {
+            if ($(this).attr("class") === "element" || $(this).attr("class") === "element isCollapsed") {
                 var element = {};
                 element.name = $(this).attr("data-name");
                 element.type = 'element';
