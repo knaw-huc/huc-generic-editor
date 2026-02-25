@@ -429,31 +429,39 @@ var formBuilder = {
         var buttonFrame = document.createElement('div');
         buttonFrame.setAttribute('id', 'btnFrame');
 
-        var control = document.createElement('input');
-        control.setAttribute('type', 'button');
-        control.setAttribute('value', ccfOptions.submitButton.label);
-        control.setAttribute('id', 'OKbtn');
-        if (ccfOptions.submitButton.actionURI === ccfOptions.saveButton.actionURI) {
-            control.onclick = function () {
-                validate();
-            };
-        } else {
-            control.onclick = function () {
-                window.location.assign(ccfOptions.submitButton.actionURI);
-            };
-
+        if (ccfOptions.submitButton !== null && ccfOptions.submitButton !== undefined) {
+            var control = document.createElement('input');
+            control.setAttribute('type', 'button');
+            control.setAttribute('value', ccfOptions.submitButton.label);
+            control.setAttribute('id', 'OKbtn');
+            if (ccfOptions.submitButton.actionURI  !== undefined) {
+                control.onclick = function () {
+                    window.location.assign(ccfOptions.submitButton.actionURI);
+                };
+            } else {
+                control.onclick = function () {
+                    validate();
+                };
+            }
+            buttonFrame.appendChild(control);
         }
 
-        buttonFrame.appendChild(control);
-
-        var control = document.createElement('input');
-        control.setAttribute('type', 'button');
-        control.setAttribute('value', ccfOptions.saveButton.label);
-        control.setAttribute('id', 'saveBtn');
-        control.onclick = function () {
-            sendForm();
-        };
-        buttonFrame.appendChild(control);
+        if (ccfOptions.saveButton !== null && ccfOptions.saveButton !== undefined) {
+            var control = document.createElement('input');
+            control.setAttribute('type', 'button');
+            control.setAttribute('value', ccfOptions.saveButton.label);
+            control.setAttribute('id', 'saveBtn');
+            if (ccfOptions.saveButton.actionURI  !== undefined) {
+                control.onclick = function () {
+                    window.location.assign(ccfOptions.saveButton.actionURI);
+                };
+            } else {
+                control.onclick = function () {
+                    sendForm();
+                };
+            }
+            buttonFrame.appendChild(control);
+        }
 
         if (ccfOptions.resetButton !== null && ccfOptions.resetButton !== undefined) {
             var control = document.createElement('input');
@@ -890,6 +898,7 @@ function validate() {
 ;
 
 function sendForm() {
+    console.log("?MENZO: welcome to sendForm!")
     expandAll();
     var formValues = [];
     $(".clonedComponent").each(function () {
