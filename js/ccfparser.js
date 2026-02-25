@@ -898,7 +898,6 @@ function validate() {
 ;
 
 function sendForm() {
-    console.log("?MENZO: welcome to sendForm!")
     expandAll();
     var formValues = [];
     $(".clonedComponent").each(function () {
