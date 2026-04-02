@@ -290,11 +290,11 @@ var formBuilder = {
                     control.appendChild(option);
                     var option = document.createElement('option');
                     option.setAttribute("value", "true");
-                    option.innerHTML = 'Ja';
+                    option.innerHTML = ccfOptions.yes.label;
                     control.appendChild(option);
                     var option = document.createElement('option');
                     option.setAttribute("value", "false");
-                    option.innerHTML = 'Nee';
+                    option.innerHTML = ccfOptions.no.label;
                     control.appendChild(option);
                     break;
                 case 'string':
@@ -803,10 +803,11 @@ function createAutoCompletes() {
             },
             onSelect: function (suggestion) {
                 var comp = $(this).parent().parent();
-
                 var id = "uri_"+$(this).attr("id");
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val(suggestion.data.uri);
+                $(this).val(suggestion.data.value);
+                //console.log("!MENZO[810]: value set to ["+$(this).val()+"]["+suggestion.data.value+"]");
             }
         });
     });
@@ -830,6 +831,8 @@ function addAutoComplete(clonedComponent) {
                 var id = "uri_" + $(this).attr("id");
                 var uri = comp.find("[id=" + id + "]");
                 $(uri).val(suggestion.data.uri);
+                $(this).val(suggestion.data.value);
+                //console.log("!MENZO[835]: value set to ["+$(this).val()+"]["+suggestion.data.value+"]");
             }
         });
     });

@@ -70,13 +70,13 @@ function createListElement(value) {
     var el = document.createElement('div');
     $(el).addClass("skos-list-value");
     $(el).on("click", function () {
-        $("#" + skosListRegistry.currentID).val(value.value);
+        $("#" + skosListRegistry.currentID).val(value.data.value);
         //console.log(value.data.uri);
         //console.log("#uri_" + skosListRegistry.currentID);
         $("#uri_" + skosListRegistry.currentID).val(value.data.uri);
         document.getElementById("myModal").style.display = "none";
     });
-    $(el).html(value.value);
+    $(el).html(value.data.label);
     $("#skos_list_picker").append(el);
 }
 
