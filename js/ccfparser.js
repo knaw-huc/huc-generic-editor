@@ -9,6 +9,7 @@ var recordEdit = false;
 var datePickerFormat = "yy-mm-dd";
 var yearRange = '1900:2040'
 var ccfTrackedFunctions = [];
+var backendVersions = ['2.0-RC11'];
 
 
 function validateTracker() {
@@ -23,6 +24,26 @@ var formBuilder = {
     profileID: null,
     recordFile: null,
     start: function (obj) {
+        info_url = window.location.href.replace(/\/app\/.*/, "/info");
+        console.log(info_url);
+        $.ajax(
+        {
+            type: "GET",
+            url: info_url,
+            contentType: 'application/json; charset=utf-8"',
+            dataType: "json",
+            processData: false,
+            success: function (msg) {
+                console.log(msg.version);
+                if (!backendVersions.includes(msg.version)) {
+                    alert ("ERR: backend version unknown! you might loose data! contact your editor technician, e.g. structured-data@di.huc.knaw.nl");
+                    console.log("unknown backend["+msg.version+"]!");
+                } else
+                    console.log("known backend["+msg.version+"]!");
+            }, error: function (err) {
+                alert ("ERR: backend version unknown! you might loose data! contact your editor technician, e.g. structured-data@di.huc.knaw.nl");
+            }
+        });
         this.profileID = obj.id;
         this.parse(obj.content, obj.ID, false);
         this.createButtons();
