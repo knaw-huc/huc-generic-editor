@@ -165,7 +165,9 @@ var formBuilder = {
         // Add explanation
         if (element.attributes.explanation !== undefined) {
             explanation = document.createElement('div');
-            explanation.innerHTML = element.attributes.explanation;
+            expl = marked.parse(element.attributes.explanation.trim()).replaceAll(new RegExp('<a ', 'g'),"<a target='explanation' ");
+            console.log('explanation['+element.ID+']['+expl+']');
+            explanation.innerHTML = expl;
             explanation.setAttribute("class", "formExplanation");
             html.appendChild(explanation);
         }
