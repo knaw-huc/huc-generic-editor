@@ -9,7 +9,7 @@ var recordEdit = false;
 var datePickerFormat = "yy-mm-dd";
 var yearRange = '1900:2040'
 var ccfTrackedFunctions = [];
-var backendVersions = ['2.0-RC11'];
+var backendVersions = ['2.0-RC11','2.0-RC12-alpha'];
 
 
 function validateTracker() {
@@ -287,6 +287,17 @@ var formBuilder = {
             header.appendChild(form);
         }
         html.appendChild(header);
+
+        // Add explanation
+        if (component.attributes.explanation !== undefined) {
+            explanation = document.createElement('div');
+            expl = marked.parse(component.attributes.explanation.trim()).replaceAll(new RegExp('<a ', 'g'),"<a target='explanation' ");
+            console.log('explanation['+component.ID+']['+expl+']');
+            explanation.innerHTML = expl;
+            explanation.setAttribute("class", "formExplanation");
+            html.appendChild(explanation);
+        }
+
         if (componentID === undefined) {
             $("#ccform").append(html);
         } else {

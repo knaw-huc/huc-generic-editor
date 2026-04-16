@@ -155,6 +155,11 @@ display: block;
 max-width: 600px;
 }
 
+.formExplanation a {
+   cursor: pointer;
+   text-decoration: underline; 
+}
+
 .uri_dd{
 display:none;
 }
