@@ -676,8 +676,11 @@ function cloneComponent(e) {
             // console.log("MENZO@cc["+$(this).attr('id')+"]");
         });
     clonedComponent.find(".btn").each(function () {
-        $(this).on("click",cloneElement);
+        $(this).on("click",function () {
+            cloneElement(this)
+        });
     });
+
 
     clonedComponent.find(".collapser").each(function () {
         $(this).on("click", function () {
@@ -707,6 +710,9 @@ function cloneComponent(e) {
     });
     clonedComponent.find(".optionalCompBtn").each(function () {
         $(this).on("click", showComponentFields);
+    //    $(this).on("click", function () {
+    //        showComponentFields(this)
+    //    });
     });
     clonedComponent.find(".headerMsg").remove();
     clonedComponent.attr("data-filename", null);
@@ -1349,6 +1355,9 @@ function duplicateComponent(obj, set) {
     clonedComponent.find(".optionalCompBtn").each(function () {
         $(this).attr('value', "✓");
         $(this).on("click", showComponentFields);
+//        $(this).on("click", function () {
+//            showComponentFields(this)
+//        });
     });
 
     clonedComponent.attr("data-filename", null);
