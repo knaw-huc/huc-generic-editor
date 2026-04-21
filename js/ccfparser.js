@@ -1021,7 +1021,7 @@ function parseComponent(component) {
     var retStruct = [];
     $(component).children().each(function () {
         //console.log("?MENZO: "+$(this).attr("class")+"("+$(this).attr("data-name")+")")
-        if ($(this).attr("class") === "component" || $(this).attr("class") === "clonedComponent" || $(this).attr("class") === "component isCollapsed") {
+        if ($(this).attr("class") === "component" || $(this).attr("class") === "clonedComponent" || $(this).attr("class") === "component isCollapsed" || $(this).attr("class") === "component clonedComponent") {
             var element = {};
             element.name = $(this).attr("data-name");
             element.type = 'component';
@@ -1045,7 +1045,6 @@ function parseComponent(component) {
                 if (element.content !== "") {
                     retStruct.push(element);
                 }
-
             }
         }
     });
@@ -1055,7 +1054,9 @@ function parseComponent(component) {
 
 function parseElement(element) {
     var retVal = [];
+    console.log("?MENZO: pe e dn["+$(element).attr("data-name")+"] id["+$(element).attr("id")+"]");
     $(element).find(".input_element").each(function () {
+        console.log("?MENZO: pe ie id["+$(this).attr("id")+"]");
         if ($(this).is("input") || $(this).is("select") || $(this).is("textarea")) {
             var unit = {};
             unit.value = $(this).val();
