@@ -9,7 +9,7 @@ var recordEdit = false;
 var datePickerFormat = "yy-mm-dd";
 var yearRange = '1900:2040'
 var ccfTrackedFunctions = [];
-var backendVersions = ['2.0-RC12-alpha2'];
+var backendVersions = ['2.0-RC11','2.0-RC12-alpha'];
 
 
 function validateTracker() {
@@ -212,7 +212,9 @@ var formBuilder = {
             span.innerHTML = "▼ ";
             span.setAttribute("title", "Hide block content")
             span.setAttribute("class", "collapser");
-            $(span).on("click", thisShowHideComponent);
+            $(span).on("click", function () {
+                thisShowHideComponent(this)
+            });
             header.appendChild(span);
         }
         var span = document.createElement("span");
@@ -681,7 +683,6 @@ function cloneComponent(e) {
         });
     });
 
-
     clonedComponent.find(".collapser").each(function () {
         $(this).on("click", function () {
             showHideComponent(this)
@@ -706,13 +707,14 @@ function cloneComponent(e) {
         $(this).attr('id', 'upload_' + $(this).parent().children(":nth-child(1)").attr("data-validation-profile") + '_' + next.toString());
         $(this).val("");
         $(this).show();
-        $(this).on("change",addUploadTrigger);
+        $(this).on("change", function () {
+            addUploadTrigger(this)
+        });
     });
     clonedComponent.find(".optionalCompBtn").each(function () {
-        $(this).on("click", showComponentFields);
-    //    $(this).on("click", function () {
-    //        showComponentFields(this)
-    //    });
+        $(this).on("click", function () {
+            showComponentFields(this)
+        });
     });
     clonedComponent.find(".headerMsg").remove();
     clonedComponent.attr("data-filename", null);
@@ -776,7 +778,9 @@ function showComponentFields() {
     });
     header.find(".compBtn").show();
     header.find(".uploader").show();
-    $(this).on("click", hideComponentFields);
+    $(this).on("click",  function () {
+        hideComponentFields(this)
+    });
 }
 
 function checkResourceFilter(sel, filter) {
@@ -805,7 +809,9 @@ function hideComponentFields() {
     header.find(".compBtn").hide();
     header.find(".uploader").hide();
     $(this).attr("value", "✓");
-    $(this).on("click", showComponentFields);
+    $(this).on("click",  function () {
+        showComponentFields(this)
+    });
 }
 
 function collapseComponent(obj) {
@@ -940,24 +946,49 @@ function validate() {
 }
 ;
 
-function toJSON() {
-    var rec = [];
-    $("#ccform").children().each(function () {
-        if ($(this).attr("class") === "component" || 
-            $(this).attr("class") === "clonedComponent" ||
-            $(this).attr("class") === "component isCollapsed" || 
-            $(this).attr("class") === "component clonedComponent") {
-                var element = {};
-                element.name = $(this).attr("data-name");
-                element.type = 'component';
-                element.sortOrder = 0;
-                element.content = parseComponent(this);
-                rec.push(element);
-            }
+function sendForm() {
+    expandAll();
+    var formValues = [];
+    $(".clonedComponent").each(function () {
+        $(this).attr("class", "component");
     });
-    return rec;
+    $(".hidden_element").each(function () {
+        $(this).removeClass("hidden_element");
+    });
+    $("#ccform").children().each(function () {
+        if ($(this).attr("class") === "component") {
+            var element = {};
+            element.name = $(this).attr("data-name");
+            element.type = 'component';
+            element.sortOrder = 0;
+            element.content = parseComponent(this);
+            formValues.push(element);
+        }
+    });
+    var ret = JSON.stringify(formValues);
+    var form = document.createElement('form');
+    $(form).attr('id', 'ccSendForm');
+    $(form).attr('method', 'post');
+    $(form).attr('action', ccfOptions.saveButton.actionURI);
+    var inputField = document.createElement('input');
+    $(inputField).attr('type', 'hidden');
+    $(inputField).attr('name', 'ccData');
+    $(inputField).val(ret);
+    $(form).append(inputField);
+    var inputField = document.createElement('input');
+    $(inputField).attr('type', 'hidden');
+    $(inputField).attr('name', 'ccProfileID');
+    $(inputField).val(formBuilder.profileID);
+    $(form).append(inputField);
+    var inputField = document.createElement('input');
+    $(inputField).attr('type', 'hidden');
+    $(inputField).attr('name', 'ccRecordFile');
+    $(inputField).val(formBuilder.recordFile);
+    $(form).append(inputField);
+    $("#ccform").append(form);
+    //$("#OKbtn").remove();
+    $("#ccSendForm").submit();
 }
-;
 
 function fillValues(record) {
     obj = record[2].value;
@@ -996,10 +1027,7 @@ function parseComponent(component) {
     var retStruct = [];
     $(component).children().each(function () {
         //console.log("?MENZO: "+$(this).attr("class")+"("+$(this).attr("data-name")+")")
-        if ($(this).attr("class") === "component" || 
-            $(this).attr("class") === "clonedComponent" || 
-            $(this).attr("class") === "component isCollapsed" || 
-            $(this).attr("class") === "component clonedComponent") {
+        if ($(this).attr("class") === "component" || $(this).attr("class") === "clonedComponent" || $(this).attr("class") === "component isCollapsed") {
             var element = {};
             element.name = $(this).attr("data-name");
             element.type = 'component';
@@ -1014,9 +1042,7 @@ function parseComponent(component) {
             }
 
         } else {
-            if ($(this).attr("class") === "element" || 
-                $(this).attr("class") === "element isCollapsed" ||
-                $(this).attr("class") === "element blocked_element") {
+            if ($(this).attr("class") === "element" || $(this).attr("class") === "element isCollapsed") {
                 var element = {};
                 element.name = $(this).attr("data-name");
                 element.type = 'element';
@@ -1025,17 +1051,17 @@ function parseComponent(component) {
                 if (element.content !== "") {
                     retStruct.push(element);
                 }
+
             }
         }
     });
+    //retStruct);
     return retStruct;
 }
 
 function parseElement(element) {
     var retVal = [];
-    console.log("?MENZO: pe e dn["+$(element).attr("data-name")+"] id["+$(element).attr("id")+"]");
     $(element).find(".input_element").each(function () {
-        console.log("?MENZO: pe ie id["+$(this).attr("id")+"]");
         if ($(this).is("input") || $(this).is("select") || $(this).is("textarea")) {
             var unit = {};
             unit.value = $(this).val();
@@ -1335,9 +1361,6 @@ function duplicateComponent(obj, set) {
     clonedComponent.find(".optionalCompBtn").each(function () {
         $(this).attr('value', "✓");
         $(this).on("click", showComponentFields);
-//        $(this).on("click", function () {
-//            showComponentFields(this)
-//        });
     });
 
     clonedComponent.attr("data-filename", null);
