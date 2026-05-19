@@ -2,7 +2,7 @@ version: '2'
 
 services:
   cmdicdn:
-    image: ghcr.io/knaw-huc/huc-generic-editor:1.0-rc6
+    image: ghcr.io/knaw-huc/huc-generic-editor:1.0-rc8
     container_name: cmdicdn
     restart: unless-stopped
     labels:
