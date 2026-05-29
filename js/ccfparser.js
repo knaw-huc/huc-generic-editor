@@ -25,7 +25,7 @@ var formBuilder = {
     recordFile: null,
     start: function (obj) {
         info_url = window.location.href.replace(/\/app\/.*/, "/info");
-        console.log(info_url);
+        //console.log(info_url);
         $.ajax(
         {
             type: "GET",
@@ -34,12 +34,12 @@ var formBuilder = {
             dataType: "json",
             processData: false,
             success: function (msg) {
-                console.log(msg.version);
+                //console.log(msg.version);
                 if (!backendVersions.includes(msg.version)) {
-                    alert ("ERR: backend version unknown! you might loose data! contact your editor technician, e.g. structured-data@di.huc.knaw.nl");
-                    console.log("unknown backend["+msg.version+"]!");
+                    alert ("ERR: backend version["+msg.version+"] unknown! you might loose data! contact your editor technician, e.g. structured-data@di.huc.knaw.nl");
+                    console.log("ERR: unknown backend["+msg.version+"]!");
                 } else
-                    console.log("known backend["+msg.version+"]!");
+                    console.log("INFO: known backend["+msg.version+"]");
             }, error: function (err) {
                 alert ("ERR: backend version unknown! you might loose data! contact your editor technician, e.g. structured-data@di.huc.knaw.nl");
             }
@@ -166,7 +166,7 @@ var formBuilder = {
         if (element.attributes.explanation !== undefined) {
             explanation = document.createElement('div');
             expl = marked.parse(element.attributes.explanation.trim()).replaceAll(new RegExp('<a ', 'g'),"<a target='explanation' ");
-            console.log('explanation['+element.ID+']['+expl+']');
+            //console.log('explanation['+element.ID+']['+expl+']');
             explanation.innerHTML = expl;
             explanation.setAttribute("class", "formExplanation");
             html.appendChild(explanation);
@@ -1070,7 +1070,7 @@ function parseRecord(obj, set) {
             } else {
                 nameStack[obj[key].name]++;
             }
-            if (obj[key].type) 
+            //if (obj[key].type) 
                 //console.log("MENZO: "+obj[key].type+"("+obj[key].name+")stack["+nameStack[obj[key].name]+"]");
             if (obj[key].type === 'component') {
                 if (nameStack[obj[key].name] > 1) {
@@ -1212,30 +1212,6 @@ function duplicateComponent(obj, set) {
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
     //console.log("MENZO@dc["+obj.name+"]["+clonedComponent.attr('id')+"]");
 
-    //console.log("MENZO: nested compBtn["+clonedComponent.find(".compBtn").length+"]");
-    clonedComponent.find(".compBtn").each(
-        function () {
-
-            if ($(this).is($(this).parent().parent().parent().children().find(".compBtn").eq(1)))
-            {
-                $(this).attr('value', '+');
-                //$(this).on("click", function (e) {
-                    //e.preventDefault();
-                    //var that = $(this);
-                    //that.parent().parent().on("click", cloneComponent) ;
-                    this.onclick = cloneComponent;
-                //});
-            } else {
-                $(this).attr('value', '-');
-                $(this).on("click", function (e) {
-                    e.preventDefault();
-                    var that = $(this);
-                    that.parent().parent().remove();
-                });
-            }
-
-        });
-
     //console.log("MENZO: nested clones["+clonedComponent.find(".clone").length+"]");
     clonedComponent.find(".clone").each(
         function () {
@@ -1291,6 +1267,44 @@ function duplicateComponent(obj, set) {
             $(this).attr('id', id + '_' + next);
             // console.log("MENZO@dc["+$(this).attr('id')+"]");
         });
+
+    // the cloned component is always a non-first so the compBtn must be a '-'
+    //console.log("MENZO: clone register '-' handler");
+    var btn = clonedComponent.children('.componentHeader').children('.compBtn');
+    btn.attr('value', '-');
+    btn.on("click", function (e) {
+        e.preventDefault();
+        var that = $(this);
+        that.parent().parent().remove();
+    });
+
+    // the nested components need their event handlers to be rebound (disabled are optional elements & components)
+    // console.log("MENZO: nested elements["+clonedComponent.children('.disabledElement,.element').length+"] components["+clonedComponent.children('.disabledComponent,.component').length+"]");
+    // clonedComponent.children().each(
+    //     function () {
+    //         var that = $(this);
+    //         console.log("MENZO: "+that.attr('class')+"["+that.attr("data-name")+"]");
+    //     }
+    // );
+    clonedComponent.children('.disabledComponent,.component').find(".compBtn").each(
+        function() {
+            var btn = $(this);
+            // console.log("MENZO: "+that.attr('class')+"["+that.attr("data-name")+"]");
+            // var btn = that.find(".compBtn");
+            //console.log("MENZO: "+that.attr('class')+"["+that.attr("data-name")+"] compBtn["+btn+"]["+btn.attr('class')+"]");
+            if (btn.attr('value') == '+') {
+                //console.log("MENZO: register '+' handler");
+                btn.on("click", cloneComponent);
+            } else {
+                //console.log("MENZO: register '-' handler");
+                btn.on("click", function (e) {
+                    e.preventDefault();
+                    var that = $(this);
+                    that.parent().parent().remove();
+                });
+            }
+        }
+    );
 
     clonedComponent.find(".input_element").each(function () {
         var id = $(this).attr("id");
