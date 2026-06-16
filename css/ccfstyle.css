@@ -164,5 +164,7 @@ max-width: 600px;
 display:none;
 }
 
-
+input:disabled {
+background-color: lightgray;
+}
 

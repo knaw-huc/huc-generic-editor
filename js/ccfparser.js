@@ -9,7 +9,9 @@ var recordEdit = false;
 var datePickerFormat = "yy-mm-dd";
 var yearRange = '1900:2040'
 var ccfTrackedFunctions = [];
-var backendVersions = ['2.0-RC12'];
+var backendVersions = ['2.0-RC13-alpha'];
+var enableDict = {};
+
 
 
 function validateTracker() {
@@ -180,6 +182,9 @@ var formBuilder = {
             $(html).addClass("blocked_element");
         }
         $("#" + componentID).append(html);
+        if (element.attributes.enable !== undefined) {
+            this.dependsOn(element.ID,element.attributes.enable);
+        }
         validationProfiles[element.ID] = element;
         if (element.attributes.ValueScheme === 'date') {
             $("#" + element.ID).datepicker({
@@ -189,6 +194,46 @@ var formBuilder = {
                 dateFormat: datePickerFormat
             });
         }
+    },
+    dependsOn: function(id,cue) {
+        var that = $("#" + id);
+        var cur = that.parent().parent();
+        var parts = cue.split('=');
+        var on = parts[0];
+        var val = null;
+        if (parts.length > 1) {
+            val = parts[1];
+            if (val.trim().match(/^'.*'$/)) {
+                val = val.replace(/^'(.*)'$/,'$1');
+            }
+        }
+        console.log('MENZO: element['+id+'] enable['+on+']['+val+']');
+        var p = cur.prev();
+        while (p && p.attr('data-name')!=on) {
+            p = p.prev();
+        }
+        if (p && val && !val.match(".*'[ ]+OR[ ]+'")) {
+            c = p.children("[class='control']");
+            i = c.children("[class='input_element']");
+            console.log("MENZO: look for on["+on+"]");
+            console.log(enableDict);
+            if (!Object.hasOwn(enableDict, on)) {
+                Object.defineProperty(enableDict, on, {value:{},writable:true,enumerable:true,configurable:true});
+                console.log(enableDict);
+            }
+            if (!Object.hasOwn(enableDict[on], val)) {
+                Object.defineProperty(enableDict[on], val, {value : [],writable:true,enumerable:true,configurable:true});
+                console.log(enableDict);
+            }
+            enableDict[on][val].push(id);
+            i.on('change',function(e) {
+                enableInput(e);
+            });
+            var on_id = i.attr("id");
+            $("#" + id).attr("disabled", true);
+            console.log ("MENZO: "+cur+"["+id+"]depends on "+on+"["+on_id+"]["+getInputType(i)+"]");
+        }
+        console.log(enableDict);
     },
     handleComponent: function (component, componentID, parentIsOptional) {
         var optionalParent = false;
@@ -292,7 +337,7 @@ var formBuilder = {
         if (component.attributes.explanation !== undefined) {
             explanation = document.createElement('div');
             expl = marked.parse(component.attributes.explanation.trim()).replaceAll(new RegExp('<a ', 'g'),"<a target='explanation' ");
-            console.log('explanation['+component.ID+']['+expl+']');
+            //console.log('explanation['+component.ID+']['+expl+']');
             explanation.innerHTML = expl;
             explanation.setAttribute("class", "formExplanation");
             html.appendChild(explanation);
@@ -1504,6 +1549,36 @@ function getInputType(element) {
     }
 }
 
+function enableInput(e) {
+    var that = $(e.target);
+    var name = that.parent().parent().attr("data-name");
+    var val = that.val();
+    var enable = enableDict[name][val];
+    console.log("MENZO: element["+name+"]["+val+"] enable ["+enable+"]");
+    if (enable) {
+        enable.forEach(function(v,i,a) {
+            $("#"+v).attr("disabled", false);
+            console.log("MENZO: enabled ["+v+"]");
+        });
+    }
+    // for other values disable the dependants
+    var disable = enableDict[name];
+    console.log(disable);
+    console.log(Object.keys(disable));
+    for(var prop in disable) {
+        console.log("MENZO: disable["+prop+"]");
+    }
+    console.log("MENZO: disable["+Object.keys(disable).length+"]");
+    Object.keys(disable).forEach(function(k,i) {
+        console.log("MENZO: disable["+k+"]["+i+"]");
+        if (k!=val) {
+            disable[k].forEach(function(v,i,a) {
+                $("#"+v).attr("disabled", true);
+                console.log ("MENZO: disabled ["+v+"]");
+            });
+        };
+    });
+};
 
 
 
