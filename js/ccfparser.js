@@ -56,6 +56,8 @@ var formBuilder = {
         }
     },
     parse: function (o, componentID, isOptional) {
+        console.log("MENZO: parse content["+o.type+"] of["+componentID+"]");
+        console.log(o);
         if (o.hasOwnProperty('type')) {
             switch (o.type) {
                 case 'Element':
@@ -77,6 +79,7 @@ var formBuilder = {
         } else {
             for (var key in o) {
                 var type = typeof o[key];
+                console.log("MENZO: content["+key+"] of["+componentID+"]");
                 if (type === 'object') {
                     this.parse(o[key], componentID, isOptional);
                 }
@@ -84,6 +87,7 @@ var formBuilder = {
         }
     },
     handleElement: function (element, componentID, parentIsOptional) {
+        console.log("MENZO: welcome to handle element["+element.attributes.name+"]");
         html = document.createElement('div');
         if (!parentIsOptional) {
             html.setAttribute('class', 'element');
@@ -182,9 +186,11 @@ var formBuilder = {
             $(html).addClass("blocked_element");
         }
         $("#" + componentID).append(html);
+        console.log("MENZO: before dependsOn");
         if (element.attributes.enable !== undefined) {
             this.dependsOn(element.ID,element.attributes.enable);
         }
+        console.log("MENZO: after dependsOn");
         validationProfiles[element.ID] = element;
         if (element.attributes.ValueScheme === 'date') {
             $("#" + element.ID).datepicker({
@@ -194,17 +200,25 @@ var formBuilder = {
                 dateFormat: datePickerFormat
             });
         }
+        console.log("Bye from handle element["+element.attributes.name+"]");
     },
     dependsOn: function(id,cue) {
+        console.log("MENZO: welcome to depends on for["+id+"]["+cue+"]");
         var that = $("#" + id);
+        console.log("MENZO: that["+that+"]");
         var cur = that.parent().parent();
+        console.log("MENZO: cur["+cur+"]");
         var parts = cue.split('=');
-        var on = parts[0];
+        console.log("MENZO: parts["+parts+"]");
+        var on = parts[0].trim();
+        console.log("MENZO: on["+on+"]");
         var val = null;
         if (parts.length > 1) {
             val = parts[1];
+            console.log("MENZO: val["+val+"]");
             if (val.trim().match(/^'.*'$/)) {
-                val = val.replace(/^'(.*)'$/,'$1');
+                val = val.trim().replace(/^'(.*)'$/,'$1');
+                console.log("MENZO: val["+val+"]");
             }
         }
         console.log('MENZO: element['+id+'] enable['+on+']['+val+']');
@@ -349,6 +363,7 @@ var formBuilder = {
         } else {
             $("#" + componentID).append(html);
         }
+        console.log("Bye from element["+component.attributes.name+"]");
         return optionalParent;
     },
     createControl: function (element) {
