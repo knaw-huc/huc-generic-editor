@@ -56,8 +56,8 @@ var formBuilder = {
         }
     },
     parse: function (o, componentID, isOptional) {
-        console.log("MENZO: parse content["+o.type+"] of["+componentID+"]");
-        console.log(o);
+        //console.log("MENZO: parse content["+o.type+"] of["+componentID+"]");
+        //console.log(o);
         if (o.hasOwnProperty('type')) {
             switch (o.type) {
                 case 'Element':
@@ -79,7 +79,7 @@ var formBuilder = {
         } else {
             for (var key in o) {
                 var type = typeof o[key];
-                console.log("MENZO: content["+key+"] of["+componentID+"]");
+                //console.log("MENZO: content["+key+"] of["+componentID+"]");
                 if (type === 'object') {
                     this.parse(o[key], componentID, isOptional);
                 }
@@ -87,7 +87,6 @@ var formBuilder = {
         }
     },
     handleElement: function (element, componentID, parentIsOptional) {
-        console.log("MENZO: welcome to handle element["+element.attributes.name+"]");
         html = document.createElement('div');
         if (!parentIsOptional) {
             html.setAttribute('class', 'element');
@@ -186,11 +185,10 @@ var formBuilder = {
             $(html).addClass("blocked_element");
         }
         $("#" + componentID).append(html);
-        console.log("MENZO: before dependsOn");
         if (element.attributes.enable !== undefined) {
-            this.dependsOn(element.ID,element.attributes.enable);
+            dependsOn(element.ID,element.attributes.enable);
+            html.setAttribute('data-cue-enable',element.attributes.enable);
         }
-        console.log("MENZO: after dependsOn");
         validationProfiles[element.ID] = element;
         if (element.attributes.ValueScheme === 'date') {
             $("#" + element.ID).datepicker({
@@ -200,55 +198,6 @@ var formBuilder = {
                 dateFormat: datePickerFormat
             });
         }
-        console.log("Bye from handle element["+element.attributes.name+"]");
-    },
-    dependsOn: function(id,cue) {
-        console.log("MENZO: welcome to depends on for["+id+"]["+cue+"]");
-        var that = $("#" + id);
-        console.log("MENZO: that["+that+"]");
-        var cur = that.parent().parent();
-        console.log("MENZO: cur["+cur+"]");
-        var parts = cue.split('=');
-        console.log("MENZO: parts["+parts+"]");
-        var on = parts[0].trim();
-        console.log("MENZO: on["+on+"]");
-        var val = null;
-        if (parts.length > 1) {
-            val = parts[1];
-            console.log("MENZO: val["+val+"]");
-            if (val.trim().match(/^'.*'$/)) {
-                val = val.trim().replace(/^'(.*)'$/,'$1');
-                console.log("MENZO: val["+val+"]");
-            }
-        }
-        console.log('MENZO: element['+id+'] enable['+on+']['+val+']');
-        var p = cur.prev();
-        while (p && p.attr('data-name')!=on) {
-            p = p.prev();
-        }
-        if (p && val && !val.match(".*'[ ]+OR[ ]+'")) {
-            var c = p.children("[class='control']");
-            var i = c.children("[class='input_element']");
-            var on_id = i.attr("id");
-            console.log("MENZO: look for on["+on+"]");
-            console.log(enableDict);
-            if (!Object.hasOwn(enableDict, on_id)) {
-                Object.defineProperty(enableDict, on_id, {value:{'@name':on},writable:true,enumerable:true,configurable:true});
-                console.log(enableDict);
-            }
-            if (!Object.hasOwn(enableDict[on_id], val)) {
-                Object.defineProperty(enableDict[on_id], val, {value : [],writable:true,enumerable:true,configurable:true});
-                console.log(enableDict);
-            }
-            enableDict[on_id][val].push(id);
-            i.on('change',function(e) {
-                enableInput(e);
-            });
-            
-            $("#" + id).attr("disabled", true);
-            console.log ("MENZO: "+cur+"["+id+"]depends on "+on+"["+on_id+"]["+getInputType(i)+"]");
-        }
-        console.log(enableDict);
     },
     handleComponent: function (component, componentID, parentIsOptional) {
         var optionalParent = false;
@@ -363,7 +312,6 @@ var formBuilder = {
         } else {
             $("#" + componentID).append(html);
         }
-        console.log("Bye from element["+component.attributes.name+"]");
         return optionalParent;
     },
     createControl: function (element) {
@@ -664,6 +612,10 @@ function cloneElement(obj) {
             $(this).val("");
         });
     clonedElement.insertAfter(that.parent());
+    if (clonedElement.parent().attr('data-cue-enable') !== undefined) {
+        dependsOn(tempID,clonedElement.parent().attr('data-cue-enable'));
+    }
+
     createAutoCompletes();
     validateTracker();
 };
@@ -677,7 +629,7 @@ function cloneComponent(e) {
     tmpID = clonedComponent.attr("id");
     clonedComponent.addClass("clonedComponent");
     clonedComponent.attr("id", clonedComponent.attr("id") + '_' + next);
-    console.log("MENZO@cc["+clonedComponent.attr("id")+"]");
+    //console.log("MENZO@cc["+clonedComponent.attr("id")+"]");
 
     clonedComponent.find(".clone").each(
         function () {
@@ -786,6 +738,13 @@ function cloneComponent(e) {
     }
     console.log(list);
     //that.parent().parent().parent().append(clonedComponent);
+
+    clonedComponent.find(".input_element").each(function () {
+        if ($(this).parent().parent().attr('data-cue-enable') !== undefined) {
+            dependsOn($(this).attr('id'),$(this).parent().parent().attr('data-cue-enable'));
+        }
+    });
+
     addAutoComplete(clonedComponent);
     validateTracker()
     //console.log("MENZO@cc["+tmpID+ '_' + next.toString()+"]") 
@@ -1094,9 +1053,9 @@ function parseComponent(component) {
 
 function parseElement(element) {
     var retVal = [];
-    console.log("?MENZO: pe e dn["+$(element).attr("data-name")+"] id["+$(element).attr("id")+"]");
+    //console.log("?MENZO: pe e dn["+$(element).attr("data-name")+"] id["+$(element).attr("id")+"]");
     $(element).find(".input_element").each(function () {
-        console.log("?MENZO: pe ie id["+$(this).attr("id")+"]");
+        //console.log("?MENZO: pe ie id["+$(this).attr("id")+"]");
         if ($(this).is("input") || $(this).is("select") || $(this).is("textarea")) {
             var unit = {};
             unit.value = $(this).val();
@@ -1151,9 +1110,11 @@ function parseRecord(obj, set) {
                     duplicateField(obj[key], set);
                 } else {
                     var name = obj[key].name;
+                    //console.log("MENZO: set element["+name+"] to val["+obj[key].value+"]");
                     //$(set).find("div[data-name='" + name + "']").find(".input_element").first().val(obj[key].value);
                     var el = $(set).find("div[data-name='" + name + "']").find(".input_element").first();
                     $(el).val(obj[key].value);
+                    doEnableInput($(el).attr('id'));
                     while ($(el).length > 0)  {
                         $(el).parent().parent().parent().children().first().children().each(function () {
                             if ($(this).hasClass("optionalCompBtn")) {
@@ -1233,6 +1194,7 @@ function duplicateField(obj, set) {
         function () {
             var id = $(this).attr('data-validation-profile');
             $(this).val(obj.value);
+            //console.log("MENZO element["+name+"] val["+obj.value+"]["+$(this).val()+"]");
             tempID = id + '_' + next;
             $(this).attr('id', tempID);
         });
@@ -1261,6 +1223,11 @@ function duplicateField(obj, set) {
         });
 
     clonedElement.insertAfter(btn.parent());
+    
+    if (clonedElement.parent().attr('data-cue-enable') !== undefined) {
+        dependsOn(tempID,clonedElement.parent().attr('data-cue-enable'));
+    }
+
     createAutoCompletes();
 }
 
@@ -1380,10 +1347,6 @@ function duplicateComponent(obj, set) {
                     dateFormat: datePickerFormat
                 });
         }
-        if (!Object.hasOwn(enableDict, id)) {
-            // TODO: copy the id entry for, but you can only do that after they all got new ids, and you have to find them back based on their data-name
-            $(this).on("change", enableInput);
-        }    
     });
     clonedComponent.find(".btn").each(function () {
         if ($(this).attr("value") === "+") {
@@ -1438,6 +1401,12 @@ function duplicateComponent(obj, set) {
         clonedComponent.insertAfter($("#" + cloned_id));
         //console.log("MENZO: insert(no list) ["+clonedComponent.attr("data-name")+"("+clonedComponent.attr("id")+")] after["+$("#" + cloned_id).attr("data-name")+"("+$("#" + cloned_id).attr("id")+")]")
     }
+    
+     clonedComponent.find(".input_element").each(function () {
+        if ($(this).parent().parent().attr('data-cue-enable') !== undefined) {
+            dependsOn($(this).attr('id'),$(this).parent().parent().attr('data-cue-enable'));
+        }
+    });   
 
     addAutoComplete(clonedComponent);
 
@@ -1569,35 +1538,86 @@ function getInputType(element) {
     }
 }
 
-function enableInput(e) {
-    var that = $(e.target);
-    var id = that.attr('id');
+function dependsOn(id,cue) {
+    var that = $("#" + id);
+    var cur = that.parent().parent();
+    var parts = cue.split('=');
+    var on = parts[0].trim();
+    var val = null;
+    if (parts.length > 1) {
+        val = parts[1];
+        if (val.trim().match(/^'.*'$/)) {
+            val = val.trim().replace(/^'(.*)'$/,'$1');
+        }
+    }
+    console.log('MENZO: element['+id+'] enable['+on+']['+val+']');
+    var p = cur.prev();
+    while (p && p.attr('data-name')!=on) {
+        p = p.prev();
+    }
+    if (p && val && !val.match(".*'[ ]+OR[ ]+'")) {
+        var c = p.children("[class='control']");
+        var i = c.children("[class='input_element']");
+        var on_id = i.attr("id");
+        console.log("MENZO: look for on["+on+"]");
+        console.log(enableDict);
+        if (!Object.hasOwn(enableDict, on_id)) {
+            Object.defineProperty(enableDict, on_id, {value:{'@name':on},writable:true,enumerable:true,configurable:true});
+            console.log(enableDict);
+        }
+        if (!Object.hasOwn(enableDict[on_id], val)) {
+            Object.defineProperty(enableDict[on_id], val, {value : [],writable:true,enumerable:true,configurable:true});
+            console.log(enableDict);
+        }
+        enableDict[on_id][val].push(id);
+        i.on('change',function(e) {
+            enableInput(e);
+        });
+        
+        if (i.val()==val)
+            $("#" + id).attr("disabled", false);
+        else
+            $("#" + id).attr("disabled", true);
+        console.log ("MENZO: "+cur+"["+id+"]["+$("#" + id).attr("disabled")+"]depends on "+on+"["+on_id+"]["+getInputType(i)+"]=["+val+"]");
+
+    }
+    console.log(enableDict);
+}
+
+function doEnableInput(id) {
+    var that = $("#"+id);
     var val = that.val();
-    var enable = enableDict[id][val];
-    console.log("MENZO: element["+id+"]["+val+"] enable ["+enable+"]");
-    if (enable) {
-        enable.forEach(function(v,i,a) {
-            $("#"+v).attr("disabled", false);
-            console.log("MENZO: enabled ["+v+"]");
+    if (enableDict[id]) {
+        var enable = enableDict[id][val];
+        console.log("MENZO: element["+id+"]["+val+"] enable ["+enable+"]");
+        if (enable) {
+            enable.forEach(function(v,i,a) {
+                $("#"+v).attr("disabled", false);
+                console.log("MENZO: enabled ["+v+"]");
+            });
+        }
+        // for other values disable the dependants
+        var disable = enableDict[id];
+        console.log(disable);
+        console.log(Object.keys(disable));
+        for(var prop in disable) {
+            console.log("MENZO: disable["+prop+"]");
+        }
+        console.log("MENZO: disable["+Object.keys(disable).length+"]");
+        Object.keys(disable).forEach(function(k,i) {
+            console.log("MENZO: disable["+k+"]["+i+"]");
+            if (k.charAt(0)!='@' && k!=val) {
+                disable[k].forEach(function(v,i,a) {
+                    $("#"+v).attr("disabled", true);
+                    console.log ("MENZO: disabled ["+v+"]");
+                });
+            };
         });
     }
-    // for other values disable the dependants
-    var disable = enableDict[id];
-    console.log(disable);
-    console.log(Object.keys(disable));
-    for(var prop in disable) {
-        console.log("MENZO: disable["+prop+"]");
-    }
-    console.log("MENZO: disable["+Object.keys(disable).length+"]");
-    Object.keys(disable).forEach(function(k,i) {
-        console.log("MENZO: disable["+k+"]["+i+"]");
-        if (k.charAt(0)!='@' && k!=val) {
-            disable[k].forEach(function(v,i,a) {
-                $("#"+v).attr("disabled", true);
-                console.log ("MENZO: disabled ["+v+"]");
-            });
-        };
-    });
+}
+
+function enableInput(e) {
+    doEnableInput($(e.target).attr('id'));
 }
 
 
