@@ -11,6 +11,7 @@ var yearRange = '1900:2040'
 var ccfTrackedFunctions = [];
 var backendVersions = ['2.0-RC13-alpha'];
 var enableDict = {};
+var ANY = '__CCF@ANY__';
 
 
 
@@ -867,7 +868,7 @@ function createAutoCompletes() {
                 var uri = comp.find("[id="+id+"]");
                 $(uri).val(suggestion.data.uri);
                 $(this).val(suggestion.data.value);
-                //console.log("!MENZO[810]: value set to ["+$(this).val()+"]["+suggestion.data.value+"]");
+                //console.log("!MENZO[870]: value set to ["+$(this).val()+"]["+suggestion.data.value+"]");
             }
         });
     });
@@ -1543,19 +1544,19 @@ function dependsOn(id,cue) {
     var cur = that.parent().parent();
     var parts = cue.split('=');
     var on = parts[0].trim();
-    var val = null;
+    var vals = [ANY];
     if (parts.length > 1) {
-        val = parts[1];
-        if (val.trim().match(/^'.*'$/)) {
-            val = val.trim().replace(/^'(.*)'$/,'$1');
-        }
+        if (parts[1].trim().match(/^'.*'$/)) {
+            vals = parts[1].trim().replace(/^'(.*)'$/,'$1').split(/'[ ]*,[ ]*'/);
+        } else
+            vals = [parts[1]];
     }
-    console.log('MENZO: element['+id+'] enable['+on+']['+val+']');
+    console.log('MENZO: element['+id+'] enable['+on+']['+vals+']');
     var p = cur.prev();
     while (p && p.attr('data-name')!=on) {
         p = p.prev();
     }
-    if (p && val && !val.match(".*'[ ]+OR[ ]+'")) {
+    if (p) {
         var c = p.children("[class='control']");
         var i = c.children("[class='input_element']");
         var on_id = i.attr("id");
@@ -1565,21 +1566,21 @@ function dependsOn(id,cue) {
             Object.defineProperty(enableDict, on_id, {value:{'@name':on},writable:true,enumerable:true,configurable:true});
             console.log(enableDict);
         }
-        if (!Object.hasOwn(enableDict[on_id], val)) {
-            Object.defineProperty(enableDict[on_id], val, {value : [],writable:true,enumerable:true,configurable:true});
-            console.log(enableDict);
+        for (const val of vals) {
+            if (!Object.hasOwn(enableDict[on_id], val)) {
+                Object.defineProperty(enableDict[on_id], val, {value : [],writable:true,enumerable:true,configurable:true});
+                enableDict[on_id][val].push(id);
+            }
         }
-        enableDict[on_id][val].push(id);
         i.on('change',function(e) {
             enableInput(e);
         });
         
-        if (i.val()==val)
+        if (i.val().trim()!='' && (vals.includes(i.val()) || vals.includes(ANY)))
             $("#" + id).attr("disabled", false);
         else
             $("#" + id).attr("disabled", true);
-        console.log ("MENZO: "+cur+"["+id+"]["+$("#" + id).attr("disabled")+"]depends on "+on+"["+on_id+"]["+getInputType(i)+"]=["+val+"]");
-
+        console.log ("MENZO: "+cur+"["+id+"]["+$("#" + id).attr("disabled")+"]depends on "+on+"["+on_id+"]["+getInputType(i)+"]=["+vals+"]");
     }
     console.log(enableDict);
 }
@@ -1590,6 +1591,9 @@ function doEnableInput(id) {
     if (enableDict[id]) {
         var enabled = [];
         var enable = enableDict[id][val];
+        // if val isn't there try ANY
+        if (!enable && val.trim()!='')
+            enable = enableDict[id][ANY];
         console.log("MENZO: element["+id+"]["+val+"] enable ["+enable+"]");
         if (enable) {
             enable.forEach(function(v,i,a) {
