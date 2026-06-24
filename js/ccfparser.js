@@ -1588,28 +1588,47 @@ function doEnableInput(id) {
     var that = $("#"+id);
     var val = that.val();
     if (enableDict[id]) {
+        var enabled = [];
         var enable = enableDict[id][val];
         console.log("MENZO: element["+id+"]["+val+"] enable ["+enable+"]");
         if (enable) {
             enable.forEach(function(v,i,a) {
-                $("#"+v).attr("disabled", false);
-                console.log("MENZO: enabled ["+v+"]");
+                var m = memo_get(v);
+                var i = $("#"+v);
+                i.attr("disabled", false);
+                // if memoized restore the value
+                if (m) {
+                    i.val(m);
+                }
+                enabled.push(v);
+                console.log("MENZO: enabled ["+v+"] memo["+m+"]");
             });
         }
         // for other values disable the dependants
         var disable = enableDict[id];
         console.log(disable);
         console.log(Object.keys(disable));
-        for(var prop in disable) {
-            console.log("MENZO: disable["+prop+"]");
-        }
-        console.log("MENZO: disable["+Object.keys(disable).length+"]");
+        //for(var prop in disable) {
+        //    console.log("MENZO: disable["+prop+"]");
+        //}
+        //console.log("MENZO: disable["+Object.keys(disable).length+"]");
         Object.keys(disable).forEach(function(k,i) {
             console.log("MENZO: disable["+k+"]["+i+"]");
             if (k.charAt(0)!='@' && k!=val) {
                 disable[k].forEach(function(v,i,a) {
-                    $("#"+v).attr("disabled", true);
-                    console.log ("MENZO: disabled ["+v+"]");
+                    // don't disable what we just enabled
+                    if (!enabled.includes(v)) {
+                        var i = $("#"+v);
+                        if (!i.attr("disabled")) {
+                            // memoize the value and make it empty
+                            memo_set(v,i.val());
+                            i.val("");
+                            i.attr("disabled", true);
+                            console.log ("MENZO: disabled ["+v+"] memo["+memo_get(v)+"]");
+                        } else
+                            console.log ("MENZO: already disabled ["+v+"] memo["+memo_get(v)+"]");
+                    } else
+                        console.log ("MENZO: just enabled ["+v+"] memo["+memo_get(v)+"]");
                 });
             };
         });
@@ -1620,6 +1639,27 @@ function enableInput(e) {
     doEnableInput($(e.target).attr('id'));
 }
 
+var memory = {};
+
+function memo(id, val) {
+    var res = null;
+    if (Object.hasOwn(memory, id))
+        res = memory[id];
+    if (val) {
+        if (!Object.hasOwn(memory, id))
+            Object.defineProperty(memory, id, {val,writable:true,enumerable:true,configurable:true});
+        memory[id] = val;
+    }
+    return res;
+}
+
+function memo_set(id,val) {
+    return memo(id,val);
+}
+
+function memo_get(id) {
+    return memo(id,null);
+}
 
 
 
