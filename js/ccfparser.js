@@ -1549,12 +1549,28 @@ function dependsOn(id,cue) {
         if (parts[1].trim().match(/^'.*'$/)) {
             vals = parts[1].trim().replace(/^'(.*)'$/,'$1').split(/'[ ]*,[ ]*'/);
         } else
-            vals = [parts[1]];
+            vals = [parts[1].trim()];
     }
     console.log('MENZO: element['+id+'] enable['+on+']['+vals+']');
-    var p = cur.prev();
-    while (p && p.attr('data-name')!=on) {
-        p = p.prev();
+    var p = null;
+    if (on.trim().match(/^.*\/\/?.*$/)) {
+        // find ancestor component and descendant element
+        var co = on.trim().replace(/^(.*)\/\/?.*$/,'$1').trim();
+        var el = on.trim().replace(/^.*\/\/?(.*)$/,'$1').trim();
+        var a = cur.parent();
+        while (a && a.attr('data-name')!=co) {
+            a = a.parent();
+        }
+        if (a) {
+            p = a.find(".element[data-name='"+el+"']").first();
+        }
+        console.log("MENZO: on["+on+"] co["+co+"]["+a.attr("id")+"] el["+el+"]["+p+"]["+p.find("[class='input_element']").attr("id")+"]");
+    } else {
+        // find preceding-sibling element
+        p = cur.prev();
+        while (p && p.attr('data-name')!=on) {
+            p = p.prev();
+        }
     }
     if (p) {
         var c = p.children("[class='control']");
@@ -1569,8 +1585,8 @@ function dependsOn(id,cue) {
         for (const val of vals) {
             if (!Object.hasOwn(enableDict[on_id], val)) {
                 Object.defineProperty(enableDict[on_id], val, {value : [],writable:true,enumerable:true,configurable:true});
-                enableDict[on_id][val].push(id);
             }
+            enableDict[on_id][val].push(id);
         }
         i.on('change',function(e) {
             enableInput(e);
