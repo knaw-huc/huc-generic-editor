@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  padding: 2rem;
+  font-family: system-ui, sans-serif;
+}
+
+.react-aria-Table {
+  width: 400px;
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+}
+
+.react-aria-Column {
+  background: #f5f5f5;
+  font-weight: 600;
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+.react-aria-Cell {
+  padding: 12px;
+}
+
+.react-aria-Row {
+  border-bottom: 1px solid #eee;
+}
+
+.react-aria-Row[data-hovered] {
+  background: #f7faff;
+}
+
+.react-aria-Row[data-focus-visible] {
+  outline: 2px solid dodgerblue;
+  outline-offset: -2px;
+}
+
+.header1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
