@@ -9,6 +9,7 @@ import {
   TableHeader,
   Button,
 } from "react-aria-components";
+import {createFileRoute} from "@tanstack/react-router";
 
 interface User {
   id: number;
@@ -19,7 +20,11 @@ interface User {
   edupersontargetedid?: string;
 }
 
-export default function App() {
+export const Route = createFileRoute('/users')({
+    component: Users,
+})
+
+export default function Users() {
   const [users, setUsers] = useState<User[]>([
     { id: 1, name: "user" },
     { id: 2, name: "demo" },
