@@ -8,7 +8,16 @@ import {
   TableBody,
   TableHeader,
   Button,
+  DialogTrigger,
+  Dialog,
+  Heading,
+  Form,
+  TextField,
+  Label,
+  Input,
 } from "react-aria-components";
+
+import { Modal } from "./Modal";
 
 interface User {
   id: number;
@@ -21,8 +30,8 @@ interface User {
 
 export default function App() {
   const [users, setUsers] = useState<User[]>([
-    { id: 1, name: "user" },
-    { id: 2, name: "demo" },
+    { id: 1, name: "user", role: "student" },
+    { id: 2, name: "demo", role: "postdoc" },
   ]);
 
   const [editing, setEditing] = useState(false);
@@ -51,6 +60,14 @@ export default function App() {
     setNewName("");
   }
 
+  const handleDelete = (id: number) => {
+    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+  };
+
+  const handleEdit = (id: number) => {
+    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+  };
+
   function addUser() {
     const newUser: User = {
       id: users.length + 1,
@@ -68,7 +85,6 @@ export default function App() {
 
         {editing && (
           <input
-            autoFocus
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             onBlur={finishAdding}
@@ -90,6 +106,7 @@ export default function App() {
           <Column>eppn</Column>
           <Column>idp</Column>
           <Column>edupersontargetedid</Column>
+          <Column>actions</Column>
         </TableHeader>
 
         <TableBody items={users}>
@@ -101,18 +118,50 @@ export default function App() {
               <Cell>{user.eppn}</Cell>
               <Cell>{user.idp}</Cell>
               <Cell>{user.edupersontargetedid}</Cell>
+              <Cell>
+                <Button onPress={() => handleDelete(user.id)}>
+                  <BsFillTrashFill />
+                </Button>
+
+                <DialogTrigger>
+                  {/* <Button onPress={() => handleEdit(user.id)}> */}
+                  <Button>
+                    <BsFillPencilFill />
+                  </Button>
+                  <Modal>
+                    <Dialog>
+                      <Heading slot="title">edit the user</Heading>
+
+                      <Form>
+                        <TextField autoFocus>
+                          <Label>name</Label>
+                          <Input placeholder="Enter user name" />
+                        </TextField>
+
+                        <TextField>
+                          <Label>role</Label>
+                          <Input placeholder="Enter role" />
+                        </TextField>
+
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: 8,
+                            alignSelf: "end",
+                          }}
+                        >
+                          <Button slot="close">Cancel</Button>
+                          <Button slot="close">done</Button>
+                        </div>
+                      </Form>
+                    </Dialog>
+                  </Modal>
+                </DialogTrigger>
+              </Cell>
             </Row>
           )}
         </TableBody>
-
-        
       </Table>
-
-     <span>
-      <BsFillTrashFill />
-      </span>
-          
-        
     </main>
   );
 }
