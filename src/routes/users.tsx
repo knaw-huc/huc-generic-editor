@@ -1,22 +1,17 @@
 import { useState } from "react";
-import { BsFillTrashFill, BsFillPencilFill } from "react-icons/bs";
 import {
-  Cell,
-  Column,
-  Row,
-  Table,
-  TableBody,
-  TableHeader,
+  BsFillTrashFill,
+  BsFillPencilFill,
+} from "react-icons/bs";
+import {
   Button,
   DialogTrigger,
-
 } from "react-aria-components";
 
-import {createFileRoute} from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { UserFormModal } from "../components/UserModalForm";
-
-
-
+import { createColumnHelper } from "@tanstack/react-table";
+import PaginatedTable from "../components/PaginatedTable";
 
 interface User {
   id: number;
@@ -27,9 +22,9 @@ interface User {
   edupersontargetedid?: string;
 }
 
-export const Route = createFileRoute('/users')({
-    component: Users,
-})
+export const Route = createFileRoute("/users")({
+  component: Users,
+});
 
 export default function Users() {
   type UserFormData = {
@@ -45,6 +40,54 @@ export default function Users() {
     { id: 1, name: "user", role: "student" },
     { id: 2, name: "demo", role: "postdoc" },
   ]);
+
+  // columns for the table
+  const columnHelper = createColumnHelper<User>();
+
+  const columns = [
+    columnHelper.accessor("id", {
+      header: () => "ID",
+      cell: (info) => info.getValue(),
+    }),
+
+    columnHelper.accessor("name", {
+      header: () => "Name",
+      cell: (info) => info.getValue(),
+    }),
+
+    columnHelper.accessor("role", {
+      header: () => "Role",
+      cell: (info) => info.getValue(),
+    }),
+
+    columnHelper.accessor("eppn", {
+      header: () => "eppn",
+      cell: (info) => info.getValue(),
+    }),
+
+    columnHelper.accessor("idp", {
+      header: () => "idp",
+      cell: (info) => info.getValue(),
+    }),
+
+    columnHelper.accessor("edupersontargetedid", {
+      header: () => "edupersontargetedid",
+      cell: (info) => info.getValue(),
+    }),
+
+
+    columnHelper.display({
+      id: "actions",
+      header: () => "Actions",
+      cell: ({ row }) => (
+        <>
+          <Button onPress={() => startEditing(row.original)}><BsFillPencilFill /> Edit</Button>
+
+          <Button onPress={() => handleDelete(row.original.id)}><BsFillTrashFill /> Delete</Button>
+        </>
+      ),
+    }),
+  ];
 
   // create new user
   // react state newUser
@@ -149,42 +192,7 @@ export default function Users() {
         </DialogTrigger>
       </div>
 
-      <Table aria-label="Users">
-        <TableHeader>
-          <Column isRowHeader>ID</Column>
-
-          <Column>Name</Column>
-          <Column>Role</Column>
-          <Column>eppn</Column>
-          <Column>idp</Column>
-          <Column>edupersontargetedid</Column>
-          <Column>actions</Column>
-        </TableHeader>
-
-        <TableBody items={users}>
-          {(user) => (
-            <Row id={user.id}>
-              <Cell>{user.id}</Cell>
-              <Cell>{user.name}</Cell>
-              <Cell>{user.role}</Cell>
-              <Cell>{user.eppn}</Cell>
-              <Cell>{user.idp}</Cell>
-              <Cell>{user.edupersontargetedid}</Cell>
-              <Cell>
-                <Button onPress={() => handleDelete(user.id)}>
-                  <BsFillTrashFill />
-                  delete user
-                </Button>
-
-                <Button onPress={() => startEditing(user)}>
-                  <BsFillPencilFill />
-                  edit user
-                </Button>
-              </Cell>
-            </Row>
-          )}
-        </TableBody>
-      </Table>
+      <PaginatedTable columns={columns} data={users} />
 
       {editingUser && (
         <DialogTrigger isOpen={isEditOpen} onOpenChange={setIsEditOpen}>

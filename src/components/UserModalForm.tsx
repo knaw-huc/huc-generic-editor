@@ -39,7 +39,7 @@ export function UserFormModal({
 
         <Form>
           <TextField isRequired autoFocus>
-            <Label>Name</Label>
+            <Label>Name (required)</Label>
             <Input
               value={user.name}
               onChange={(e) =>
