@@ -1,4 +1,4 @@
-import {BASE_URL} from "./config.ts";
+import {BACKEND_URL, BASE_URL} from "./config.ts";
 import {getRouteApi} from "@tanstack/react-router";
 
 const routeApi = getRouteApi('/');
@@ -84,4 +84,25 @@ export async function fetchAuthenticated(input: RequestInfo | URL, init: Request
     }
 
     return response
+}
+
+export async function openSigned(url: string, newTab = false) {
+    const response = await fetchAuthenticated(BASE_URL + "/auth/sign", {
+        method: "POST",
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            url: url
+        })
+    })
+    const jsonBody = await response.json()
+    const signedUrl = `${BACKEND_URL}${jsonBody.url}`
+
+    if (newTab) {
+        window.open(signedUrl, "_blank")?.focus()
+    } else {
+        window.location.replace(signedUrl)
+    }
 }

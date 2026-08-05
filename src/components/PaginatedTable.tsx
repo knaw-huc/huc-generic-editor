@@ -1,36 +1,31 @@
 import { useState } from "react";
 import {
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  type PaginationState,
-  useReactTable,
+    type ColumnDef,
+    flexRender,
+    getCoreRowModel,
+    getPaginationRowModel,
+    type PaginationState,
+    useReactTable
 } from "@tanstack/react-table";
-import {
-  Cell,
-  Column,
-  Row,
-  Table,
-  TableBody,
-  TableHeader,
-} from "react-aria-components";
+import {Cell, Column, Row, Table, TableBody, TableHeader} from "react-aria-components";
 
-export default function PaginatedTable({ columns, data }) {
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+export default function PaginatedTable({columns, data}: {columns: ColumnDef<unknown, any>[], data: any[]}) {
 
-  const table = useReactTable({
-    columns: columns,
-    data: data,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination,
-    state: {
-      pagination,
-    },
-  });
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: 0,
+        pageSize: 10
+    })
+
+    const table = useReactTable({
+        columns: columns,
+        data: data,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        onPaginationChange: setPagination,
+        state: {
+            pagination
+        }
+    });
 
   return (
     <div>
