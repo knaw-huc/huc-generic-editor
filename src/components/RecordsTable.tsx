@@ -7,14 +7,43 @@ import {Link} from "@tanstack/react-router";
 import {openSigned} from "../auth.ts";
 import {APP} from "../config.ts";
 
-
-type Record = {
-    _id: string;
+type Header = {
+    prop: string
+    label: string
+    sort: boolean
+    filter: boolean | "select"
 }
 
+type Record = {
+    _id: string
+    creationDate: string
+    actionsEnabled: {
+        [key: string]: boolean
+    },
+    read: boolean
+    write: boolean
+}
+
+type Action = {
+    level: string
+    label: string
+    endpoint: string
+    hook: string
+}
+
+type RecordsResponse = {
+    header: Header[]
+    actions: {
+        [key: string]: Action
+    }
+    data: Record[]
+    offset: number
+    limit: number
+    total: number
+}
 
 export default function RecordsTable({profile, title}: {profile: string, title: string}) {
-    const {data} = useSuspenseQuery(useRecords(profile))
+    const {data}: {data: RecordsResponse} = useSuspenseQuery(useRecords(profile))
 
     const columnHelper = createColumnHelper<Record>()
 
@@ -29,8 +58,12 @@ export default function RecordsTable({profile, title}: {profile: string, title: 
         console.log("delete", recordId)
     }
 
-    function openExport(recordId: string, format: string) {
-        openSigned(`/app/${APP}/profile/${profile}/record/${recordId}.${format}`, true)
+    async function openExport(recordId: string, format: string) {
+        await openSigned(`/app/${APP}/profile/${profile}/record/${recordId}.${format}`, true)
+    }
+
+    async function performAction(recordId: string, action: Action) {
+        await openSigned(`/app/${APP}/profile/${profile}/record/${recordId}/action/${action.endpoint}`, true)
     }
 
     columns.push(columnHelper.display({
@@ -46,12 +79,17 @@ export default function RecordsTable({profile, title}: {profile: string, title: 
 
     columns.push(columnHelper.display({
         id: "delete",
-        cell: props => <Button className={"cursor-pointer"} onClick={() => deleteRecord(props.row.original._id)}>🗑️️</Button>
+        cell: props => <Button
+            className={props.row.original.write ? "cursor-pointer" : "cursor-not-allowed"}
+            isDisabled={!props.row.original.write}
+            onClick={() => deleteRecord(props.row.original._id)}>🗑️️</Button>
     }))
 
     columns.push(columnHelper.display({
         id: "history",
-        cell: props => <Link to={`/profiles/$profileName/records/$recordId/history`} params={(prev) => ({
+        cell: props => <Link
+            to={`/profiles/$profileName/records/$recordId/history`}
+            params={(prev) => ({
             ...prev,
             profileName: profile,
             recordId: props.row.original._id,
@@ -63,7 +101,28 @@ export default function RecordsTable({profile, title}: {profile: string, title: 
     for (const format of exports) {
         columns.push(columnHelper.display({
             id: format.name,
-            cell: props => <a href={"javascript:void(0)"} onClick={() => openExport(props.row.original._id, format.type)}>{format.name}</a>
+            cell: props => <Button
+                isDisabled={!props.row.original.read}
+                onClick={() => openExport(props.row.original._id, format.type)}
+                className={props.row.original.read ? "cursor-pointer" : "cursor-not-allowed"}
+            >{format.name}</Button>
+        }))
+    }
+
+    for (const actionName in data.actions) {
+        const action = data.actions[actionName]
+        console.log("Action", action)
+        columns.push(columnHelper.display({
+            id: `action_${actionName}`,
+            cell: props => {
+                if (props.row.original.actionsEnabled[actionName]) {
+                    return <Button
+                        className={"cursor-pointer font-bold"}
+                        onClick={() => {performAction(props.row.original._id, action)}}
+                    >{action.label}</Button>
+                }
+                return <Button isDisabled={true} className={"cursor-not-allowed"}>{action.label}</Button>
+            }
         }))
     }
 
