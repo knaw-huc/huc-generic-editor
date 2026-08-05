@@ -1,5 +1,6 @@
 import {useState} from "react";
 import {
+    type ColumnDef,
     flexRender,
     getCoreRowModel,
     getPaginationRowModel,
@@ -8,7 +9,7 @@ import {
 } from "@tanstack/react-table";
 import {Cell, Column, Row, Table, TableBody, TableHeader} from "react-aria-components";
 
-export default function PaginatedTable({columns, data}) {
+export default function PaginatedTable({columns, data}: {columns: ColumnDef<unknown, any>[], data: any[]}) {
 
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: 0,

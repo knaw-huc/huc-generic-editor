@@ -1,14 +1,20 @@
-import * as React from 'react'
-import {Outlet, createRootRoute, Link, Navigate} from '@tanstack/react-router'
+import {Outlet, Link, Navigate, createRootRouteWithContext} from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import {QueryClient} from "@tanstack/react-query";
 
-export const Route = createRootRoute({
+interface RouterContext {
+    queryClient: QueryClient
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
     component: RootComponent,
     errorComponent: (err) => {
         console.log(err)
         if (err.error instanceof Response) {
+            const response = err.error as Response;
             console.log("this is a redirect")
-            return <Navigate to={err.error.options.to} />
+            // @ts-ignore
+            return <Navigate to={response.options.to} />
         }
         return <h1>Error</h1>
     }
@@ -17,33 +23,6 @@ export const Route = createRootRoute({
 function RootComponent() {
     return (
         <>
-            {/*<header className="border-b py-4 px-4 sm:px-10 bg-white font-sans min-h-[70px]">*/}
-            {/*    <nav className={"flex flex-wrap items-center lg:gap-y-2 gap-y-4 gap-x-4"}>*/}
-            {/*        <ul className={"flex lg:ml-10 lg:space-x-8 max-lg:space-y-2 max-lg:block max-lg:w-full"}>*/}
-            {/*            <li className={"max-lg:border-b max-lg:py-2"}>*/}
-            {/*                <Link*/}
-            {/*                    to="/"*/}
-            {/*                    activeProps={{*/}
-            {/*                        className: 'font-bold',*/}
-            {/*                    }}*/}
-            {/*                    activeOptions={{exact: true}}*/}
-            {/*                >*/}
-            {/*                    Home*/}
-            {/*                </Link>*/}
-            {/*            </li>*/}
-            {/*            <li className={"max-lg:border-b max-lg:py-2"}>*/}
-            {/*                <Link*/}
-            {/*                    to="/users"*/}
-            {/*                    activeProps={{*/}
-            {/*                        className: 'font-bold',*/}
-            {/*                    }}*/}
-            {/*                >*/}
-            {/*                    Users*/}
-            {/*                </Link>*/}
-            {/*            </li>*/}
-            {/*        </ul>*/}
-            {/*    </nav>*/}
-            {/*</header>*/}
             <nav className="flex items-center justify-between flex-wrap bg-blue-500 p-6 mb-4">
                 <div className="block lg:hidden">
                     <button

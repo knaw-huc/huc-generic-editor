@@ -9,7 +9,8 @@ export const Route = createFileRoute('/login')({
 
 function LoginRouteComponent() {
 
-    const [username, setUsername] = useState<string>(localStorage.getItem("remembered_user") != null ? localStorage.getItem("remembered_user") : "")
+    const rememberedUser: string = localStorage.getItem("remembered_user") ?? ""
+    const [username, setUsername] = useState<string>(rememberedUser)
     const [password, setPassword] = useState<string>('')
     const [remember, setRemember] = useState<boolean>(localStorage.getItem("remembered_user") != null)
     const message = localStorage.getItem("login_message")
