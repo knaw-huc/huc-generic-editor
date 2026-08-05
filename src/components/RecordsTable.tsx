@@ -4,6 +4,8 @@ import {createColumnHelper} from "@tanstack/react-table";
 import PaginatedTable from "./PaginatedTable.tsx";
 import {Button} from "react-aria-components";
 import {Link} from "@tanstack/react-router";
+import {openSigned} from "../auth.ts";
+import {APP} from "../config.ts";
 
 
 export default function RecordsTable({profile, title}: {profile: string, title: string}) {
@@ -18,8 +20,12 @@ export default function RecordsTable({profile, title}: {profile: string, title: 
         })
     })
 
-    function deleteRecord(recordId) {
+    function deleteRecord(recordId: string) {
         console.log("delete", recordId)
+    }
+
+    function openExport(recordId: string, format: string) {
+        openSigned(`/app/${APP}/profile/${profile}/record/${recordId}.${format}`, true)
     }
 
     columns.push(columnHelper.display({
@@ -36,6 +42,15 @@ export default function RecordsTable({profile, title}: {profile: string, title: 
         id: "history",
         cell: props => <Link to={`/profiles/${profile}/records/${props.row.original._id}/history`}>🕖</Link>
     }))
+
+    const exports = [{name: "CMDI", type: "xml"}, {name: "HTML", type: "html"}, {name: "PDF", type: "pdf"}]
+
+    for (const format of exports) {
+        columns.push(columnHelper.display({
+            id: format.name,
+            cell: props => <Button onClick={() => openExport(props.row.original._id, format.type)}>{format.name}</Button>
+        }))
+    }
 
     return (
         <>
