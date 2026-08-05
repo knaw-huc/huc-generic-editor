@@ -9,38 +9,110 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as UsersRouteImport } from './routes/users'
+import { Route as ProfilesProfileNameRecordsRecordIdEditRouteImport } from './routes/profiles.$profileName/records/$recordId.edit'
+import { Route as ProfilesProfileNameRecordsRecordIdHistoryRouteImport } from './routes/profiles.$profileName/records/$recordId.history'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UsersRoute = UsersRouteImport.update({
   id: '/users',
   path: '/users',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfilesProfileNameRecordsRecordIdEditRoute =
+  ProfilesProfileNameRecordsRecordIdEditRouteImport.update({
+    id: '/profiles/$profileName/records/$recordId/edit',
+    path: '/profiles/$profileName/records/$recordId/edit',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ProfilesProfileNameRecordsRecordIdHistoryRoute =
+  ProfilesProfileNameRecordsRecordIdHistoryRouteImport.update({
+    id: '/profiles/$profileName/records/$recordId/history',
+    path: '/profiles/$profileName/records/$recordId/history',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/users': typeof UsersRoute
+  '/profiles/$profileName/records/$recordId/edit': typeof ProfilesProfileNameRecordsRecordIdEditRoute
+  '/profiles/$profileName/records/$recordId/history': typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/users': typeof UsersRoute
+  '/profiles/$profileName/records/$recordId/edit': typeof ProfilesProfileNameRecordsRecordIdEditRoute
+  '/profiles/$profileName/records/$recordId/history': typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/login': typeof LoginRoute
   '/users': typeof UsersRoute
+  '/profiles/$profileName/records/$recordId/edit': typeof ProfilesProfileNameRecordsRecordIdEditRoute
+  '/profiles/$profileName/records/$recordId/history': typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/users'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/users'
+    | '/profiles/$profileName/records/$recordId/edit'
+    | '/profiles/$profileName/records/$recordId/history'
   fileRoutesByTo: FileRoutesByTo
-  to: '/users'
-  id: '__root__' | '/users'
+  to:
+    | '/'
+    | '/login'
+    | '/users'
+    | '/profiles/$profileName/records/$recordId/edit'
+    | '/profiles/$profileName/records/$recordId/history'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/users'
+    | '/profiles/$profileName/records/$recordId/edit'
+    | '/profiles/$profileName/records/$recordId/history'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
   UsersRoute: typeof UsersRoute
+  ProfilesProfileNameRecordsRecordIdEditRoute: typeof ProfilesProfileNameRecordsRecordIdEditRoute
+  ProfilesProfileNameRecordsRecordIdHistoryRoute: typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/users': {
       id: '/users'
       path: '/users'
@@ -48,11 +120,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UsersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profiles/$profileName/records/$recordId/edit': {
+      id: '/profiles/$profileName/records/$recordId/edit'
+      path: '/profiles/$profileName/records/$recordId/edit'
+      fullPath: '/profiles/$profileName/records/$recordId/edit'
+      preLoaderRoute: typeof ProfilesProfileNameRecordsRecordIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profiles/$profileName/records/$recordId/history': {
+      id: '/profiles/$profileName/records/$recordId/history'
+      path: '/profiles/$profileName/records/$recordId/history'
+      fullPath: '/profiles/$profileName/records/$recordId/history'
+      preLoaderRoute: typeof ProfilesProfileNameRecordsRecordIdHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
   UsersRoute: UsersRoute,
+  ProfilesProfileNameRecordsRecordIdEditRoute:
+    ProfilesProfileNameRecordsRecordIdEditRoute,
+  ProfilesProfileNameRecordsRecordIdHistoryRoute:
+    ProfilesProfileNameRecordsRecordIdHistoryRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
