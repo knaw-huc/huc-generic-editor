@@ -1,4 +1,4 @@
-export const APP = "ecodices"
+export const APP = "tastadev1"
 
 export const BACKEND_URL = "http://localhost:1210"
 

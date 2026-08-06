@@ -12,6 +12,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { UserFormModal } from "../components/UserModalForm";
 import { createColumnHelper } from "@tanstack/react-table";
 import PaginatedTable from "../components/PaginatedTable";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {useUsers} from "../queries/users.ts";
 
 interface User {
   id: number;
@@ -24,6 +26,9 @@ interface User {
 
 export const Route = createFileRoute("/users")({
   component: Users,
+  loader: ({context}) => {
+    context.queryClient.ensureQueryData(useUsers())
+  }
 });
 
 export default function Users() {
@@ -36,10 +41,13 @@ export default function Users() {
   };
 
   // standard users
-  const [users, setUsers] = useState<User[]>([
-    { id: 1, name: "user", role: "student" },
-    { id: 2, name: "demo", role: "postdoc" },
-  ]);
+  // const [users, setUsers] = useState<User[]>([
+  //   { id: 1, name: "user", role: "student" },
+  //   { id: 2, name: "demo", role: "postdoc" },
+  // ]);
+
+  const {data : users} = useSuspenseQuery(useUsers());
+
 
   // columns for the table
   const columnHelper = createColumnHelper<User>();
