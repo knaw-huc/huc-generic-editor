@@ -348,6 +348,10 @@ var formBuilder = {
                     }
 
             }
+            if (element.attributes !== undefined && element.attributes.readonly !== undefined && element.attributes.readonly === "yes") {
+                control.setAttribute("disabled", true);
+            }
+
         }
         if (element.attributes.class !== undefined) {
             control.setAttribute('data-class', element.attributes.class);
