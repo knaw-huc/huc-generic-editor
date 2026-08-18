@@ -9,22 +9,24 @@ import {
 } from "react-aria-components";
 
 import { Modal } from "./Modal";
+import type {User} from "../routes/users.tsx";
 
-interface UserFormData {
-  name: string;
-  role: string;
-  eppn: string;
-  idp: string;
-  edupersontargetedid: string;
-}
+
+
 
 interface UserFormModalProps {
   title: string;
   user: UserFormData;
   setUser: React.Dispatch<React.SetStateAction<UserFormData>>;
-  onSave: () => void;
+  onSave: (user: User) => void;
 }
-
+export interface UserFormData {
+    name: string;
+    role?: string;
+    eppn?: string;
+    idp?: string;
+    edupersontargetedid?: string;
+}
 
 export function UserFormModal({
   title,
@@ -38,6 +40,7 @@ export function UserFormModal({
         <Heading slot="title">{title}</Heading>
 
         <Form>
+
           <TextField isRequired autoFocus>
             <Label>Name (required)</Label>
             <Input
@@ -52,7 +55,7 @@ export function UserFormModal({
           </TextField>
 
           <TextField>
-            <Label>Role</Label>
+            <Label>Role (NI)</Label>
             <Input
               value={user.role}
               onChange={(e) =>
@@ -65,7 +68,7 @@ export function UserFormModal({
           </TextField>
 
           <TextField>
-            <Label>eppn</Label>
+            <Label>eppn (NI)</Label>
             <Input
               value={user.eppn}
               onChange={(e) =>
@@ -78,7 +81,7 @@ export function UserFormModal({
           </TextField>
 
           <TextField>
-            <Label>idp</Label>
+            <Label>idp (NI)</Label>
             <Input
               value={user.idp}
               onChange={(e) =>
@@ -91,7 +94,7 @@ export function UserFormModal({
           </TextField>
 
           <TextField>
-            <Label>edupersontargetedid</Label>
+            <Label>edupersontargetedid (NI)</Label>
             <Input
               value={user.edupersontargetedid}
               onChange={(e) =>
@@ -111,7 +114,7 @@ export function UserFormModal({
             }}
           >
             <Button slot="close">Cancel</Button>
-            <Button slot="close" onPress={onSave}>
+            <Button slot="close" onPress={ () => onSave(user)}>
               Done
             </Button>
           </div>

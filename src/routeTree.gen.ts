@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as MeRouteImport } from './routes/me'
 import { Route as UsersRouteImport } from './routes/users'
 import { Route as ProfilesProfileNameRecordsRecordIdEditRouteImport } from './routes/profiles.$profileName/records/$recordId.edit'
 import { Route as ProfilesProfileNameRecordsRecordIdHistoryRouteImport } from './routes/profiles.$profileName/records/$recordId.history'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MeRoute = MeRouteImport.update({
+  id: '/me',
+  path: '/me',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UsersRoute = UsersRouteImport.update({
@@ -46,6 +52,7 @@ const ProfilesProfileNameRecordsRecordIdHistoryRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/me': typeof MeRoute
   '/users': typeof UsersRoute
   '/profiles/$profileName/records/$recordId/edit': typeof ProfilesProfileNameRecordsRecordIdEditRoute
   '/profiles/$profileName/records/$recordId/history': typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
@@ -53,6 +60,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/me': typeof MeRoute
   '/users': typeof UsersRoute
   '/profiles/$profileName/records/$recordId/edit': typeof ProfilesProfileNameRecordsRecordIdEditRoute
   '/profiles/$profileName/records/$recordId/history': typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
@@ -61,6 +69,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/me': typeof MeRoute
   '/users': typeof UsersRoute
   '/profiles/$profileName/records/$recordId/edit': typeof ProfilesProfileNameRecordsRecordIdEditRoute
   '/profiles/$profileName/records/$recordId/history': typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
@@ -70,6 +79,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/login'
+    | '/me'
     | '/users'
     | '/profiles/$profileName/records/$recordId/edit'
     | '/profiles/$profileName/records/$recordId/history'
@@ -77,6 +87,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/me'
     | '/users'
     | '/profiles/$profileName/records/$recordId/edit'
     | '/profiles/$profileName/records/$recordId/history'
@@ -84,6 +95,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/login'
+    | '/me'
     | '/users'
     | '/profiles/$profileName/records/$recordId/edit'
     | '/profiles/$profileName/records/$recordId/history'
@@ -92,6 +104,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  MeRoute: typeof MeRoute
   UsersRoute: typeof UsersRoute
   ProfilesProfileNameRecordsRecordIdEditRoute: typeof ProfilesProfileNameRecordsRecordIdEditRoute
   ProfilesProfileNameRecordsRecordIdHistoryRoute: typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
@@ -111,6 +124,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/users': {
@@ -140,6 +160,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  MeRoute: MeRoute,
   UsersRoute: UsersRoute,
   ProfilesProfileNameRecordsRecordIdEditRoute:
     ProfilesProfileNameRecordsRecordIdEditRoute,

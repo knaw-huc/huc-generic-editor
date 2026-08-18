@@ -8,14 +8,20 @@ import {
   DialogTrigger,
 } from "react-aria-components";
 
-import { createFileRoute } from "@tanstack/react-router";
-import { UserFormModal } from "../components/UserModalForm";
+
+import {createFileRoute, Link,} from "@tanstack/react-router";
+import {type UserFormData, UserFormModal} from "../components/UserModalForm";
 import { createColumnHelper } from "@tanstack/react-table";
 import PaginatedTable from "../components/PaginatedTable";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {useUsers} from "../queries/users.ts";
 
-interface User {
+
+import { useMutation, useQueryClient} from "@tanstack/react-query";
+import {fetchAuthenticated} from "../auth.ts";
+
+
+export interface User {
   id: number;
   name: string;
   role?: string;
@@ -32,29 +38,18 @@ export const Route = createFileRoute("/users")({
 });
 
 export default function Users() {
-  type UserFormData = {
-    name: string;
-    role: string;
-    eppn: string;
-    idp: string;
-    edupersontargetedid: string;
-  };
+
 
   // standard users
-  // const [users, setUsers] = useState<User[]>([
-  //   { id: 1, name: "user", role: "student" },
-  //   { id: 2, name: "demo", role: "postdoc" },
-  // ]);
-
   const {data : users} = useSuspenseQuery(useUsers());
-
 
   // columns for the table
   const columnHelper = createColumnHelper<User>();
 
   const columns = [
+
     columnHelper.accessor("id", {
-      header: () => "ID",
+      header: () => "id",
       cell: (info) => info.getValue(),
     }),
 
@@ -64,22 +59,22 @@ export default function Users() {
     }),
 
     columnHelper.accessor("role", {
-      header: () => "Role",
+      header: () => "Role (NI)",
       cell: (info) => info.getValue(),
     }),
 
     columnHelper.accessor("eppn", {
-      header: () => "eppn",
+      header: () => "eppn (NI)",
       cell: (info) => info.getValue(),
     }),
 
     columnHelper.accessor("idp", {
-      header: () => "idp",
+      header: () => "idp (NI)",
       cell: (info) => info.getValue(),
     }),
 
     columnHelper.accessor("edupersontargetedid", {
-      header: () => "edupersontargetedid",
+      header: () => "edupersontargetedid(NI)",
       cell: (info) => info.getValue(),
     }),
 
@@ -91,97 +86,154 @@ export default function Users() {
         <>
           <Button onPress={() => startEditing(row.original)}><BsFillPencilFill /> Edit</Button>
 
-          <Button onPress={() => handleDelete(row.original.id)}><BsFillTrashFill /> Delete</Button>
+          <Button
+          onPress={() => deleteUserMutation.mutate(row.original.id)}>
+            <BsFillTrashFill /> Delete</Button>
         </>
       ),
     }),
   ];
 
+
+
+  const queryClient = useQueryClient();
+
   // create new user
+  const addUserMutation = useMutation({
+    mutationFn: async (user: UserFormData) => {
+
+      console.log("1. addUserMutation called with user", user);
+      const response = await fetchAuthenticated("http://localhost:1210/app/tastadev1/auth/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(user),
+      });
+
+      // console.log("2. response status:", response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+
+        console.error("API error:", {
+          status: response.status,
+          body: errorText,
+        });
+
+        throw new Error(
+            `Failed to add user: ${response.status} ${errorText}`
+        );
+      }
+
+      return response.json();
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["users"]
+      })
+    }
+
+  });
+
+
   // react state newUser
   const [newUser, setNewUser] = useState<UserFormData>({
     name: "",
-    role: "",
-    eppn: "",
-    idp: "",
-    edupersontargetedid: "",
   });
 
-  // function is called when the button 'done' in the modal is pressed
+
   const addUser = () => {
-    if (!newUser.name.trim()) {
-      return;
-    }
+    addUserMutation.mutate(newUser);
 
-    setUsers((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        ...newUser,
-      },
-    ]);
-
-    setNewUser({
-      name: "",
-      role: "",
-      eppn: "",
-      idp: "",
-      edupersontargetedid: "",
-    });
   };
 
   // //edit users
-  // edit dialog open state
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  // state which stores which user is being edited
-  const [editingUser, setEditingUser] = useState<User | null>(null);
-  // state: what is currently in the edit form
+
+  // const [editingUser, setEditingUser] = useState<User | null>(null);
   const [formData, setFormData] = useState<UserFormData>({
     name: "",
-    role: "",
-    eppn: "",
-    idp: "",
-    edupersontargetedid: "",
+  });
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const [originalUserId, setOriginalUserId] = useState<number | null>(null);
+
+
+  const updateUserMutation = useMutation({
+    mutationFn: async ({originalId, user}: {originalId: number;
+    user: UserFormData;}) => {
+      const response = await fetchAuthenticated(`http://localhost:1210/app/tastadev1/auth/users/${originalId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+
+            },
+            body: JSON.stringify({
+              name: user.name,
+            }),
+          });
+
+      return response.json();
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      });
+
+      setIsEditOpen(false);
+    },
   });
 
-  // function when edit button is pressed
-  const startEditing = (user: User) => {
-    setEditingUser(user);
 
-    // copy users data into form
+
+  const startEditing = (user: User) => {
+    // setEditingUser({...user});
+    setOriginalUserId(user.id);
+
     setFormData({
-      name: user.name ?? "",
+      name: user.name,
       role: user.role ?? "",
       eppn: user.eppn ?? "",
       idp: user.idp ?? "",
-      edupersontargetedid: user.edupersontargetedid ?? "",
+      edupersontargetedid: user.eppn ?? ""
     });
-
     setIsEditOpen(true);
   };
 
-  // function when press done in modal
-  const saveEdit = () => {
-    if (!editingUser) return;
+  const handleSave = (updatedUser: UserFormData) => {
+    if (originalUserId === null) {
+      return;
+    }
 
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === editingUser.id
-          ? {
-              ...u,
-              ...formData,
-            }
-          : u,
-      ),
-    );
-
-    setEditingUser(null);
+    updateUserMutation.mutate({
+      originalId: originalUserId,
+      user: updatedUser,
+    });
   };
+
+
 
   // delete button function
-  const handleDelete = (id: number) => {
-    setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-  };
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      const response = await fetchAuthenticated(`http://localhost:1210/app/tastadev1/auth/users/${userId}`,
+          {
+            method: "DELETE",
+          }
+          );
+
+      return response.json();
+
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["users"]
+      })
+    }
+  })
 
   return (
     <main style={{ padding: "5rem" }}>
@@ -200,15 +252,25 @@ export default function Users() {
         </DialogTrigger>
       </div>
 
+      <div>
+
+        <Link
+            to="/me"
+        >
+          Current user
+        </Link>
+
+      </div>
+
       <PaginatedTable columns={columns} data={users} />
 
-      {editingUser && (
+      {formData && (
         <DialogTrigger isOpen={isEditOpen} onOpenChange={setIsEditOpen}>
           <UserFormModal
             title="Edit user"
             user={formData}
             setUser={setFormData}
-            onSave={saveEdit}
+            onSave={handleSave}
           />
         </DialogTrigger>
       )}
