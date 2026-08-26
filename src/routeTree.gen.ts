@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MeRouteImport } from './routes/me'
+import { Route as RedirectRouteImport } from './routes/redirect'
 import { Route as UsersRouteImport } from './routes/users'
 import { Route as ProfilesProfileNameRecordsRecordIdEditRouteImport } from './routes/profiles.$profileName/records/$recordId.edit'
 import { Route as ProfilesProfileNameRecordsRecordIdHistoryRouteImport } from './routes/profiles.$profileName/records/$recordId.history'
@@ -29,6 +30,11 @@ const LoginRoute = LoginRouteImport.update({
 const MeRoute = MeRouteImport.update({
   id: '/me',
   path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RedirectRoute = RedirectRouteImport.update({
+  id: '/redirect',
+  path: '/redirect',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UsersRoute = UsersRouteImport.update({
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/me': typeof MeRoute
+  '/redirect': typeof RedirectRoute
   '/users': typeof UsersRoute
   '/profiles/$profileName/records/$recordId/edit': typeof ProfilesProfileNameRecordsRecordIdEditRoute
   '/profiles/$profileName/records/$recordId/history': typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/me': typeof MeRoute
+  '/redirect': typeof RedirectRoute
   '/users': typeof UsersRoute
   '/profiles/$profileName/records/$recordId/edit': typeof ProfilesProfileNameRecordsRecordIdEditRoute
   '/profiles/$profileName/records/$recordId/history': typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/me': typeof MeRoute
+  '/redirect': typeof RedirectRoute
   '/users': typeof UsersRoute
   '/profiles/$profileName/records/$recordId/edit': typeof ProfilesProfileNameRecordsRecordIdEditRoute
   '/profiles/$profileName/records/$recordId/history': typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/me'
+    | '/redirect'
     | '/users'
     | '/profiles/$profileName/records/$recordId/edit'
     | '/profiles/$profileName/records/$recordId/history'
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/me'
+    | '/redirect'
     | '/users'
     | '/profiles/$profileName/records/$recordId/edit'
     | '/profiles/$profileName/records/$recordId/history'
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/me'
+    | '/redirect'
     | '/users'
     | '/profiles/$profileName/records/$recordId/edit'
     | '/profiles/$profileName/records/$recordId/history'
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   MeRoute: typeof MeRoute
+  RedirectRoute: typeof RedirectRoute
   UsersRoute: typeof UsersRoute
   ProfilesProfileNameRecordsRecordIdEditRoute: typeof ProfilesProfileNameRecordsRecordIdEditRoute
   ProfilesProfileNameRecordsRecordIdHistoryRoute: typeof ProfilesProfileNameRecordsRecordIdHistoryRoute
@@ -131,6 +144,13 @@ declare module '@tanstack/react-router' {
       path: '/me'
       fullPath: '/me'
       preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/redirect': {
+      id: '/redirect'
+      path: '/redirect'
+      fullPath: '/redirect'
+      preLoaderRoute: typeof RedirectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/users': {
@@ -161,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   MeRoute: MeRoute,
+  RedirectRoute: RedirectRoute,
   UsersRoute: UsersRoute,
   ProfilesProfileNameRecordsRecordIdEditRoute:
     ProfilesProfileNameRecordsRecordIdEditRoute,

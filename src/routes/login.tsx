@@ -61,6 +61,16 @@ function LoginRouteComponent() {
         navigate({
             to: "/"
         })
+
+
+
+    }
+
+    function loginSatosa(){
+
+        const loginUrl = "http://localhost:1210/app/tastadev1/auth/satosalogin";
+        window.location.href = loginUrl;
+
     }
 
     return <div>
@@ -112,12 +122,34 @@ function LoginRouteComponent() {
 
                         <button type="submit"
                                 className="w-full py-2 px-3.5 text-sm rounded-md font-semibold cursor-pointer tracking-wide text-white border border-blue-600 bg-blue-600 hover:bg-blue-700 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-                            Sign in
+                            Sign in with user
                         </button>
 
+
+
+
+
                     </form>
+
+                    <form className="space-y-6 mt-10" onSubmit={e => {e.preventDefault(); login()}}>
+
+
+                        <button onClick={loginSatosa}
+                                className="w-full py-2 px-3.5 text-sm rounded-md font-semibold cursor-pointer tracking-wide text-white border border-blue-600 bg-blue-600 hover:bg-blue-700 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+                            Sign in with Satosa
+                        </button>
+
+
+
+                    </form>
+
+
                 </div>
+
+
             </div>
+
+
         </div>
     </div>
 }

@@ -5,6 +5,8 @@ import RecordsTable from "../components/RecordsTable.tsx";
 
 
 export const Route = createFileRoute('/')({
+
+
     component: RouteComponent,
     loader: ({context}) => {
         context.queryClient.ensureQueryData(useProfiles())
@@ -23,3 +25,6 @@ function RouteComponent() {
         })}
     </div>
 }
+
+
+

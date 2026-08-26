@@ -1,5 +1,8 @@
 import {BACKEND_URL, BASE_URL} from "./config.ts";
 import {getRouteApi} from "@tanstack/react-router";
+// import React, { useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom';
+
 
 const routeApi = getRouteApi('/');
 
@@ -106,3 +109,5 @@ export async function openSigned(url: string, newTab = false) {
         window.location.replace(signedUrl)
     }
 }
+
+
