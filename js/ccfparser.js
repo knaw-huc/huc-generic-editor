@@ -9,7 +9,7 @@ var recordEdit = false;
 var datePickerFormat = "yy-mm-dd";
 var yearRange = '1900:2040'
 var ccfTrackedFunctions = [];
-var backendVersions = ['2.0-RC12'];
+var backendVersions = ['2.0-RC13-alpha'];
 
 
 function validateTracker() {
