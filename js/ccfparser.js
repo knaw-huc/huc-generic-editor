@@ -358,6 +358,10 @@ var formBuilder = {
                     }
 
             }
+            if (element.attributes !== undefined && element.attributes.readonly !== undefined && element.attributes.readonly === "yes") {
+                control.setAttribute("disabled", true);
+            }
+
         }
         if (element.attributes.class !== undefined) {
             control.setAttribute('data-class', element.attributes.class);
@@ -967,7 +971,8 @@ function toJSON() {
         if ($(this).attr("class") === "component" || 
             $(this).attr("class") === "clonedComponent" ||
             $(this).attr("class") === "component isCollapsed" || 
-            $(this).attr("class") === "component clonedComponent") {
+            $(this).attr("class") === "component clonedComponent" ||
+            $(this).attr("class") === "component clonedComponent isCollapsed") {
                 var element = {};
                 element.name = $(this).attr("data-name");
                 element.type = 'component';
@@ -1020,7 +1025,8 @@ function parseComponent(component) {
         if ($(this).attr("class") === "component" || 
             $(this).attr("class") === "clonedComponent" || 
             $(this).attr("class") === "component isCollapsed" || 
-            $(this).attr("class") === "component clonedComponent") {
+            $(this).attr("class") === "component clonedComponent" ||
+            $(this).attr("class") === "component clonedComponent isCollapsed") {
             var element = {};
             element.name = $(this).attr("data-name");
             element.type = 'component';
