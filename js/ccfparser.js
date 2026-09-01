@@ -950,7 +950,8 @@ function toJSON() {
         if ($(this).attr("class") === "component" || 
             $(this).attr("class") === "clonedComponent" ||
             $(this).attr("class") === "component isCollapsed" || 
-            $(this).attr("class") === "component clonedComponent") {
+            $(this).attr("class") === "component clonedComponent" ||
+            $(this).attr("class") === "component clonedComponent isCollapsed") {
                 var element = {};
                 element.name = $(this).attr("data-name");
                 element.type = 'component';
@@ -1003,7 +1004,8 @@ function parseComponent(component) {
         if ($(this).attr("class") === "component" || 
             $(this).attr("class") === "clonedComponent" || 
             $(this).attr("class") === "component isCollapsed" || 
-            $(this).attr("class") === "component clonedComponent") {
+            $(this).attr("class") === "component clonedComponent" ||
+            $(this).attr("class") === "component clonedComponent isCollapsed") {
             var element = {};
             element.name = $(this).attr("data-name");
             element.type = 'component';
