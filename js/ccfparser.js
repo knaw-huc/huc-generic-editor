@@ -951,7 +951,9 @@ function toJSON() {
             $(this).attr("class") === "clonedComponent" ||
             $(this).attr("class") === "component isCollapsed" || 
             $(this).attr("class") === "component clonedComponent" ||
-            $(this).attr("class") === "component clonedComponent isCollapsed") {
+            $(this).attr("class") === "component clonedComponent isCollapsed" ||
+            $(this).attr("class") === "component isCollapsed clonedComponent"  //isn't possible: if a component is collapsed you can't press the clone button
+        ) {
                 var element = {};
                 element.name = $(this).attr("data-name");
                 element.type = 'component';
@@ -1005,7 +1007,9 @@ function parseComponent(component) {
             $(this).attr("class") === "clonedComponent" || 
             $(this).attr("class") === "component isCollapsed" || 
             $(this).attr("class") === "component clonedComponent" ||
-            $(this).attr("class") === "component clonedComponent isCollapsed") {
+            $(this).attr("class") === "component clonedComponent isCollapsed" ||
+            $(this).attr("class") === "component isCollapsed clonedComponent" //isn't possible: if a component is collapsed you can't press the clone button
+        ) {
             var element = {};
             element.name = $(this).attr("data-name");
             element.type = 'component';
@@ -1022,7 +1026,9 @@ function parseComponent(component) {
         } else {
             if ($(this).attr("class") === "element" || 
                 $(this).attr("class") === "element isCollapsed" ||
-                $(this).attr("class") === "element blocked_element") {
+                $(this).attr("class") === "element blocked_element" ||
+                $(this).attr("class") === "element blocked_element isCollapsed"
+            ) {
                 var element = {};
                 element.name = $(this).attr("data-name");
                 element.type = 'element';
